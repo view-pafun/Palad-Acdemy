@@ -47,7 +47,7 @@ export const PathwayCards: React.FC<PathwayCardsProps> = ({
                 ทำแบบทดสอบเส้นทางชีวิต
               </h3>
               <p className="text-slate-600 text-sm sm:text-base leading-relaxed mb-6 font-normal">
-                ทำแบบประเมินตนเอง 60 ข้อด้วยมาตรวัด Likert Scale (1-7) พร้อมระบบวิเคราะห์คะแนนย้อนกลับอัตโนมัติ และค้นพบจุดแข็ง 6 มิติเพื่อออกแบบเส้นทางชีวิต
+                ทำแบบประเมินตนเอง 60 ข้อด้วยมาตรวัด Likert Scale (1-7) เพื่อค้นพบจุดแข็งและออกแบบเส้นทางชีวิตของคุณ
               </p>
               {/* Outlined button with rounded corners: #FFC800 with no black border, turns black with white text on hover/active */}
               <button
@@ -76,7 +76,7 @@ export const PathwayCards: React.FC<PathwayCardsProps> = ({
                 }`} 
               />
               <img
-                src="https://s.imgz.io/2026/10/12/a002b3e010ab2b23616cec313d439b71cbbb4334242784dc.png"
+                src="https://i.postimg.cc/Jz5ZXKgy/daw-sea-r-lay-kaea-the-ngphr-xm-dwng-xath-ty-s-hel-xng.png"
                 alt="ภาพทำแบบทดสอบเส้นทางชีวิต"
                 referrerPolicy="no-referrer"
                 className={`w-full h-full object-contain will-change-[transform,opacity] transition-all duration-500 ease-in-out drop-shadow-md ${
@@ -115,7 +115,7 @@ export const PathwayCards: React.FC<PathwayCardsProps> = ({
                 }`} 
               />
               <img
-                src="https://s.imgz.io/2026/10/12/33d66e8f4b66f0a749447911af51766dbc80946a0f1fb84f.png"
+                src="https://i.postimg.cc/D0GbwcLr/prat-m-t-re-xng-saeng-bn-dwng-c-nthr.png"
                 alt="ภาพเข้าสู่บทเรียนออนไลน์"
                 referrerPolicy="no-referrer"
                 className={`w-full h-full object-contain will-change-[transform,opacity] transition-all duration-500 ease-in-out drop-shadow-md ${

@@ -228,10 +228,10 @@ export const StudentProfileModal: React.FC<StudentProfileModalProps> = ({
               <div>
                 <h5 className="text-xs font-bold text-slate-900 flex items-center gap-1.5">
                   <Sparkles className="w-3.5 h-3.5 text-amber-500" />
-                  <span>ผลประเมินตัวตนแห่งจักรวาล & Student Base Outcome (12 มิติ)</span>
+                  <span>ผลการประเมินตัวตนแห่งจักรวาลและเส้นทางชีวิต</span>
                 </h5>
                 <p className="text-[11px] text-slate-600 mt-0.5">
-                  กราฟใยแมงมุม Spider Radar และพลังประจำตัวในยานอวกาศ
+                  ตัวตนและระบบพลังประจำตัวในยานอวกาศ
                 </p>
               </div>
               <button

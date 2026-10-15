@@ -2,7 +2,7 @@ import express from 'express';
 import { createServer as createViteServer } from 'vite';
 import { db } from './src/db/index.ts';
 import * as schema from './src/db/schema.ts';
-import { eq, desc } from 'drizzle-orm';
+import { eq, desc, sql } from 'drizzle-orm';
 import dotenv from 'dotenv';
 import { INITIAL_COURSES, INITIAL_BLOG_TOPICS, INITIAL_PEER_STORIES, INITIAL_EVENTS } from './src/data/mockData.ts';
 
@@ -590,6 +590,15 @@ app.post('/api/settings/landing', async (req, res) => {
 // Auto-seed initial catalog to database if empty
 async function seedSqlDatabaseIfEmpty() {
   try {
+    // Check if the courses table exists before querying
+    const tableCheck = await db.execute(
+      sql`SELECT table_name FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'courses' LIMIT 1`
+    );
+    if (!tableCheck.rows || tableCheck.rows.length === 0) {
+      console.log('Database tables not yet created. Skipping auto-seed until schema is applied.');
+      return;
+    }
+
     const existingCourses = await db.select().from(schema.courses).limit(1);
     if (existingCourses.length === 0) {
       console.log('Seeding initial courses to Cloud SQL...');
@@ -675,8 +684,19 @@ async function seedSqlDatabaseIfEmpty() {
         }).onConflictDoNothing();
       }
     }
-  } catch (err) {
-    console.warn('Auto-seed database notice:', err);
+
+    const existingSettings = await db.select().from(schema.siteSettings).limit(1);
+    if (existingSettings.length === 0) {
+      console.log('Seeding initial site settings to Cloud SQL...');
+      await db.insert(schema.siteSettings).values({
+        id: 'landing',
+        heroBannerUrl: 'https://s.imgz.io/2026/10/09/792ee306f311a1f20f74869bf0501cb8122544b471a93be1.png',
+        updatedBy: 'system',
+        updatedAt: new Date(),
+      }).onConflictDoNothing();
+    }
+  } catch (err: any) {
+    console.log('Auto-seed database status:', err?.message || err);
   }
 }
 

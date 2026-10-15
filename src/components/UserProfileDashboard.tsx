@@ -831,7 +831,7 @@ export const UserProfileDashboard: React.FC<UserProfileDashboardProps> = ({
                 >
                   <div className="flex items-center gap-1.5">
                     <Radar className="w-4 h-4 text-slate-900" />
-                    <span>ผลทดสอบตัวตน & SBO Radar</span>
+                    <span>ผลประเมินตัวตนและเส้นทางชีวิต</span>
                   </div>
                   {activeTab === 'assessment' && (
                     <span className="absolute bottom-[-9px] left-3 right-3 h-[3px] bg-slate-950 rounded-full" />
@@ -1260,7 +1260,7 @@ export const UserProfileDashboard: React.FC<UserProfileDashboardProps> = ({
                       </div>
                       <div>
                         <h4 className="text-xs sm:text-sm font-bold text-slate-900">
-                          ผลการประเมินสมรรถนะ Student Base Outcome (12 มิติ) & ตัวตนแห่งจักรวาล
+                          ผลการประเมินตัวตนแห่งจักรวาลและเส้นทางชีวิต
                         </h4>
                         <p className="text-[11px] text-slate-500">
                           ประมวลผลจากแบบประเมิน 60 ข้อประจำตัวของ {currentUser?.name || profileForm.firstNameTh}
