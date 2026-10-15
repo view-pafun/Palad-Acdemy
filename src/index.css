@@ -1,0 +1,239 @@
+@import "tailwindcss";
+
+:root {
+  --brand-yellow: #FFC800;
+  --brand-black: #000000;
+}
+
+@layer base {
+  html {
+    font-family: 'Noto Sans Thai', system-ui, -apple-system, sans-serif;
+    scroll-behavior: smooth;
+  }
+
+  /* หัวข้อหลักตามส่วนต่างๆ ของเว็บใช้ : Mitr */
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Mitr', sans-serif;
+  }
+
+  /* คำอธิบายหรือหัวข้อย่อยใช้ : Noto Sans Thai */
+  p, span, li, a, label, input, textarea, select {
+    font-family: 'Noto Sans Thai', sans-serif;
+  }
+}
+
+/* Font utility classes */
+.font-mitr,
+.font-heading {
+  font-family: 'Mitr', sans-serif !important;
+}
+
+.font-noto,
+.font-body,
+.font-sub,
+.font-desc {
+  font-family: 'Noto Sans Thai', sans-serif !important;
+}
+
+/* English font : Patrick Hand */
+.font-patrick,
+.font-en,
+.font-english,
+.font-handwriting {
+  font-family: 'Patrick Hand', cursive !important;
+}
+
+.font-sriracha {
+  font-family: 'Sriracha', cursive;
+}
+
+/* Button style utilities in #FFC800 and #000000 (No black borders; yellow turns black with white text on hover/active) */
+.btn-yellow,
+button.btn-yellow {
+  background-color: #FFC800 !important;
+  color: #000000 !important;
+  border: none !important;
+  font-family: 'Mitr', sans-serif !important;
+  font-weight: 700 !important;
+  transition: all 0.2s ease-in-out;
+}
+.btn-yellow:hover,
+.btn-yellow:active,
+.btn-yellow:focus-visible,
+button.btn-yellow:hover,
+button.btn-yellow:active,
+button.btn-yellow:focus-visible {
+  background-color: #000000 !important;
+  color: #ffffff !important;
+  transform: translateY(-1px);
+}
+.btn-yellow:hover *,
+.btn-yellow:active *,
+.btn-yellow:focus-visible *,
+button.btn-yellow:hover *,
+button.btn-yellow:active *,
+button.btn-yellow:focus-visible * {
+  color: #ffffff !important;
+}
+
+.btn-black,
+button.btn-black {
+  background-color: #000000 !important;
+  color: #ffffff !important;
+  border: none !important;
+  font-family: 'Mitr', sans-serif !important;
+  font-weight: 700 !important;
+  transition: all 0.2s ease-in-out;
+}
+.btn-black:hover,
+.btn-black:active,
+button.btn-black:hover,
+button.btn-black:active {
+  background-color: #FFC800 !important;
+  color: #000000 !important;
+  transform: translateY(-1px);
+}
+.btn-black:hover *,
+.btn-black:active *,
+button.btn-black:hover *,
+button.btn-black:active * {
+  color: #000000 !important;
+}
+
+@keyframes heroFadeInUp {
+  0% {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-hero-fade-in-up {
+  animation: heroFadeInUp 0.85s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-hero-fade-in-up-delay-1 {
+  animation: heroFadeInUp 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.3s both;
+}
+
+.animate-hero-fade-in-up-delay-2 {
+  animation: heroFadeInUp 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.55s both;
+}
+
+@keyframes float-slow {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-8px) rotate(1deg); }
+}
+
+@keyframes swing-gentle {
+  0%, 100% { transform: rotate(-3deg); transform-origin: top center; }
+  50% { transform: rotate(3deg); transform-origin: top center; }
+}
+
+@keyframes pulse-soft {
+  0%, 100% { opacity: 0.9; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.02); }
+}
+
+@keyframes cloud-drift {
+  0% { transform: translateX(-10%); }
+  50% { transform: translateX(10%); }
+  100% { transform: translateX(-10%); }
+}
+
+.animate-float {
+  animation: float-slow 4s ease-in-out infinite;
+}
+
+.animate-swing {
+  animation: swing-gentle 3.5s ease-in-out infinite;
+}
+
+.animate-pulse-soft {
+  animation: pulse-soft 3s ease-in-out infinite;
+}
+
+.animate-cloud {
+  animation: cloud-drift 22s ease-in-out infinite;
+}
+
+/* Custom scrollbar for modern Gen-Z clean look */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(calc(-100% - var(--gap, 1rem)));
+  }
+}
+
+@keyframes marquee-vertical {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(calc(-100% - var(--gap, 1rem)));
+  }
+}
+
+@keyframes border-beam {
+  100% {
+    offset-distance: 100%;
+  }
+}
+
+.animate-marquee {
+  animation: marquee var(--duration, 20s) linear infinite;
+}
+
+.animate-marquee-vertical {
+  animation: marquee-vertical var(--duration, 20s) linear infinite;
+}
+
+.animate-border-beam {
+  animation: border-beam calc(var(--duration) * 1s) infinite linear;
+}
+
+/* 3D Flashcard Flip utilities */
+.perspective-1000 {
+  perspective: 1000px;
+  -webkit-perspective: 1000px;
+}
+.preserve-3d {
+  transform-style: preserve-3d;
+  -webkit-transform-style: preserve-3d;
+}
+.backface-hidden {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+.rotate-y-180 {
+  transform: rotateY(180deg);
+  -webkit-transform: rotateY(180deg);
+}
+
+.fsh-title-rainbow {
+  /* ทำให้สีตัวอักษรไล่ระดับ (Gradient) */
+  background: linear-gradient(135deg, #ff7a00, #ff0055, #7928ca, #0070f3);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+

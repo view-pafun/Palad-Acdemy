@@ -1,0 +1,1515 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ออกแบบเส้นทางชีวิต & ถอดรหัสตัวตนแห่งจักรวาล | Cosmic Life Path Test</title>
+  
+  <!-- Google Fonts: Kanit, Orbitron, Rajdhani -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=Orbitron:wght@600;700;800;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            cyber: {
+              yellow: '#FFE600',
+              gold: '#FACC15',
+              darkgold: '#EAB308',
+              black: '#09090B',
+              card: '#18181B',
+              slate: '#1E293B',
+              border: '#27272A',
+              light: '#F8FAFC',
+              lightborder: '#E2E8F0'
+            }
+          },
+          fontFamily: {
+            thai: ['Kanit', 'sans-serif'],
+            cyber: ['Orbitron', 'Rajdhani', 'sans-serif'],
+            mono: ['Rajdhani', 'monospace']
+          },
+          boxShadow: {
+            'glow-yellow': '0 0 25px rgba(255, 230, 0, 0.45)',
+            'glow-card': '0 10px 30px -10px rgba(9, 9, 11, 0.15)',
+            'glow-dark': '0 20px 40px -15px rgba(0, 0, 0, 0.5)'
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Chart.js for Spider / Radar Chart -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- Canvas Confetti -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+
+  <style>
+    /* Custom Scrollbar & Aesthetics */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #F1F5F9;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #09090B;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #FFE600;
+    }
+
+    body {
+      font-family: 'Kanit', sans-serif;
+      background-color: #FFFFFF;
+      color: #09090B;
+      overflow-x: hidden;
+      min-height: 100vh;
+    }
+
+    .font-cyber {
+      font-family: 'Orbitron', 'Rajdhani', sans-serif;
+    }
+
+    .grid-bg {
+      background-size: 32px 32px;
+      background-image: 
+        linear-gradient(to right, rgba(226, 232, 240, 0.65) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(226, 232, 240, 0.65) 1px, transparent 1px);
+    }
+
+    /* Radar Scanning Sweep */
+    @keyframes radarSweep {
+      0% {
+        transform: rotate(0deg);
+      }
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+    .radar-sweep-beam {
+      animation: radarSweep 2.2s linear infinite;
+      transform-origin: 50% 50%;
+    }
+
+    /* Pulse Glow */
+    @keyframes pulseGlow {
+      0%, 100% { opacity: 0.8; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.03); }
+    }
+    .animate-pulse-glow {
+      animation: pulseGlow 2.5s ease-in-out infinite;
+    }
+
+    /* Card print styles for saving */
+    @media print {
+      body {
+        background: #fff !important;
+      }
+      .no-print {
+        display: none !important;
+      }
+      #cosmic-identity-card {
+        box-shadow: none !important;
+        border: 2px solid #000 !important;
+        page-break-inside: avoid;
+      }
+    }
+  </style>
+</head>
+<body class="relative selection:bg-cyber-yellow selection:text-black grid-bg">
+
+  <!-- Background Animated Stardust & Cyber Grid Canvas -->
+  <canvas id="bg-canvas" class="fixed inset-0 pointer-events-none z-0 opacity-35"></canvas>
+
+  <!-- Main Container -->
+  <div class="relative z-10 min-h-screen flex flex-col">
+
+    <!-- Top Sticky Cyber Header -->
+    <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b-2 border-cyber-black shadow-xs">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-18 flex items-center justify-between">
+        
+        <div class="flex items-center gap-3 cursor-pointer" onclick="restartToStep1()">
+          <div class="w-9 h-9 sm:w-10 sm:h-10 bg-cyber-black text-cyber-yellow flex items-center justify-center font-cyber font-black text-lg sm:text-xl border-2 border-cyber-yellow shadow-sm">
+            ✦
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="font-cyber font-black text-base sm:text-lg tracking-wider text-cyber-black leading-none">
+                LIFE PATH<span class="text-cyber-darkgold">.COSMIC</span>
+              </span>
+              <span class="hidden sm:inline-block px-1.5 py-0.5 bg-cyber-yellow text-black font-cyber text-[10px] font-bold border border-black">
+                60 QUESTIONS
+              </span>
+            </div>
+            <span class="text-[11px] text-slate-500 font-medium tracking-wide block mt-0.5">
+              ออกแบบเส้นทางชีวิต & ถอดรหัสตัวตนจักรวาล
+            </span>
+          </div>
+        </div>
+
+        <!-- Right Quick Controls -->
+        <div class="flex items-center gap-2 sm:gap-3">
+          <button onclick="quickAutoFillDemo()" title="สุ่มคำตอบเพื่อทดสอบผลลัพธ์ทันที" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-semibold border border-slate-300 transition-all cursor-pointer flex items-center gap-1">
+            <span>⚡ สุ่มคำตอบด่วน (Demo)</span>
+          </button>
+
+          <button onclick="restartToStep1()" class="px-3 py-1.5 bg-cyber-black hover:bg-cyber-yellow text-white hover:text-black font-semibold text-xs border border-cyber-black transition-all cursor-pointer">
+            <span>↺ เริ่มใหม่</span>
+          </button>
+        </div>
+
+      </div>
+
+      <!-- Live Global Progress Bar -->
+      <div id="global-progress-bar-container" class="w-full bg-slate-200 h-1.5">
+        <div id="global-progress-bar" class="bg-cyber-yellow h-full transition-all duration-300 w-0 border-r-2 border-cyber-black"></div>
+      </div>
+    </header>
+
+    <!-- CONTENT WRAPPER -->
+    <main class="flex-1 w-full max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10">
+
+      <!-- ========================================== -->
+      <!-- VIEW 1: 60 QUESTIONS TEST FLOW (DIRECT)   -->
+      <!-- ========================================== -->
+      <section id="view-test" class="space-y-6">
+
+        <!-- Stage Header & Step Navigation Bar -->
+        <div class="bg-white border-2 border-cyber-black p-5 sm:p-6 shadow-[4px_4px_0px_#09090B]">
+          <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="px-2.5 py-0.5 bg-cyber-black text-cyber-yellow font-cyber text-xs font-bold uppercase">
+                  ขั้นตอนที่ <span id="current-step-num">1</span> จาก 6
+                </span>
+                <span class="text-xs font-semibold text-slate-600">
+                  (คำถามข้อที่ <span id="current-step-range">1 - 10</span> จาก 60 ข้อ)
+                </span>
+              </div>
+              <h1 class="text-lg sm:text-2xl font-black text-cyber-black mt-1.5">
+                ประเมินกรอบความคิด & การออกแบบเส้นทางชีวิต
+              </h1>
+              <p class="text-xs sm:text-sm text-slate-500 mt-0.5">
+                ตอบคำถามตามความเป็นจริงของคุณ เพื่อถอดรหัสทัศนคติ สไตล์การแก้ปัญหา และสปีชีส์คอสมิก
+              </p>
+            </div>
+
+            <!-- Progress Indicator -->
+            <div class="flex items-center gap-3 w-full sm:w-auto justify-between sm:justify-end shrink-0">
+              <div class="text-right">
+                <div class="text-xs text-slate-500 font-medium">ตอบแล้ว</div>
+                <div class="text-base font-cyber font-black text-cyber-black leading-tight">
+                  <span id="answered-count-total">0</span>/60 <span class="text-xs text-slate-500 font-normal">(<span id="answered-percent">0%</span>)</span>
+                </div>
+              </div>
+
+              <div class="w-24 sm:w-28 bg-slate-100 h-3 border border-cyber-black overflow-hidden">
+                <div id="step-progress-fill" class="bg-cyber-yellow h-full transition-all duration-300 w-0"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Dimension Tags Bar -->
+          <div class="mt-4 pt-4 border-t border-slate-200 flex flex-wrap items-center gap-2 text-[11px]">
+            <span class="font-bold text-slate-500">4 มิติการประเมิน:</span>
+            <span class="px-2 py-0.5 bg-slate-100 border border-slate-300 text-slate-700">1. การวิเคราะห์และวางแผน (Life Vision)</span>
+            <span class="px-2 py-0.5 bg-slate-100 border border-slate-300 text-slate-700">2. การสร้างความร่วมมือ (Synergy)</span>
+            <span class="px-2 py-0.5 bg-slate-100 border border-slate-300 text-slate-700">3. การถ่ายทอดแรงบันดาลใจ (Expression)</span>
+            <span class="px-2 py-0.5 bg-slate-100 border border-slate-300 text-slate-700">4. การรังสรรค์นวัตกรรม (Innovation)</span>
+          </div>
+        </div>
+
+        <!-- Notification / Warning if incomplete -->
+        <div id="validation-notice" class="hidden p-4 bg-amber-50 border-2 border-amber-400 text-amber-950 text-xs sm:text-sm font-medium flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <span class="text-base sm:text-lg">⚠️</span>
+            <span>กรุณาตอบคำถามให้ครบทั้ง 10 ข้อในหน้านี้ (ยังเหลืออีก <span id="remaining-count-step" class="font-bold underline">0</span> ข้อ) ก่อนกดถัดไป</span>
+          </div>
+          <button onclick="highlightUnansweredQuestions()" class="underline font-bold text-cyber-black hover:text-amber-800 shrink-0">
+            ดูข้อที่ข้าม
+          </button>
+        </div>
+
+        <!-- Current 10 Questions Container -->
+        <div id="questions-list-container" class="space-y-4 sm:space-y-5">
+          <!-- Dynamically injected via JS -->
+        </div>
+
+        <!-- Navigation Action Buttons -->
+        <div class="pt-6 border-t-2 border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <button id="btn-prev-step" onclick="prevStep()" class="w-full sm:w-auto px-6 py-3 bg-white hover:bg-slate-100 text-cyber-black font-semibold text-sm border-2 border-cyber-black shadow-xs disabled:opacity-30 disabled:cursor-not-allowed transition-all cursor-pointer flex items-center justify-center gap-2">
+            <span>← ย้อนกลับ</span>
+          </button>
+
+          <div class="flex items-center gap-3 w-full sm:w-auto">
+            <button onclick="autoFillCurrentStep()" class="px-4 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold border border-slate-300 transition-all cursor-pointer">
+              ⚡ ตอบหน้านี้ให้ครบ (10 ข้อ)
+            </button>
+
+            <button id="btn-next-step" onclick="nextStep()" class="flex-1 sm:flex-initial px-8 py-3.5 bg-cyber-yellow hover:bg-yellow-300 text-cyber-black font-bold text-sm uppercase tracking-wider border-2 border-cyber-black shadow-[4px_4px_0px_#09090B] disabled:opacity-40 disabled:cursor-not-allowed disabled:shadow-none hover:translate-x-0.5 hover:translate-y-0.5 transition-all cursor-pointer flex items-center justify-center gap-2">
+              <span id="btn-next-text">ขั้นตอนถัดไป →</span>
+            </button>
+          </div>
+        </div>
+
+      </section>
+
+
+      <!-- ========================================== -->
+      <!-- VIEW 2: RADAR SCAN PROCESSING SCREEN      -->
+      <!-- ========================================== -->
+      <section id="view-processing" class="hidden py-14 flex flex-col items-center justify-center text-center">
+        
+        <div class="relative w-64 h-64 sm:w-80 sm:h-80 mx-auto flex items-center justify-center">
+          
+          <!-- Outer Radar Rings -->
+          <div class="absolute inset-0 rounded-full border-2 border-cyber-black/20"></div>
+          <div class="absolute inset-6 rounded-full border border-dashed border-cyber-black/30"></div>
+          <div class="absolute inset-16 rounded-full border-2 border-cyber-yellow/80"></div>
+          <div class="absolute inset-24 rounded-full border border-cyber-black/40"></div>
+          
+          <!-- Radar Crosshairs -->
+          <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+            <div class="w-full h-[1px] bg-cyber-black/30"></div>
+          </div>
+          <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+            <div class="h-full w-[1px] bg-cyber-black/30"></div>
+          </div>
+
+          <!-- Spinning Radar Sweep Beam -->
+          <div class="absolute inset-0 rounded-full overflow-hidden">
+            <div class="w-full h-full radar-sweep-beam bg-gradient-to-tr from-transparent via-transparent to-cyber-yellow/50"></div>
+          </div>
+
+          <!-- Center Cosmic Core -->
+          <div class="relative z-10 w-20 h-20 bg-cyber-black rounded-full border-2 border-cyber-yellow flex items-center justify-center text-cyber-yellow font-cyber font-black text-2xl shadow-glow-yellow animate-pulse-glow">
+            ✦
+          </div>
+
+        </div>
+
+        <div class="mt-8 space-y-3 max-w-md mx-auto">
+          <div class="inline-block px-3 py-1 bg-cyber-black text-cyber-yellow font-cyber text-xs uppercase tracking-widest border border-cyber-black">
+            [ QUANTUM FREQUENCY SYNTHESIS ]
+          </div>
+          <h3 id="processing-status-text" class="text-xl sm:text-2xl font-black text-cyber-black transition-all">
+            กำลังวิเคราะห์คลื่นความถี่บุคลิกภาพ...
+          </h3>
+          <p id="processing-sub-text" class="text-xs text-slate-500 font-mono">
+            CALCULATING COGNITIVE ORBIT AND DNA ARCHETYPE...
+          </p>
+
+          <!-- Step Bars -->
+          <div class="w-64 mx-auto bg-slate-200 h-2 border border-cyber-black overflow-hidden mt-4">
+            <div id="processing-progress-fill" class="h-full bg-cyber-yellow transition-all duration-300 w-0"></div>
+          </div>
+        </div>
+
+      </section>
+
+
+      <!-- ========================================== -->
+      <!-- VIEW 3: RESULT DASHBOARD (DASHBOARD)       -->
+      <!-- ========================================== -->
+      <section id="view-dashboard" class="hidden space-y-8">
+
+        <!-- Top Action Toolbar -->
+        <div class="no-print bg-white border-2 border-cyber-black p-4 shadow-[4px_4px_0px_#09090B] flex flex-wrap items-center justify-between gap-4">
+          <div class="flex items-center gap-2">
+            <span class="w-3 h-3 bg-cyber-yellow border border-cyber-black inline-block animate-ping"></span>
+            <span class="font-cyber font-bold text-xs uppercase text-slate-800 tracking-wider">
+              ANALYSIS COMPLETE • LIFE PATH ARCHETYPE CONFIRMED
+            </span>
+          </div>
+
+          <div class="flex items-center gap-2 flex-wrap">
+            <button onclick="shareOrCopyLink()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-cyber-black font-semibold text-xs border border-cyber-black transition-all cursor-pointer flex items-center gap-1.5">
+              <span>🔗 คัดลอกผลลัพธ์</span>
+            </button>
+            <button onclick="printOrSaveCard()" class="px-4 py-2 bg-cyber-black hover:bg-zinc-800 text-cyber-yellow font-semibold text-xs border border-cyber-black transition-all cursor-pointer flex items-center gap-1.5">
+              <span>🖨️ บันทึกการ์ดตัวตน</span>
+            </button>
+            <button onclick="restartToStep1()" class="px-4 py-2 bg-cyber-yellow hover:bg-yellow-300 text-cyber-black font-bold text-xs border border-cyber-black transition-all cursor-pointer flex items-center gap-1.5">
+              <span>↻ ทำแบบทดสอบอีกครั้ง</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- ======================================================== -->
+        <!-- DOMINANT ARCHETYPE HERO BANNER (TAIWAN EXPO / CAKERESUME) -->
+        <!-- ======================================================== -->
+        <div id="cosmic-identity-card" class="bg-white border-4 border-cyber-black p-6 sm:p-10 shadow-[8px_8px_0px_#09090B] relative overflow-hidden">
+          
+          <!-- Cyber Corner Accents -->
+          <div class="absolute top-0 right-0 w-16 h-16 bg-cyber-yellow border-b-2 border-l-2 border-cyber-black -mr-8 -mt-8 rotate-45 pointer-events-none"></div>
+
+          <!-- Top Badge Bar -->
+          <div class="flex flex-wrap items-center justify-between gap-3 border-b-2 border-cyber-black pb-4">
+            <div class="flex items-center gap-2">
+              <span class="px-3 py-1 bg-cyber-black text-cyber-yellow font-cyber font-bold text-xs uppercase tracking-widest">
+                YOUR LIFE PATH ARCHETYPE
+              </span>
+              <span id="res-theme-badge" class="px-3 py-1 bg-cyber-yellow text-cyber-black font-semibold text-xs border border-cyber-black">
+                The Core Theoretician / นักคิดวงโคจรลึก
+              </span>
+            </div>
+
+            <div class="text-right">
+              <span class="text-xs font-mono text-slate-500">LIFE PATH ID:</span>
+              <span id="res-galaxy-id" class="text-xs font-cyber font-bold text-cyber-black">#PATH-9982</span>
+            </div>
+          </div>
+
+          <!-- Main Dominant Identity Section -->
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center mt-6">
+            
+            <!-- Left Character Portrait (from image links) -->
+            <div class="lg:col-span-5 flex flex-col items-center justify-center text-center">
+              <div class="w-full max-w-[280px] aspect-square bg-slate-50 border-4 border-cyber-black p-4 relative shadow-[4px_4px_0px_#FFE600] flex items-center justify-center">
+                <img id="res-archetype-img" src="" alt="Archetype Character" class="max-h-56 max-w-full object-contain filter drop-shadow-md">
+                
+                <!-- Floating Ship Title Badge -->
+                <div class="absolute -bottom-3 left-1/2 -translate-x-1/2 w-max max-w-[90%] px-3 py-1 bg-cyber-black text-cyber-yellow border border-cyber-black text-[11px] font-bold tracking-wide shadow-sm truncate">
+                  <span id="res-ship-title">ผู้กำหนดทิศทางแห่งกาแล็กซี่</span>
+                </div>
+              </div>
+
+              <!-- Motto Quote -->
+              <p id="res-motto" class="font-cyber italic text-xs sm:text-sm text-slate-700 font-semibold mt-6 max-w-xs text-center border-l-2 border-cyber-yellow pl-3">
+                "มองเห็นความเป็นไปได้นับล้านในความว่างเปล่า"
+              </p>
+            </div>
+
+            <!-- Right Info & Story -->
+            <div class="lg:col-span-7 space-y-4">
+              <div>
+                <span id="res-summary-title" class="px-2.5 py-0.5 bg-slate-100 border border-slate-300 text-xs font-bold uppercase tracking-wider text-slate-800">
+                  นักคิด (Thinker)
+                </span>
+                <h2 id="res-name-th" class="text-2xl sm:text-4xl font-black text-cyber-black tracking-tight mt-2">
+                  เผ่าพันธุ์นักดูดาวผู้มองทะลุจักรวาล
+                </h2>
+                <h3 id="res-name-en" class="text-sm sm:text-base font-cyber font-bold text-cyber-darkgold tracking-wider uppercase mt-1">
+                  The Star Gazers
+                </h3>
+              </div>
+
+              <!-- Summary Description (EXACT VERBATIM TEXT) -->
+              <p id="res-summary-desc" class="text-xs sm:text-sm text-slate-700 leading-relaxed bg-slate-50 p-4 border-l-4 border-cyber-black">
+                คุณคือจอมวางแผนแห่งมิติเวลา ผู้ไม่ได้แค่นั่งมองความว่างเปล่าบนท้องฟ้า แต่กำลังคำนวณโครงสร้างของจักรวาลอยู่ในหัวตลอดเวลา คุณมีสติปัญญาอันแหลมคมในการแยกแยะข้อเท็จจริงออกจากความรู้สึก
+              </p>
+
+              <!-- Quick Trait Pills (Taiwan Expo style) -->
+              <div class="pt-2">
+                <div class="text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-2 font-mono">
+                  [ INNATE CHARACTERISTICS / คุณลักษณะเด่น ]
+                </div>
+                <div id="res-trait-pills" class="flex flex-wrap gap-2">
+                  <!-- Injected via JS -->
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Reference-Inspired Identity Extras (CakeResume / Taiwan Expo metadata) -->
+          <div class="mt-8 pt-8 border-t-2 border-cyber-black grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
+            
+            <div class="bg-slate-50 p-4 border border-cyber-black">
+              <div class="text-[11px] font-mono text-slate-500 uppercase font-bold">COSMIC RESONANCE / ค่าเรโซแนนซ์</div>
+              <div id="res-resonance-val" class="text-2xl sm:text-3xl font-cyber font-black text-cyber-black mt-1">94%</div>
+              <div class="text-xs text-slate-500 mt-1">ความสอดคล้องกับเส้นทางชีวิต</div>
+            </div>
+
+            <div class="bg-slate-50 p-4 border border-cyber-black">
+              <div class="text-[11px] font-mono text-slate-500 uppercase font-bold">COSMIC LUCKY CHARM / ไอเทมคู่หู</div>
+              <div id="res-lucky-charm" class="text-base sm:text-lg font-bold text-cyber-black mt-1">กล้องโทรทรรศน์ควอนตัม</div>
+              <div class="text-xs text-slate-500 mt-1">ขยายวิสัยทัศน์ทะลุความมืด</div>
+            </div>
+
+            <div class="bg-slate-50 p-4 border border-cyber-black">
+              <div class="text-[11px] font-mono text-slate-500 uppercase font-bold">COSMIC ALLIES / พันธมิตรลงตัว</div>
+              <div id="res-work-besties" class="text-base sm:text-lg font-bold text-cyber-darkgold mt-1">นักปรุงแต่งสสารมืด</div>
+              <div class="text-xs text-slate-500 mt-1">เคมีเข้าขาในการสร้างสิ่งใหม่</div>
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <!-- ======================================================== -->
+        <!-- SPIDER / RADAR CHART & SECONDARY BREAKDOWN               -->
+        <!-- ======================================================== -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+          
+          <!-- Spider Radar Chart (7 Cols) -->
+          <div class="lg:col-span-7 bg-white border-2 border-cyber-black p-6 shadow-[4px_4px_0px_#09090B]">
+            <div class="flex items-center justify-between border-b border-slate-200 pb-3 mb-4">
+              <div>
+                <span class="text-xs font-mono font-bold text-slate-500 uppercase">LIFE PATH SPIDER RADAR CHART</span>
+                <h3 class="text-lg font-bold text-cyber-black">กราฟใยแมงมุม 4 มิติเส้นทางชีวิต</h3>
+              </div>
+              <span class="px-2 py-0.5 bg-cyber-black text-cyber-yellow text-[10px] font-cyber uppercase">
+                RADAR MATRIX
+              </span>
+            </div>
+
+            <div class="relative w-full aspect-square max-h-[380px] mx-auto flex items-center justify-center">
+              <canvas id="cosmic-radar-chart"></canvas>
+            </div>
+            
+            <p class="text-center text-xs text-slate-500 font-mono mt-2">
+              NORMALIZED SCORE DISTRIBUTION ACROSS 4 LIFE PATH DIMENSIONS
+            </p>
+          </div>
+
+          <!-- Secondary Archetypes Score Breakdown (5 Cols) -->
+          <div class="lg:col-span-5 bg-cyber-black text-white border-2 border-cyber-black p-6 shadow-[4px_4px_0px_#FFE600] flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between border-b border-zinc-800 pb-3 mb-4">
+                <div>
+                  <span class="text-xs font-mono text-cyber-yellow uppercase font-bold">DNA COMPOSITION</span>
+                  <h3 class="text-lg font-bold text-white">สัดส่วนศักยภาพในตัวคุณ</h3>
+                </div>
+                <span class="text-xs font-mono text-zinc-400">100% SCALE</span>
+              </div>
+
+              <!-- Breakdown Items List -->
+              <div id="breakdown-list" class="space-y-3.5">
+                <!-- Injected via JS -->
+              </div>
+            </div>
+
+            <!-- Life Path Recommended Roles -->
+            <div class="mt-6 pt-4 border-t border-zinc-800">
+              <div class="text-xs text-cyber-yellow font-bold uppercase font-mono mb-1">
+                RECOMMENDED CAREER & ROLES / บทบาทที่แนะนำ
+              </div>
+              <p id="res-career-roles" class="text-xs text-slate-300 leading-relaxed">
+                นักวางแผนกลยุทธ์, นักวิทยาศาสตร์ข้อมูล, นักวิจัยนโยบาย, สถาปนิกสารสนเทศ
+              </p>
+            </div>
+          </div>
+
+        </div>
+
+
+        <!-- ======================================================== -->
+        <!-- POWER & ABILITIES GRID (5 SPECIAL POWERS)                 -->
+        <!-- ======================================================== -->
+        <div class="bg-white border-2 border-cyber-black p-6 sm:p-8 shadow-[4px_4px_0px_#09090B]">
+          <div class="flex items-center justify-between border-b-2 border-cyber-black pb-4 mb-6">
+            <div>
+              <span class="px-2 py-0.5 bg-cyber-yellow text-cyber-black font-cyber font-bold text-xs uppercase border border-cyber-black">
+                SPECIAL ABILITIES & ARSENAL
+              </span>
+              <h3 class="text-xl sm:text-2xl font-black text-cyber-black mt-1">
+                5 พลังพิเศษประจำสปีชีส์แห่งเส้นทางชีวิตของคุณ
+              </h3>
+            </div>
+            <span class="text-xs font-mono text-slate-500 hidden sm:inline">
+              QUANTUM POWERS UNLOCKED
+            </span>
+          </div>
+
+          <!-- 5 Powers Grid -->
+          <div id="powers-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <!-- Injected via JS -->
+          </div>
+        </div>
+
+
+        <!-- Bottom Retake & Explore Action -->
+        <div class="text-center py-6 no-print">
+          <button onclick="restartToStep1()" class="px-8 py-3.5 bg-cyber-black hover:bg-cyber-yellow text-white hover:text-cyber-black font-bold text-sm tracking-wider uppercase border-2 border-cyber-black transition-all cursor-pointer shadow-[4px_4px_0px_#FFE600] inline-flex items-center gap-2">
+            <span>↺ ทำแบบประเมินอีกครั้งเพื่อวัดความเปลี่ยนแปลง</span>
+          </button>
+        </div>
+
+      </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="mt-auto border-t-2 border-cyber-black bg-white py-6 text-center text-xs text-slate-600">
+      <div class="max-w-6xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3">
+        <div class="font-cyber font-bold text-cyber-black">
+          PALAD ACADEMY • LIFE PATH & COSMIC IDENTITY ENGINE
+        </div>
+        <div class="text-slate-500">
+          White / Yellow / Black Cyber-Minimalist Theme © 2026
+        </div>
+      </div>
+    </footer>
+
+  </div>
+
+
+  <!-- ============================================================== -->
+  <!-- JAVASCRIPT: EXACT DATASET, 60 LIFE PATH QUESTIONS & ENGINE     -->
+  <!-- ============================================================== -->
+  <script>
+    /* ================================================================
+       1. EXACT ARCHETYPES DATASET (VERBATIM FROM USER SPECIFICATION)
+       ================================================================ */
+    const ARCHETYPES_DATA = {
+      star_gazers: {
+        id: "star_gazers",
+        dimension_title: "Life Vision & Analytical Strategy (มิติการวิเคราะห์และวางแผน)",
+        name_th: "เผ่าพันธุ์นักดูดาวผู้มองทะลุจักรวาล",
+        name_en: "The Star Gazers",
+        theme: "The Core Theoretician / นักคิดวงโคจรลึก",
+        ship_title: "ผู้กำหนดทิศทางแห่งกาแล็กซี่",
+        motto: '"มองเห็นความเป็นไปได้นับล้านในความว่างเปล่า"',
+        summary_title: "นักคิด (Thinker)",
+        summary_desc: "คุณคือจอมวางแผนแห่งมิติเวลา ผู้ไม่ได้แค่นั่งมองความว่างเปล่าบนท้องฟ้า แต่กำลังคำนวณโครงสร้างของจักรวาลอยู่ในหัวตลอดเวลา คุณมีสติปัญญาอันแหลมคมในการแยกแยะข้อเท็จจริงออกจากความรู้สึก ตัดสินใจอย่างเที่ยงตรงด้วยเหตุผลเชิงตรรกะและหลักฐานที่ผ่านการวิเคราะห์มาอย่างถี่ถ้วน พร้อมทั้งใช้จินตนาการระดับทะลุขอบจักรวาลในการสร้างนวัตกรรมใหม่เพื่อแก้ปัญหาที่ยากที่สุด",
+        image: "https://i.postimg.cc/ydKhknmL/xele-ynn-xy-bn-dwng-c-nthr-s-hel-xng.png",
+        lucky_charm: "กล้องโทรทรรศน์ควอนตัม (Quantum Telescope)",
+        besties: "นักปรุงแต่งสสารมืด (Mad Alchemists)",
+        recommended_roles: "นักวิเคราะห์กลยุทธ์, นักวิทยาศาสตร์ข้อมูล (Data Scientist), สถาปนิกนโยบาย, นักวิจัยขั้นสูง, ผู้จัดการความเสี่ยง",
+        traits: ["แยกแยะข้อเท็จจริงเก่ง", "ตรรกะวิเคราะห์เฉียบคม", "สุขุมรอบคอบ", "มองการณ์ไกล", "มีแบบแผนชัดเจน"],
+        powers: [
+          { name: "เลนส์กรองคลื่นอารมณ์ (Emotional Interference Shield)", desc: "ท่ามกลางความวุ่นวายและโกลาหล คุณคือคนที่สงบที่สุดบนยาน เพราะคุณสามารถแยกแยะ 'ข้อเท็จจริง' ออกจาก 'คลื่นอารมณ์' ได้อย่างเด็ดขาด มองโลกและปัญหาด้วยสายตาอันเที่ยงตรงเหมือนกล้องโทรทรรศน์อวกาศ" },
+          { name: "เข็มทิศนำทางระดับวงโคจร (Precision Navigation Decision)", desc: "ทุกก้าวที่คุณเลือกผ่านการคำนวณปัจจัย ความเสี่ยง และผลกระทบที่จะเกิดขึ้นในอีกหลายปีแสงข้างหน้าอย่างรอบคอบ การตัดสินใจของคุณมีพิกัดและหลักฐานรองรับเสมอ" },
+          { name: "ถอดรหัสความลับจักรวาล (Deep Space Analytics)", desc: "หัวใจสำคัญของคุณคือการวิเคราะห์เชิงเหตุผลตามหลักวิทยาศาสตร์ มองเห็นแบบแผน (Pattern) ในชุดข้อมูลหรือตรรกะอันซับซ้อนที่คนอื่นมองว่าไร้ระเบียบ" },
+          { name: "สมองกลสร้างนวัตกรรมข้ามมิติ (Quantum Problem Solving)", desc: "เมื่อเจอวิกฤตที่ไม่มีคู่มือการแก้ปัญหาเขียนไว้ คุณคือคนแรกที่มองเห็นความเป็นไปได้นับล้านในความว่างเปล่า และคิดค้นทฤษฎีหรือนวัตกรรมใหม่ๆ มาผ่าทางตัน" },
+          { name: "เครื่องแปลสัญญาณกาแล็กซี่ (Cosmic Fact Translator)", desc: "มีความสามารถพิเศษในการแปลข้อมูลและทฤษฎีอันยากยิ่ง ให้กลายเป็นภาษาที่เข้าใจง่าย อธิบายเหตุผลเบื้องหลังของการตัดสินใจให้ทีมงานเห็นภาพชัดเจน" }
+        ]
+      },
+      gravity_weavers: {
+        id: "gravity_weavers",
+        dimension_title: "Life Synergy & Harmony (มิติการสร้างความร่วมมือและความสัมพันธ์)",
+        name_th: "เผ่าพันธุ์ผู้ถักทอแรงโน้มถ่วง",
+        name_en: "The Gravity Weavers",
+        theme: "The Cosmic Connector / นักเชื่อมโยงดาวเคราะห์",
+        ship_title: "ผู้สร้างบ้านกลางห้วงจักรวาล",
+        motto: '"แรงดึงดูดที่ทำให้ดาวต่างดวงมาอยู่ร่วมกันได้"',
+        summary_title: "นักประสาน (Coordinator)",
+        summary_desc: "คุณคือศูนย์กลางแรงดึงดูดผู้สร้างความอบอุ่นท่ามกลางความหนาวเหน็บของอวกาศ คุณไม่ได้เป็นเพียงผู้ประสานงาน แต่คือผู้ถักทอสายใยแห่งความเข้าใจระหว่างดาวเคราะห์ทุกดวง คุณมีพลังวิเศษในการเปิดรับและเคารพความแตกต่างของทุกวัฒนธรรม สามารถดึงผู้คนที่มีความคิดต่างขั้วให้มาโคจรร่วมกันได้อย่างสมดุล ปรับจูนความขัดแย้ง และเปลี่ยนยานอวกาศอันกว้างใหญ่ให้กลายเป็น 'บ้าน' ที่ทุกคนพร้อมร่วมมือกันสร้างอนาคต",
+        image: "https://s.imgz.io/2026/10/14/-Riri02b8d1b6394c178a.png",
+        lucky_charm: "ส้อมเสียงปรับแรงโน้มถ่วง (Gravity Tuning Fork)",
+        besties: "ผู้ส่งสารแห่งละอองดาว (Signal Broadcasters)",
+        recommended_roles: "ผู้จัดการความร่วมมือและองค์กร, สถาปนิกชุมชน, นักเจรจาไกล่เกลี่ย, ผู้อำนวยการฝ่ายทรัพยากรมนุษย์ (People Operations)",
+        traits: ["เปิดรับทุกวัฒนธรรม", "สร้างความสามัคคี", "ประสานงานยอดเยี่ยม", "รับฟังใจกว้าง", "ใจดีและอบอุ่น"],
+        powers: [
+          { name: "เกราะเปิดรับคลื่นอารยธรรม (Universal Cultural Resonance)", desc: "มีหัวใจที่เปิดกว้างและเปี่ยมด้วยความเคารพต่อวิถีชีวิต ภูมิหลัง และวัฒนธรรมอันหลากหลายของสิ่งมีชีวิตทั่วกาแล็กซี่ สื่อสารกับทุกคนได้โดยไร้ซึ่งอคติหรือความขัดแย้ง" },
+          { name: "ข่ายพลังงานร้อยเรียงวงโคจร (Gravitational Network Systems)", desc: "จุดแข็งคือการประสานงานและการบริหารจัดการทีมที่ซับซ้อนให้ขับเคลื่อนไปข้างหน้าได้อย่างมีประสิทธิภาพ ทำให้ดาวทุกดวงบนยานทำงานร่วมกันอย่างเป็นระบบ" },
+          { name: "สนามปรับสมดุลความคิด (Cosmic Common Ground Harmonizer)", desc: "เมื่อเกิดความเห็นไม่ตรงกันบนยาน คุณคือผู้ที่มองเห็น 'จุดเชื่อมโยง' ที่ซ่อนอยู่เสมอ มีทักษะการเจรจาชั้นยอดในการหาข้อตกลงที่ทุกฝ่ายพึงพอใจ" },
+          { name: "ระบบปรับจูนวิกฤตฉุกเฉิน (Sub-Space Crisis Harmonizer)", desc: "ท่ามกลางภาวะตึงเครียด สามารถใช้ความคิดสร้างสรรค์และเหตุผลเข้ามาปลอบประโลมและแก้ไขปัญหาเฉพาะหน้า ฟื้นฟูบรรยากาศการทำงานให้กลับมาอบอุ่นอีกครั้ง" },
+          { name: "บีคอนสร้างความอบอุ่นแห่งจักรวาล (The Beacon of Trust & Home)", desc: "สร้างบรรยากาศแห่งความไว้วางใจและเป็นที่รักของทุกคน ได้รับความยอมรับในบทบาทผู้นำและผู้สร้างคอมมูนิตี้ที่พาทุกคนมุ่งหน้าสู่เป้าหมายอย่างมีความสุข" }
+        ]
+      },
+      signal_broadcasters: {
+        id: "signal_broadcasters",
+        dimension_title: "Life Expression & Inspiration (มิติการถ่ายทอดและการสร้างอิมแพกต์)",
+        name_th: "เผ่าพันธุ์ผู้ส่งคลื่นความถี่ทะลุมิติ",
+        name_en: "The Signal Broadcasters",
+        theme: "The Stardust Voice / ผู้ส่งสารแห่งละอองดาว",
+        ship_title: "ผู้กระจายเสียงแห่งดวงดาว",
+        motto: '"เปลี่ยนความฟุ้งซ่าน ให้กลายเป็นคลื่นสัญญาณที่ทรงพลัง"',
+        summary_title: "นักสื่อสาร (Communicator)",
+        summary_desc: "คุณคือกระบอกเสียงแห่งห้วงอวกาศ ผู้เปลี่ยนเสียงกระซิบที่เดินทางผ่านหลุมดำและกลุ่มหมอกควันให้กลายเป็นคลื่นสัญญาณที่ทรงพลัง คุณมีความสามารถพิเศษในการเปิดใจรับฟังทุกคลื่นความถี่โดยไร้อคติ เชี่ยวชาญการถอดรหัสความคิดอันซับซ้อนหรือไอเดียเพ้อเจ้อ ให้กลายเป็นภาษาที่เปี่ยมด้วยเหตุผล ข้อเท็จจริง และเข้าถึงหัวใจของทุกคน เปลี่ยนเรื่องยากให้กลายเป็นเรื่องปัง และจุดประกายให้ลูกเรือทั้งยานพร้อมมุ่งหน้าสู่เป้าหมายเดียวกัน",
+        image: "https://s.imgz.io/2026/10/14/fbce02d787aa493ed617a36f3238fb2fa43a53d80deeeb8e.png",
+        lucky_charm: "ปริซึมละอองดาว (Stardust Prism Microphone)",
+        besties: "นักคิดวงโคจรลึก (Star Gazers)",
+        recommended_roles: "นักสื่อสารมวลชน, Content Creator, ผู้กำกับงานสื่อสารองค์กร, นักประชาสัมพันธ์, ครู/วิทยากรสร้างแรงบันดาลใจ",
+        traits: ["สื่อสารทรงพลัง", "รับฟังลึกซึ้งไร้อคติ", "ย่อยเรื่องยากให้ง่าย", "สร้างแรงบันดาลใจ", "มีเสน่ห์ดึงดูด"],
+        powers: [
+          { name: "จานรับสัญญาณไร้อคติ (Universal Listening Antenna)", desc: "ผู้รับฟังชั้นยอดประจำยานอวกาศ พร้อมเปิดรับทุกคลื่นความถี่และความคิดเห็นจากผู้อื่น ไม่เคยด่วนตัดสิน ช่วยสร้างพื้นที่ปลอดภัยให้ทุกคนกล้าแสดงความคิดเห็น" },
+          { name: "เครื่องแปลงคลื่นละอองดาว (Stardust Concept Translator)", desc: "เปลี่ยนข้อเท็จจริงและตรรกะที่ซับซ้อนให้กลายเป็นเรื่องที่เข้าใจง่ายและน่าติดตาม เลือกใช้คำพูดได้อย่างเหมาะสม ทำให้ผู้ฟังกระจ่างแจ้งและอินตาม" },
+          { name: "สนามกระจายการมีส่วนร่วม (Interactive Broadcast Field)", desc: "สร้างบรรยากาศที่เชื้อเชิญให้ทุกคนเข้ามามีส่วนร่วม ทำให้เกิดบรรยากาศการทำงานที่เปิดกว้าง มีชีวิตชีวา และขับเคลื่อนไปข้างหน้าได้อย่างลื่นไหล" },
+          { name: "ตัวปรับแรงดันความเห็นต่าง (Multiverse Perspective Tuner)", desc: "ยืดหยุ่นสูงเมื่อต้องเผชิญกับความคิดเห็นที่หลากหลาย นำมุมมองที่ต่างกันมาปรับจูนเข้าหาข้อเท็จจริงและเหตุผล ประสานความเข้าใจให้ทุกฝ่ายยอมรับซึ่งกันและกัน" },
+          { name: "คลื่นสั่นสะเทือนปลุกแรงบันดาลใจ (Cosmic Motivation Frequency)", desc: "ส่งคลื่นพลังงานที่ช่วยสร้างแรงจูงใจให้แก่ทีมงาน ทำให้ทุกคนมองเห็นภาพเป้าหมายร่วมกันอย่างชัดเจน กลายเป็นผู้นำที่ได้รับความไว้วางใจ" }
+        ]
+      },
+      mad_alchemists: {
+        id: "mad_alchemists",
+        dimension_title: "Life Innovation & Experimentation (มิติการรังสรรค์และการท้าทายขีดจำกัด)",
+        name_th: "เผ่าพันธุ์นักปรุงแต่งสสารมืด",
+        name_en: "The Mad Alchemists",
+        theme: "The Cosmic Maker / นักสร้างสรรค์สิ่งใหม่จากความยุ่งเหยิง",
+        ship_title: "นักประดิษฐ์นอกรีตแห่งห้วงมิติ",
+        motto: '"เปลี่ยนความโกลาหล ให้เป็นเทคโนโลยีเปลี่ยนโลก"',
+        summary_title: "นักสร้างนวัตกรรม (Innovator)",
+        summary_desc: "คุณคือจอมแปรธาตุสายลุยประจำยานอวกาศ ผู้ไม่เคยจำนนต่อกฎเกณฑ์เดิมๆ ถ้ามีกฎเหล็กขวางทาง คุณพร้อมจะทุบมันทิ้งแล้วประกอบขึ้นมาใหม่เป็นยานรุ่นเร็วกระชากใจ! คุณมีสัญชาตญาณพิเศษในการหยิบจับเศษซากไอเดียประหลาดและความยุ่งเหยิงในอวกาศมาผสมผสานจนเกิดเป็นนวัตกรรมล้ำยุค กล้าเสี่ยง กล้าทดลอง เปลี่ยนความโกลาหลให้เป็นระบบที่มีประสิทธิภาพ และสร้างคุณค่าใหม่ๆ ที่ไม่มีใครคาดถึง",
+        image: "https://s.imgz.io/2026/10/14/ba489060c24880e5b963df571946dc8fcb2b3d1e49bc3f42.png",
+        lucky_charm: "เบ้าหลอมสสารมืด (Dark Matter Crucible)",
+        besties: "นักคิดวงโคจรลึก (Star Gazers)",
+        recommended_roles: "ผู้ประกอบการนวัตกรรม (Startup Founder), Product Designer, นักประดิษฐ์เทคโนโลยี, ผู้ริเริ่มโครงการทางสังคม (Social Innovator)",
+        traits: ["คิดนอกกรอบ", "ไม่กลัวความล้มเหลว", "สร้างต้นแบบรวดเร็ว", "ท้าทายกฎเกณฑ์", "มองเห็นโอกาสในวิกฤต"],
+        powers: [
+          { name: "สแกนเนอร์มองผ่านความโกลาหล (Chaos Opportunity Scanner)", desc: "มองเห็น 'โอกาสในการสร้างสรรค์สิ่งใหม่' ท่ามกลางความวุ่นวาย ขุดคุ้ยไอเดียแปลกใหม่มาสกัดเป็นแนวคิดสดใหม่ สร้างคุณค่าและทางออกอันชาญฉลาด" },
+          { name: "เตาแปรธาตุเปลี่ยนไอเดียเป็นจริง (Dark Matter Prototyping Engine)", desc: "เป็น 'ผู้ลงมือสร้าง' ตัวจริง เปลี่ยนไอเดียฟุ้งซ่านในหัวให้กลายเป็นกระบวนการทำงานจริงที่มีประสิทธิภาพ และมุ่งมั่นปรับปรุงพัฒนาอย่างไม่หยุดนิ่ง" },
+          { name: "เกราะทนทานต่อความล้มเหลว (Quantum Risk Immunity)", desc: "มีความกล้าหาญระดับทะลุมิติ ไม่หวาดกลัวต่อความเสี่ยง มองความล้มเหลวคือ 'ข้อมูลชั้นดีในการเรียนรู้' พร้อมชนกับความท้าทายใหม่ๆ เสมอ" },
+          { name: "แกนวาร์ปปฏิวัติองค์กร (Galactic Revolution Core)", desc: "ผู้นำคลื่นลูกใหม่ผู้ขับเคลื่อนการเปลี่ยนแปลงครั้งสำคัญ จุดประกายทีมงานผ่านการเสนอนวัตกรรมที่เป็นประโยชน์และใช้งานได้จริง" },
+          { name: "เครื่องแปลงความยุ่งเหยิงเป็นมูลค่า (Entropy Value Generator)", desc: "สามารถหยิบจับทรัพยากรที่คนอื่นมองข้ามหรือคิดว่าไร้ค่า มาประกอบร่างและปรับเปลี่ยนกระบวนการจนกลายเป็นผลงานที่ทรงคุณค่าและมีประโยชน์สูงสุด" }
+        ]
+      }
+    };
+
+    /* ================================================================
+       2. 60 LIFE PATH EVALUATION QUESTIONS (ออกแบบเส้นทางชีวิต)
+       Divided into 4 core dimensions (15 items each)
+       ================================================================ */
+    const RAW_QUESTIONS = [
+      // 1. STAR GAZERS: Life Vision & Analytical Strategy (15 items)
+      { id: 1, archetype: "star_gazers", text: "คุณยังไม่เชื่อข้อมูลหรือข่าวสารใด จนกว่าจะรู้ที่มาและหลักฐานเชิงประจักษ์อย่างชัดเจน" },
+      { id: 2, archetype: "star_gazers", text: "คุณคิดว่าการตัดสินผู้อื่นหรือสถานการณ์จากคำบอกเล่า โดยไม่มีหลักฐานพิสูจน์ได้ เป็นสิ่งที่ไม่ควรทำ" },
+      { id: 3, archetype: "star_gazers", text: "เมื่อเกิดปัญหา คุณให้ความสำคัญกับการค้นหาสาเหตุที่แท้จริง (Root Cause) มากกว่าการแก้ปัญหาเฉพาะหน้า" },
+      { id: 4, archetype: "star_gazers", text: "คุณมักจะวิเคราะห์สถานการณ์ เชื่อมโยงข้อมูล และประเมินความเสี่ยงอย่างเป็นระบบก่อนตัดสินใจเรื่องสำคัญ" },
+      { id: 5, archetype: "star_gazers", text: "ท่ามกลางสถานการณ์ตึงเครียด คุณสามารถแยกแยะข้อเท็จจริงออกจากอารมณ์และความรู้สึกส่วนตัวได้อย่างดี" },
+      { id: 6, archetype: "star_gazers", text: "คุณมักจะตั้งคำถามและตรวจสอบข้อมูลจากหลายๆ แหล่ง ก่อนที่จะนำมาใช้ในการวางแผนชีวิตหรือการทำงาน" },
+      { id: 7, archetype: "star_gazers", text: "คุณมองเห็นแบบแผน (Pattern) และความเชื่อมโยงในชุดข้อมูลซับซ้อนที่คนอื่นอาจมองว่าไร้ระเบียบ" },
+      { id: 8, archetype: "star_gazers", text: "คุณสามารถเปรียบเทียบทางเลือกต่างๆ และเลือกทางออกที่มีเหตุผลและคุ้มค่าที่สุดในระยะยาว" },
+      { id: 9, archetype: "star_gazers", text: "คุณชอบทำความเข้าใจหลักการและกลไกเบื้องลึก มากกว่าการทำตามคำสั่งโดยไม่เข้าใจเหตุผล" },
+      { id: 10, archetype: "star_gazers", text: "ในการทำงานเป็นทีม คุณมักช่วยดึงข้อเท็จจริงและตรรกะมาเป็นเกณฑ์ เพื่อให้การตัดสินใจถูกต้องแม่นยำ" },
+      { id: 11, archetype: "star_gazers", text: "คุณรู้สึกสบายใจกับการวางแผนระยะยาว และคิดจำลองสถานการณ์ล่วงหน้าหลายขั้นตอน" },
+      { id: 12, archetype: "star_gazers", text: "คำพูดหรือแนวคิดที่มีน้ำหนักสำหรับคุณ ต้องมีข้อมูลสถิติ งานวิจัย หรือตรรกะที่พิสูจน์ได้รองรับ" },
+      { id: 13, archetype: "star_gazers", text: "เมื่อเจอปัญหาที่ไม่มีคู่มือ คุณจะเริ่มจากการแยกย่อยองค์ประกอบของปัญหาอย่างเป็นขั้นเป็นตอน" },
+      { id: 14, archetype: "star_gazers", text: "คุณสามารถสรุปประเด็นที่ซับซ้อนให้กลายเป็นข้อสรุปเชิงตรรกะที่เข้าใจง่ายและนำไปปฏิบัติได้จริง" },
+      { id: 15, archetype: "star_gazers", text: "คุณเชื่อว่าการวางแผนชีวิตที่ดี ต้องตั้งอยู่บนพื้นฐานของการประเมินตนเองและข้อเท็จจริงที่เที่ยงตรง" },
+
+      // 2. GRAVITY WEAVERS: Life Synergy & Harmony (15 items)
+      { id: 16, archetype: "gravity_weavers", text: "คุณเชื่อว่าการให้โอกาสทุกคนได้แสดงความคิดเห็น เป็นการสร้างการยอมรับความแตกต่างที่สร้างสรรค์" },
+      { id: 17, archetype: "gravity_weavers", text: "คุณยอมรับและเคารพในวิถีชีวิต ความเชื่อ และวัฒนธรรมที่แตกต่างหลากหลายของผู้คนรอบตัว" },
+      { id: 18, archetype: "gravity_weavers", text: "คุณสามารถควบคุมอารมณ์และสงบสติได้ดี เมื่อเกิดความขัดแย้งหรือสถานการณ์ไม่เป็นไปตามแผน" },
+      { id: 19, archetype: "gravity_weavers", text: "คุณใส่ใจและพยายามทำความเข้าใจความรู้สึกและความต้องการของผู้อื่น แม้ไม่ได้เอ่ยปากพูด" },
+      { id: 20, archetype: "gravity_weavers", text: "คุณมักสร้างบรรยากาศที่ดี เป็นมิตร และทำให้ทุกคนรู้สึกอบอุ่นปลอดภัยเมื่อได้อยู่ร่วมกัน" },
+      { id: 21, archetype: "gravity_weavers", text: "คุณพร้อมที่จะสนับสนุนและยื่นมือช่วยเหลือผู้อื่น เมื่อเห็นว่าพวกเขากำลังเผชิญกับความยากลำบาก" },
+      { id: 22, archetype: "gravity_weavers", text: "คุณรู้สึกสนุกและมีพลังเมื่อได้ทำงานร่วมกับผู้อื่น และพร้อมร่วมมือเพื่อเป้าหมายร่วมกันของทีม" },
+      { id: 23, archetype: "gravity_weavers", text: "คุณเปิดรับความคิดเห็นที่แตกต่าง และพร้อมนำมาปรับใช้เพื่อความสำเร็จของส่วนรวม" },
+      { id: 24, archetype: "gravity_weavers", text: "คุณให้ความสำคัญกับความสุขและความเป็นอยู่ที่ดีของทีม มากกว่าการมุ่งสร้างผลงานเด่นเพียงลำพัง" },
+      { id: 25, archetype: "gravity_weavers", text: "เมื่อเกิดความเห็นไม่ตรงกัน คุณมักเป็นคนกลางที่มองเห็นจุดเชื่อมโยงและช่วยไกล่เกลี่ยด้วยความเข้าใจ" },
+      { id: 26, archetype: "gravity_weavers", text: "คุณพร้อมที่จะปรับตัวและประนีประนอม เพื่อรักษาความสัมพันธ์และความสามัคคีของกลุ่ม" },
+      { id: 27, archetype: "gravity_weavers", text: "คนรอบข้างมักไว้วางใจและรู้สึกสบายใจที่จะเข้ามาปรึกษาปัญหาเรื่องงานและเรื่องชีวิตกับคุณ" },
+      { id: 28, archetype: "gravity_weavers", text: "คุณมีความสามารถในการเชื่อมโยงเครือข่ายผู้คนหลากหลายสายงานให้มาร่วมมือกันสร้างสิ่งดีๆ" },
+      { id: 29, archetype: "gravity_weavers", text: "คุณให้คุณค่ากับการสร้างพื้นที่ที่ทุกคนได้รับการดูแลอย่างเท่าเทียมและมีคุณค่าในตนเอง" },
+      { id: 30, archetype: "gravity_weavers", text: "คุณเชื่อมั่นว่าความสำเร็จที่ยั่งยืนในชีวิต เกิดจากการมีกัลยาณมิตรและการก้าวไปข้างหน้าร่วมกัน" },
+
+      // 3. SIGNAL BROADCASTERS: Life Expression & Inspiration (15 items)
+      { id: 31, archetype: "signal_broadcasters", text: "คุณตั้งใจรับฟังผู้อื่นอย่างเต็มที่ เพื่อทำความเข้าใจสิ่งที่พวกเขาต้องการสื่อสารโดยไร้อคติ" },
+      { id: 32, archetype: "signal_broadcasters", text: "คุณสามารถสื่อสารความคิดและความรู้สึกของคุณได้อย่างชัดเจน สุภาพ และตรงประเด็น" },
+      { id: 33, archetype: "signal_broadcasters", text: "คุณสามารถปรับเปลี่ยนวิธีการสื่อสาร เพื่อให้เหมาะสมกับผู้ฟังที่มีภูมิหลังหรือวัยวุฒิแตกต่างกัน" },
+      { id: 34, archetype: "signal_broadcasters", text: "คุณมีความสุขกับการนำเรื่องราวหรือความรู้ที่ยาก มาอธิบายให้ผู้อื่นเข้าใจง่ายและน่าติดตาม" },
+      { id: 35, archetype: "signal_broadcasters", text: "คนรอบข้างมักบอกว่าการพูดคุยกับคุณ ช่วยจุดประกายไอเดียและสร้างแรงบันดาลใจให้พวกเขา" },
+      { id: 36, archetype: "signal_broadcasters", text: "เมื่อเกิดความไม่เข้าใจกัน คุณมักใช้การพูดคุยเปิดใจอย่างสร้างสรรค์เพื่อปรับความเข้าใจ" },
+      { id: 37, archetype: "signal_broadcasters", text: "คุณกระตือรือร้นในการเป็นกระบอกเสียง เพื่อบอกเล่าเรื่องราวหรือประเด็นที่เป็นประโยชน์ต่อสังคม" },
+      { id: 38, archetype: "signal_broadcasters", text: "คุณชอบกระตุ้นและเชื้อเชิญให้ทุกคนในที่ประชุมได้มีส่วนร่วมในการแสดงความคิดเห็นอย่างทั่วถึง" },
+      { id: 39, archetype: "signal_broadcasters", text: "คุณมีทักษะในการจับประเด็นสำคัญจากการฟัง และสะท้อนภาพรวมให้คนอื่นเห็นภาพชัดเจนตรงกัน" },
+      { id: 40, archetype: "signal_broadcasters", text: "คุณเชื่อมั่นว่าพลังแห่งการสื่อสารที่จริงใจและสร้างสรรค์ สามารถเปลี่ยนแปลงทัศนคติและโลกได้" },
+      { id: 41, archetype: "signal_broadcasters", text: "ในการนำเสนองาน คุณชอบใช้ศิลปะการเล่าเรื่อง (Storytelling) เพื่อสร้างความประทับใจและอารมณ์ร่วม" },
+      { id: 42, archetype: "signal_broadcasters", text: "คุณเปิดใจรับคำวิจารณ์และข้อเสนอแนะเพื่อนำมาปรับปรุงพัฒนาทักษะตนเองอยู่เสมอ" },
+      { id: 43, archetype: "signal_broadcasters", text: "คุณชอบการแลกเปลี่ยนบทสนทนาที่มีคุณค่าและสร้างความหมาย มากกว่าการพูดคุยเรื่องผิวเผิน" },
+      { id: 44, archetype: "signal_broadcasters", text: "เมื่อทีมงานรู้สึกท้อแท้ คุณมักมีคำพูดที่ช่วยฟื้นฟูกำลังใจและกระตุ้นให้พวกเขามองเห็นเป้าหมายชัดเจน" },
+      { id: 45, archetype: "signal_broadcasters", text: "คุณเชื่อว่าความโปร่งใสและการรับฟังซึ่งกันและกัน คือหัวใจสำคัญของการสร้างความไว้วางใจในชีวิต" },
+
+      // 4. MAD ALCHEMISTS: Life Innovation & Experimentation (15 items)
+      { id: 46, archetype: "mad_alchemists", text: "คุณมองว่าความล้มเหลวไม่ใช่จุดจบ แต่เป็นโอกาสสำคัญในการเรียนรู้ ปรับตัว และเติบโตต่อไป" },
+      { id: 47, archetype: "mad_alchemists", text: "คุณมักจะมองหาโอกาสใหม่ๆ หรือแนวทางที่แตกต่างในการทำงานและการแก้ไขปัญหาในชีวิต" },
+      { id: 48, archetype: "mad_alchemists", text: "คุณชอบทดลองทำสิ่งใหม่ๆ และสร้างต้นแบบขึ้นมาทดสอบจริง แม้ว่าจะมีความเสี่ยงที่จะล้มเหลว" },
+      { id: 49, archetype: "mad_alchemists", text: "คุณสามารถคิดค้นแนวทาง หรือวิธีการใหม่ๆ ที่มีประโยชน์และนำไปใช้งานได้จริง" },
+      { id: 50, archetype: "mad_alchemists", text: "คุณมีความมุ่งมั่นและตั้งใจจริงในการนำความคิดสร้างสรรค์ไปลงมือปฏิบัติให้เกิดผลเป็นรูปธรรม" },
+      { id: 51, archetype: "mad_alchemists", text: "คุณสามารถปรับเปลี่ยนแผนการทำงานได้อย่างยืดหยุ่น เมื่อเผชิญกับอุปสรรคหรือความเปลี่ยนแปลง" },
+      { id: 52, archetype: "mad_alchemists", text: "คุณพยายามทำงานให้บรรลุเป้าหมายที่ท้าทาย แม้จะต้องใช้เวลาและความพยายามอย่างมาก" },
+      { id: 53, archetype: "mad_alchemists", text: "ท่ามกลางความยุ่งเหยิงและไร้ระเบียบ คุณมักมองเห็นช่องทางในการริเริ่มสิ่งใหม่และสร้างโอกาสได้เสมอ" },
+      { id: 54, archetype: "mad_alchemists", text: "คุณชอบตั้งคำถามท้าทายกฎเกณฑ์เดิมๆ หรือวิธีปฏิบัติที่ล้าสมัย เพื่อค้นหาทางเลือกที่ทรงพลังกว่า" },
+      { id: 55, archetype: "mad_alchemists", text: "คุณชอบหยิบจับไอเดียหรือทรัพยากรที่หลากหลาย มาผสมผสานจนเกิดเป็นแนวคิดที่ไม่เคยมีใครทำมาก่อน" },
+      { id: 56, archetype: "mad_alchemists", text: "คุณรู้สึกตื่นเต้นและมีพลังอย่างมาก เมื่อได้บุกเบิกโครงการใหม่ๆ ที่หลายคนคิดว่าเป็นไปไม่ได้" },
+      { id: 57, archetype: "mad_alchemists", text: "คุณมีความมุ่งมั่นที่จะนำความรู้ความสามารถของตนเอง มาสร้างสรรค์นวัตกรรมที่พัฒนาชุมชนและสังคม" },
+      { id: 58, archetype: "mad_alchemists", text: "คุณเชื่อมั่นในการลงมือทำจริงและเรียนรู้ปรับแต่งอย่างรวดเร็ว (Learn fast, fail forward)" },
+      { id: 59, archetype: "mad_alchemists", text: "คุณพร้อมที่จะเป็นผู้นำการเปลี่ยนแปลง และกล้าเสนอไอเดียใหม่เพื่อยกระดับองค์กร" },
+      { id: 60, archetype: "mad_alchemists", text: "คุณเชื่อว่าเป้าหมายในชีวิตของคุณ คือการได้สร้างสิ่งที่มีคุณค่าและสร้างผลกระทบเชิงบวกต่อสังคม" }
+    ];
+
+    // Interleave the questions across the 6 steps so each step of 10 contains a balanced mix
+    function getInterleavedQuestions() {
+      const g = {
+        star_gazers: RAW_QUESTIONS.filter(q => q.archetype === 'star_gazers'),
+        gravity_weavers: RAW_QUESTIONS.filter(q => q.archetype === 'gravity_weavers'),
+        signal_broadcasters: RAW_QUESTIONS.filter(q => q.archetype === 'signal_broadcasters'),
+        mad_alchemists: RAW_QUESTIONS.filter(q => q.archetype === 'mad_alchemists')
+      };
+
+      const result = [];
+      const keys = ['star_gazers', 'gravity_weavers', 'signal_broadcasters', 'mad_alchemists'];
+      for (let i = 0; i < 15; i++) {
+        for (const k of keys) {
+          if (g[k][i]) result.push(g[k][i]);
+        }
+      }
+      return result; // Exactly 60 questions!
+    }
+
+    const QUESTIONS = getInterleavedQuestions();
+
+    /* ================================================================
+       3. APPLICATION STATE
+       ================================================================ */
+    let currentStep = 1; // 1 to 6
+    const TOTAL_STEPS = 6;
+    const QUESTIONS_PER_STEP = 10;
+    const userAnswers = {}; // { questionId: 1..5 }
+    let radarChartInstance = null;
+
+    /* Likert scale labels (1 to 5) */
+    const LIKERT_OPTIONS = [
+      { val: 1, label: "ไม่เห็นด้วยอย่างยิ่ง", short: "1" },
+      { val: 2, label: "ไม่เห็นด้วย", short: "2" },
+      { val: 3, label: "ปานกลาง", short: "3" },
+      { val: 4, label: "เห็นด้วย", short: "4" },
+      { val: 5, label: "เห็นด้วยอย่างยิ่ง", short: "5" }
+    ];
+
+    /* ================================================================
+       4. AUDIO EFFECTS ENGINE (Web Audio API Synthesizer)
+       ================================================================ */
+    const AudioEngine = {
+      ctx: null,
+      init() {
+        if (!this.ctx) {
+          const AudioContext = window.AudioContext || window.webkitAudioContext;
+          if (AudioContext) this.ctx = new AudioContext();
+        }
+      },
+      beep(freq = 600, duration = 0.08, type = 'sine') {
+        try {
+          this.init();
+          if (!this.ctx) return;
+          if (this.ctx.state === 'suspended') this.ctx.resume();
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = type;
+          osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
+          gain.gain.setValueAtTime(0.04, this.ctx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + duration);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start();
+          osc.stop(this.ctx.currentTime + duration);
+        } catch(e) {}
+      },
+      click() {
+        this.beep(880, 0.04, 'triangle');
+      },
+      next() {
+        this.beep(520, 0.06, 'sine');
+        setTimeout(() => this.beep(780, 0.08, 'sine'), 50);
+      },
+      success() {
+        this.beep(440, 0.08, 'sine');
+        setTimeout(() => this.beep(554.37, 0.08, 'sine'), 80);
+        setTimeout(() => this.beep(659.25, 0.12, 'sine'), 160);
+        setTimeout(() => this.beep(880, 0.2, 'sine'), 240);
+      }
+    };
+
+    /* ================================================================
+       5. VIEW MANAGEMENT & NAVIGATION
+       ================================================================ */
+    function showView(viewId) {
+      ['view-test', 'view-processing', 'view-dashboard'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.classList.add('hidden');
+      });
+
+      const target = document.getElementById(viewId);
+      if (target) {
+        target.classList.remove('hidden');
+      }
+
+      const globalProgress = document.getElementById('global-progress-bar-container');
+      if (viewId === 'view-test') {
+        globalProgress.classList.remove('hidden');
+      } else {
+        globalProgress.classList.add('hidden');
+      }
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function restartToStep1() {
+      AudioEngine.click();
+      for (const k in userAnswers) delete userAnswers[k];
+      currentStep = 1;
+      showView('view-test');
+      renderCurrentStep();
+    }
+
+    /* Render the 10 questions for the current step */
+    function renderCurrentStep() {
+      const startIndex = (currentStep - 1) * QUESTIONS_PER_STEP;
+      const endIndex = startIndex + QUESTIONS_PER_STEP;
+      const stepQuestions = QUESTIONS.slice(startIndex, endIndex);
+
+      // Update Header Numbers
+      document.getElementById('current-step-num').textContent = currentStep;
+      document.getElementById('current-step-range').textContent = `${startIndex + 1} - ${endIndex}`;
+      
+      // Update Next button label
+      const nextBtnText = document.getElementById('btn-next-text');
+      if (currentStep === TOTAL_STEPS) {
+        nextBtnText.textContent = 'วิเคราะห์ผลลัพธ์ (Compute Results) ✦';
+      } else {
+        nextBtnText.textContent = `ขั้นตอนถัดไป (Step ${currentStep + 1}/6) →`;
+      }
+
+      // Update Prev button disabled
+      document.getElementById('btn-prev-step').disabled = (currentStep === 1);
+
+      // Build HTML for the 10 questions
+      const container = document.getElementById('questions-list-container');
+      container.innerHTML = '';
+
+      stepQuestions.forEach((q, idx) => {
+        const qNumber = startIndex + idx + 1;
+        const currentAnswer = userAnswers[q.id] || null;
+        const arch = ARCHETYPES_DATA[q.archetype];
+
+        const card = document.createElement('div');
+        card.id = `q-card-${q.id}`;
+        card.className = `p-4 sm:p-5 bg-white border-2 ${currentAnswer ? 'border-cyber-black' : 'border-slate-200'} transition-all duration-200 shadow-sm hover:border-cyber-black`;
+
+        card.innerHTML = `
+          <div class="flex items-start gap-3 sm:gap-4 mb-3">
+            <span class="w-8 h-8 rounded-none bg-cyber-black text-cyber-yellow font-cyber font-bold text-xs flex items-center justify-center shrink-0 border border-cyber-black">
+              ${qNumber < 10 ? '0' + qNumber : qNumber}
+            </span>
+            <div class="flex-1">
+              <div class="flex items-center gap-2 mb-1">
+                <span class="text-[10px] font-semibold uppercase px-1.5 py-0.2 bg-slate-100 text-slate-600 border border-slate-200">
+                  ${arch.summary_title}
+                </span>
+                <span class="text-[11px] text-slate-400 font-mono hidden sm:inline">
+                  ${arch.name_en}
+                </span>
+              </div>
+              <p class="text-sm sm:text-base font-medium text-cyber-black leading-relaxed">
+                ${q.text}
+              </p>
+            </div>
+            <div id="q-check-${q.id}" class="${currentAnswer ? 'text-cyber-darkgold' : 'text-slate-300'} font-bold text-sm shrink-0">
+              ${currentAnswer ? '✓' : '•'}
+            </div>
+          </div>
+
+          <!-- Likert 5-point scale bar -->
+          <div class="pt-2 border-t border-slate-100">
+            <div class="flex items-center justify-between text-[11px] text-slate-500 font-medium mb-1.5 px-1">
+              <span>ไม่เห็นด้วยอย่างยิ่ง</span>
+              <span class="hidden sm:inline">ปานกลาง</span>
+              <span>เห็นด้วยอย่างยิ่ง</span>
+            </div>
+
+            <div class="grid grid-cols-5 gap-1.5 sm:gap-2">
+              ${LIKERT_OPTIONS.map(opt => {
+                const isSelected = currentAnswer === opt.val;
+                return `
+                  <button 
+                    type="button" 
+                    onclick="selectAnswer(${q.id}, ${opt.val})"
+                    class="py-2 sm:py-2.5 px-1 text-center border-2 transition-all cursor-pointer flex flex-col items-center justify-center ${
+                      isSelected 
+                        ? 'bg-cyber-yellow text-cyber-black font-bold border-cyber-black shadow-[2px_2px_0px_#09090B]' 
+                        : 'bg-slate-50 hover:bg-slate-100 text-slate-700 border-slate-200 hover:border-slate-400 font-medium'
+                    }">
+                    <span class="font-cyber text-sm sm:text-base font-black leading-none">${opt.short}</span>
+                    <span class="text-[10px] hidden sm:block mt-1 leading-tight truncate max-w-full px-1">${opt.label}</span>
+                  </button>
+                `;
+              }).join('')}
+            </div>
+          </div>
+        `;
+
+        container.appendChild(card);
+      });
+
+      updateStepValidationState();
+    }
+
+    /* Select Answer Handler */
+    function selectAnswer(questionId, score) {
+      AudioEngine.click();
+      userAnswers[questionId] = score;
+
+      const card = document.getElementById(`q-card-${questionId}`);
+      if (card) {
+        card.classList.remove('border-slate-200');
+        card.classList.add('border-cyber-black');
+      }
+
+      const check = document.getElementById(`q-check-${questionId}`);
+      if (check) {
+        check.className = 'text-cyber-darkgold font-bold text-sm shrink-0';
+        check.textContent = '✓';
+      }
+
+      // Re-render buttons in that question
+      const qIndexInQuestions = QUESTIONS.findIndex(q => q.id === questionId);
+      if (qIndexInQuestions !== -1) {
+        const startIndex = (currentStep - 1) * QUESTIONS_PER_STEP;
+        const endIndex = startIndex + QUESTIONS_PER_STEP;
+        if (qIndexInQuestions >= startIndex && qIndexInQuestions < endIndex) {
+          const cardButtons = card.querySelectorAll('button');
+          LIKERT_OPTIONS.forEach((opt, idx) => {
+            const btn = cardButtons[idx];
+            if (btn) {
+              if (opt.val === score) {
+                btn.className = 'py-2 sm:py-2.5 px-1 text-center border-2 transition-all cursor-pointer flex flex-col items-center justify-center bg-cyber-yellow text-cyber-black font-bold border-cyber-black shadow-[2px_2px_0px_#09090B]';
+              } else {
+                btn.className = 'py-2 sm:py-2.5 px-1 text-center border-2 transition-all cursor-pointer flex flex-col items-center justify-center bg-slate-50 hover:bg-slate-100 text-slate-700 border-slate-200 hover:border-slate-400 font-medium';
+              }
+            }
+          });
+        }
+      }
+
+      updateStepValidationState();
+    }
+
+    /* Update validation and progress */
+    function updateStepValidationState() {
+      const startIndex = (currentStep - 1) * QUESTIONS_PER_STEP;
+      const endIndex = startIndex + QUESTIONS_PER_STEP;
+      const stepQuestions = QUESTIONS.slice(startIndex, endIndex);
+
+      let stepAnsweredCount = 0;
+      stepQuestions.forEach(q => {
+        if (userAnswers[q.id]) stepAnsweredCount++;
+      });
+
+      const isStepComplete = (stepAnsweredCount === QUESTIONS_PER_STEP);
+      const nextBtn = document.getElementById('btn-next-step');
+      nextBtn.disabled = !isStepComplete;
+
+      // Update Global Progress
+      const totalAnswered = Object.keys(userAnswers).length;
+      const totalPercent = Math.round((totalAnswered / QUESTIONS.length) * 100);
+      
+      document.getElementById('answered-count-total').textContent = totalAnswered;
+      document.getElementById('answered-percent').textContent = `${totalPercent}%`;
+      document.getElementById('step-progress-fill').style.width = `${totalPercent}%`;
+      document.getElementById('global-progress-bar').style.width = `${totalPercent}%`;
+
+      const notice = document.getElementById('validation-notice');
+      if (isStepComplete) {
+        notice.classList.add('hidden');
+      }
+    }
+
+    /* Next Step handler */
+    function nextStep() {
+      const startIndex = (currentStep - 1) * QUESTIONS_PER_STEP;
+      const endIndex = startIndex + QUESTIONS_PER_STEP;
+      const stepQuestions = QUESTIONS.slice(startIndex, endIndex);
+
+      const unanswered = stepQuestions.filter(q => !userAnswers[q.id]);
+      if (unanswered.length > 0) {
+        const notice = document.getElementById('validation-notice');
+        document.getElementById('remaining-count-step').textContent = unanswered.length;
+        notice.classList.remove('hidden');
+        highlightUnansweredQuestions();
+        return;
+      }
+
+      AudioEngine.next();
+
+      if (currentStep < TOTAL_STEPS) {
+        currentStep++;
+        renderCurrentStep();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } else {
+        // Finished all 60 questions! Transition to processing screen
+        startProcessingResults();
+      }
+    }
+
+    /* Prev Step handler */
+    function prevStep() {
+      if (currentStep > 1) {
+        AudioEngine.click();
+        currentStep--;
+        renderCurrentStep();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    }
+
+    /* Highlight unanswered cards */
+    function highlightUnansweredQuestions() {
+      const startIndex = (currentStep - 1) * QUESTIONS_PER_STEP;
+      const endIndex = startIndex + QUESTIONS_PER_STEP;
+      const stepQuestions = QUESTIONS.slice(startIndex, endIndex);
+
+      let firstUnansweredEl = null;
+      stepQuestions.forEach(q => {
+        if (!userAnswers[q.id]) {
+          const card = document.getElementById(`q-card-${q.id}`);
+          if (card) {
+            card.classList.add('ring-2', 'ring-amber-500', 'bg-amber-50/30');
+            if (!firstUnansweredEl) firstUnansweredEl = card;
+            setTimeout(() => {
+              card.classList.remove('ring-2', 'ring-amber-500', 'bg-amber-50/30');
+            }, 2500);
+          }
+        }
+      });
+
+      if (firstUnansweredEl) {
+        firstUnansweredEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    }
+
+    /* Auto-fill current 10 questions */
+    function autoFillCurrentStep() {
+      AudioEngine.click();
+      const startIndex = (currentStep - 1) * QUESTIONS_PER_STEP;
+      const endIndex = startIndex + QUESTIONS_PER_STEP;
+      const stepQuestions = QUESTIONS.slice(startIndex, endIndex);
+
+      stepQuestions.forEach(q => {
+        if (!userAnswers[q.id]) {
+          const randomScore = [3, 4, 5, 4, 5][Math.floor(Math.random() * 5)];
+          userAnswers[q.id] = randomScore;
+        }
+      });
+
+      renderCurrentStep();
+    }
+
+    /* Quick Demo Auto-fill All 60 Questions */
+    function quickAutoFillDemo() {
+      AudioEngine.click();
+      const targetArchetype = ['star_gazers', 'gravity_weavers', 'signal_broadcasters', 'mad_alchemists'][Math.floor(Math.random() * 4)];
+      
+      QUESTIONS.forEach(q => {
+        if (q.archetype === targetArchetype) {
+          userAnswers[q.id] = [4, 5, 5, 4, 5][Math.floor(Math.random() * 5)];
+        } else {
+          userAnswers[q.id] = [2, 3, 4, 3, 4][Math.floor(Math.random() * 5)];
+        }
+      });
+
+      currentStep = 6;
+      renderCurrentStep();
+    }
+
+    /* ================================================================
+       6. PROCESSING SCREEN (2.5 SECONDS RADAR SCAN)
+       ================================================================ */
+    function startProcessingResults() {
+      showView('view-processing');
+
+      const statusEl = document.getElementById('processing-status-text');
+      const subEl = document.getElementById('processing-sub-text');
+      const fillEl = document.getElementById('processing-progress-fill');
+
+      const messages = [
+        { status: "กำลังวิเคราะห์กรอบความคิดและเส้นทางชีวิต...", sub: "DECODING NEURAL BRAINWAVE & LIFE VISION", progress: "25%" },
+        { status: "คำนวณพิกัดวงโคจรสมองและพลังขับเคลื่อน...", sub: "CALCULATING COGNITIVE ORBIT AND VECTOR", progress: "55%" },
+        { status: "แปลงรหัสพันธุกรรมคอสมิก 4 มิติ...", sub: "MAPPING 4 COSMIC ARCHETYPE DNA...", progress: "85%" },
+        { status: "สังเคราะห์ผลลัพธ์สปีชีส์และเส้นทางชีวิต...", sub: "SYNTHESIS COMPLETE. LAUNCHING DASHBOARD...", progress: "100%" }
+      ];
+
+      let msgIndex = 0;
+      const interval = setInterval(() => {
+        msgIndex++;
+        if (msgIndex < messages.length) {
+          AudioEngine.beep(400 + msgIndex * 150, 0.05, 'triangle');
+          statusEl.textContent = messages[msgIndex].status;
+          subEl.textContent = messages[msgIndex].sub;
+          fillEl.style.width = messages[msgIndex].progress;
+        } else {
+          clearInterval(interval);
+        }
+      }, 600);
+
+      // Transition to Dashboard after 2.5 seconds
+      setTimeout(() => {
+        AudioEngine.success();
+        try {
+          confetti({
+            particleCount: 75,
+            spread: 80,
+            origin: { y: 0.6 },
+            colors: ['#FFE600', '#09090B', '#FACC15']
+          });
+        } catch(e) {}
+        renderResultDashboard();
+      }, 2500);
+    }
+
+    /* ================================================================
+       7. SCORE CALCULATION & DASHBOARD RENDERING
+       ================================================================ */
+    function calculateArchetypeScores() {
+      const totals = {
+        star_gazers: 0,
+        gravity_weavers: 0,
+        signal_broadcasters: 0,
+        mad_alchemists: 0
+      };
+
+      const maxPossiblePerArchetype = 15 * 5; // 75 points max
+
+      QUESTIONS.forEach(q => {
+        const score = userAnswers[q.id] || 3;
+        if (totals[q.archetype] !== undefined) {
+          totals[q.archetype] += score;
+        }
+      });
+
+      // Normalize to percentages (0 - 100%)
+      const percentages = {};
+      let highestArchetype = 'star_gazers';
+      let highestScore = -1;
+
+      Object.keys(totals).forEach(key => {
+        const raw = totals[key];
+        const pct = Math.round((raw / maxPossiblePerArchetype) * 100);
+        percentages[key] = pct;
+
+        if (raw > highestScore) {
+          highestScore = raw;
+          highestArchetype = key;
+        }
+      });
+
+      return { totals, percentages, dominantKey: highestArchetype };
+    }
+
+    function renderResultDashboard() {
+      showView('view-dashboard');
+
+      const { totals, percentages, dominantKey } = calculateArchetypeScores();
+      const dominant = ARCHETYPES_DATA[dominantKey];
+
+      // 1. Populate Dominant Archetype Banner
+      document.getElementById('res-theme-badge').textContent = dominant.theme;
+      document.getElementById('res-galaxy-id').textContent = `#PATH-${Math.floor(1000 + Math.random() * 9000)}`;
+      document.getElementById('res-archetype-img').src = dominant.image;
+      document.getElementById('res-ship-title').textContent = dominant.ship_title;
+      document.getElementById('res-motto').textContent = dominant.motto;
+      document.getElementById('res-summary-title').textContent = dominant.summary_title;
+      document.getElementById('res-name-th').textContent = dominant.name_th;
+      document.getElementById('res-name-en').textContent = dominant.name_en;
+      document.getElementById('res-summary-desc').textContent = dominant.summary_desc;
+      document.getElementById('res-resonance-val').textContent = `${percentages[dominantKey]}%`;
+      document.getElementById('res-lucky-charm').textContent = dominant.lucky_charm;
+      document.getElementById('res-work-besties').textContent = dominant.besties;
+      document.getElementById('res-career-roles').textContent = dominant.recommended_roles;
+
+      // Trait pills
+      const traitContainer = document.getElementById('res-trait-pills');
+      traitContainer.innerHTML = '';
+      dominant.traits.forEach(trait => {
+        const span = document.createElement('span');
+        span.className = 'px-3 py-1 bg-slate-100 text-slate-800 text-xs font-semibold border border-slate-300 rounded-none shadow-xs';
+        span.textContent = `#${trait}`;
+        traitContainer.appendChild(span);
+      });
+
+      // 2. Render Secondary Breakdown
+      renderSecondaryBreakdown(percentages, dominantKey);
+
+      // 3. Render 5 Special Powers Grid
+      renderPowersGrid(dominant.powers);
+
+      // 4. Render Spider / Radar Chart with Chart.js
+      renderSpiderRadarChart(percentages);
+    }
+
+    /* Render Secondary Archetypes breakdown list */
+    function renderSecondaryBreakdown(percentages, dominantKey) {
+      const container = document.getElementById('breakdown-list');
+      container.innerHTML = '';
+
+      const sortedKeys = Object.keys(percentages).sort((a, b) => percentages[b] - percentages[a]);
+
+      sortedKeys.forEach((key, index) => {
+        const arch = ARCHETYPES_DATA[key];
+        const score = percentages[key];
+        const isDominant = (key === dominantKey);
+
+        const row = document.createElement('div');
+        row.className = `p-3 border ${isDominant ? 'bg-zinc-900 border-cyber-yellow' : 'bg-zinc-900/60 border-zinc-800'}`;
+
+        row.innerHTML = `
+          <div class="flex items-center justify-between mb-1.5">
+            <div class="flex items-center gap-2">
+              <span class="w-5 h-5 flex items-center justify-center text-[10px] font-cyber font-black ${isDominant ? 'bg-cyber-yellow text-cyber-black' : 'bg-zinc-800 text-zinc-400'}">
+                0${index + 1}
+              </span>
+              <span class="font-bold text-xs ${isDominant ? 'text-cyber-yellow' : 'text-slate-200'}">
+                ${arch.summary_title} (${arch.name_en})
+              </span>
+            </div>
+            <span class="font-cyber font-black text-sm ${isDominant ? 'text-cyber-yellow' : 'text-slate-300'}">
+              ${score}%
+            </span>
+          </div>
+
+          <!-- Progress Bar -->
+          <div class="w-full bg-zinc-800 h-2 overflow-hidden border border-zinc-700">
+            <div class="${isDominant ? 'bg-cyber-yellow' : 'bg-slate-400'} h-full transition-all duration-1000" style="width: ${score}%;"></div>
+          </div>
+        `;
+
+        container.appendChild(row);
+      });
+    }
+
+    /* Render Powers Grid (5 Special Powers) */
+    function renderPowersGrid(powers) {
+      const container = document.getElementById('powers-grid');
+      container.innerHTML = '';
+
+      powers.forEach((p, idx) => {
+        const card = document.createElement('div');
+        card.className = 'p-5 bg-slate-50 border-2 border-cyber-black hover:border-cyber-darkgold hover:bg-yellow-50/20 transition-all duration-200 shadow-sm relative group';
+
+        card.innerHTML = `
+          <div class="flex items-center justify-between mb-2.5">
+            <span class="px-2 py-0.5 bg-cyber-black text-cyber-yellow font-cyber text-[10px] font-bold">
+              ABILITY 0${idx + 1}
+            </span>
+            <span class="text-xs text-cyber-darkgold font-bold">✦ UNLOCKED</span>
+          </div>
+          <h4 class="font-bold text-cyber-black text-sm mb-1.5 group-hover:text-amber-900 transition-colors">
+            ${p.name}
+          </h4>
+          <p class="text-xs text-slate-600 leading-relaxed">
+            ${p.desc}
+          </p>
+        `;
+
+        container.appendChild(card);
+      });
+    }
+
+    /* Render Spider/Radar Chart with Chart.js */
+    function renderSpiderRadarChart(percentages) {
+      const ctx = document.getElementById('cosmic-radar-chart');
+      if (!ctx) return;
+
+      if (radarChartInstance) {
+        radarChartInstance.destroy();
+      }
+
+      const labels = [
+        ['1. การวิเคราะห์และวางแผน', '(Life Vision & Strategy)'],
+        ['2. การสร้างความร่วมมือ', '(Life Synergy & Harmony)'],
+        ['3. การถ่ายทอดและสื่อสาร', '(Expression & Inspiration)'],
+        ['4. การรังสรรค์นวัตกรรม', '(Innovation & Exploration)']
+      ];
+
+      const dataValues = [
+        percentages.star_gazers,
+        percentages.gravity_weavers,
+        percentages.signal_broadcasters,
+        percentages.mad_alchemists
+      ];
+
+      radarChartInstance = new Chart(ctx, {
+        type: 'radar',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'ระดับศักยภาพเส้นทางชีวิต (%)',
+            data: dataValues,
+            fill: true,
+            backgroundColor: 'rgba(255, 230, 0, 0.35)',
+            borderColor: '#09090B',
+            borderWidth: 3,
+            pointBackgroundColor: '#FFE600',
+            pointBorderColor: '#09090B',
+            pointBorderWidth: 2,
+            pointHoverBackgroundColor: '#FFFFFF',
+            pointHoverBorderColor: '#09090B',
+            pointHoverBorderWidth: 3,
+            pointRadius: 6,
+            pointHoverRadius: 8
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            r: {
+              angleLines: {
+                color: 'rgba(9, 9, 11, 0.2)',
+                lineWidth: 1.5
+              },
+              grid: {
+                color: 'rgba(9, 9, 11, 0.12)',
+                circular: false,
+                lineWidth: 1
+              },
+              pointLabels: {
+                font: {
+                  family: 'Kanit, sans-serif',
+                  size: 11,
+                  weight: '600'
+                },
+                color: '#09090B'
+              },
+              ticks: {
+                backdropColor: 'transparent',
+                color: '#64748B',
+                font: {
+                  family: 'Rajdhani',
+                  size: 10
+                },
+                stepSize: 20,
+                min: 0,
+                max: 100
+              },
+              suggestedMin: 0,
+              suggestedMax: 100
+            }
+          },
+          plugins: {
+            legend: {
+              display: false
+            },
+            tooltip: {
+              backgroundColor: '#09090B',
+              titleFont: { family: 'Kanit', size: 12 },
+              bodyFont: { family: 'Orbitron', size: 12 },
+              titleColor: '#FFE600',
+              bodyColor: '#FFFFFF',
+              borderColor: '#FFE600',
+              borderWidth: 1,
+              padding: 10,
+              callbacks: {
+                label: function(context) {
+                  return ` Score: ${context.raw}%`;
+                }
+              }
+            }
+          }
+        }
+      });
+    }
+
+    /* Print or Save Card */
+    function printOrSaveCard() {
+      AudioEngine.click();
+      window.print();
+    }
+
+    /* Share or Copy Link */
+    function shareOrCopyLink() {
+      AudioEngine.click();
+      const text = `ฉันได้ผลลัพธ์การออกแบบเส้นทางชีวิตและถอดรหัสตัวตนแห่งจักรวาล ลองมาค้นพบเผ่าพันธุ์และศักยภาพของคุณได้ที่นี่!`;
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(window.location.href).then(() => {
+          alert('คัดลอกลิงก์ผลลัพธ์เรียบร้อยแล้ว!');
+        }).catch(() => {
+          alert(text + '\n' + window.location.href);
+        });
+      } else {
+        alert(text + '\n' + window.location.href);
+      }
+    }
+
+    /* ================================================================
+       8. BACKGROUND CANVAS ANIMATION (STARDUST PARTICLES & GRID)
+       ================================================================ */
+    (function initCanvasBackground() {
+      const canvas = document.getElementById('bg-canvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      let width, height;
+      let particles = [];
+
+      function resize() {
+        width = canvas.width = window.innerWidth;
+        height = canvas.height = window.innerHeight;
+      }
+      window.addEventListener('resize', resize);
+      resize();
+
+      class Particle {
+        constructor() {
+          this.reset();
+        }
+        reset() {
+          this.x = Math.random() * width;
+          this.y = Math.random() * height;
+          this.vx = (Math.random() - 0.5) * 0.4;
+          this.vy = (Math.random() - 0.5) * 0.4;
+          this.size = Math.random() * 2 + 1;
+          this.color = Math.random() > 0.4 ? '#EAB308' : '#09090B';
+          this.alpha = Math.random() * 0.5 + 0.2;
+        }
+        update() {
+          this.x += this.vx;
+          this.y += this.vy;
+          if (this.x < 0 || this.x > width || this.y < 0 || this.y > height) {
+            this.reset();
+          }
+        }
+        draw() {
+          ctx.beginPath();
+          ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+          ctx.fillStyle = this.color;
+          ctx.globalAlpha = this.alpha;
+          ctx.fill();
+        }
+      }
+
+      for (let i = 0; i < 40; i++) {
+        particles.push(new Particle());
+      }
+
+      function animate() {
+        ctx.clearRect(0, 0, width, height);
+
+        for (let i = 0; i < particles.length; i++) {
+          for (let j = i + 1; j < particles.length; j++) {
+            const dx = particles[i].x - particles[j].x;
+            const dy = particles[i].y - particles[j].y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            if (dist < 110) {
+              ctx.beginPath();
+              ctx.moveTo(particles[i].x, particles[i].y);
+              ctx.lineTo(particles[j].x, particles[j].y);
+              ctx.strokeStyle = '#CBD5E1';
+              ctx.globalAlpha = (1 - dist / 110) * 0.35;
+              ctx.lineWidth = 1;
+              ctx.stroke();
+            }
+          }
+        }
+
+        particles.forEach(p => {
+          p.update();
+          p.draw();
+        });
+
+        requestAnimationFrame(animate);
+      }
+      animate();
+    })();
+
+    /* ================================================================
+       9. INITIALIZATION ON LOAD: START DIRECTLY AT STEP 1!
+       ================================================================ */
+    window.addEventListener('DOMContentLoaded', () => {
+      currentStep = 1;
+      showView('view-test');
+      renderCurrentStep();
+    });
+
+  </script>
+</body>
+</html>

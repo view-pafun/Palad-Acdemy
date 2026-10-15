@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>4 คุณลักษณะสำคัญ - Interactive 3D Flashcards</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Google Fonts: Prompt -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      font-family: 'Prompt', sans-serif;
+    }
+    
+    /* 3D Flip Utilities */
+    .perspective-1000 {
+      perspective: 1000px;
+      -webkit-perspective: 1000px;
+    }
+    .preserve-3d {
+      transform-style: preserve-3d;
+      -webkit-transform-style: preserve-3d;
+    }
+    .backface-hidden {
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+    }
+    .rotate-y-180 {
+      transform: rotateY(180deg);
+      -webkit-transform: rotateY(180deg);
+    }
+  </style>
+</head>
+<body class="bg-gradient-to-b from-[#eef2ff] via-[#f5f3ff] to-[#f8fafc] min-h-screen text-slate-800 flex flex-col justify-center items-center py-12 px-4 sm:px-6 lg:px-8">
+
+  <!-- Container -->
+  <main class="w-full max-w-7xl mx-auto">
+    
+    <!-- 4-Column Responsive Grid (adjusting to 2 cols on tablets, 1 col on mobile) -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-6 lg:gap-6">
+      
+      <!-- Card 1: นักคิด -->
+      <div class="card-item perspective-1000 h-[480px] w-full cursor-pointer select-none group">
+        <div class="card-inner relative w-full h-full duration-700 preserve-3d transition-transform ease-out">
+          
+          <!-- Front Face (Top 65% Image, Bottom 35% Content) -->
+          <div class="absolute inset-0 w-full h-full backface-hidden bg-white rounded-3xl shadow-xl hover:shadow-2xl border border-slate-200/80 flex flex-col transition-all duration-300 overflow-hidden">
+            <!-- Top 65% Image Container with object-cover -->
+            <div class="h-[65%] w-full bg-slate-100 overflow-hidden relative">
+              <img 
+                src="https://s.imgz.io/2026/10/05/-5dbdbb7bb740322cd.png" 
+                alt="นักคิด" 
+                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
+              >
+              <div class="absolute inset-x-0 bottom-0 h-10 bg-gradient-to-t from-black/10 to-transparent pointer-events-none"></div>
+            </div>
+
+            <!-- Bottom 35% Content Area -->
+            <div class="h-[35%] p-4 sm:p-5 bg-white flex flex-col justify-between items-center text-center">
+              <!-- Indicator Dots -->
+              <div class="flex items-center justify-center gap-1.5 mt-0.5">
+                <span class="h-1.5 w-5 rounded-full bg-emerald-500"></span>
+                <span class="h-1.5 w-1.5 rounded-full bg-slate-200"></span>
+                <span class="h-1.5 w-1.5 rounded-full bg-slate-200"></span>
+                <span class="h-1.5 w-1.5 rounded-full bg-slate-200"></span>
+              </div>
+
+              <!-- Title -->
+              <h3 class="text-xl sm:text-2xl font-black text-slate-900 tracking-tight my-auto">
+                นักคิด
+              </h3>
+
+              <!-- Action Button -->
+              <button type="button" class="w-full py-2.5 px-4 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs sm:text-sm shadow-md shadow-emerald-600/20 transition-all flex items-center justify-center gap-2 cursor-pointer">
+                <span>ดูรายละเอียด</span>
+                <span>➔</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Back Face (Solid / Gradient Background with White Text) -->
+          <div class="absolute inset-0 w-full h-full backface-hidden bg-gradient-to-br from-indigo-700 via-blue-600 to-indigo-900 text-white rounded-3xl shadow-xl flex flex-col justify-between p-6 sm:p-7 transition-all duration-300 overflow-hidden rotate-y-180">
+            <div class="text-center pt-1">
+              <span class="text-[11px] font-bold text-white/90 bg-white/20 px-3 py-1 rounded-full border border-white/30 inline-block mb-3">
+                คุณลักษณะที่ ๑
+              </span>
+              <h4 class="text-2xl sm:text-3xl font-black text-white tracking-tight">
+                นักคิด
+              </h4>
+            </div>
+
+            <div class="my-auto py-2">
+              <div class="p-4 bg-white/10 backdrop-blur-md rounded-2xl border border-white/20 shadow-inner">
+                <p class="text-xs sm:text-sm text-white/95 leading-relaxed font-normal text-left">
+                  ผู้ที่สามารถแยกแยะข้อเท็จจริงจากอารมณ์และความรู้สึก มีทักษะในการตัดสินใจโดยอาศัยข้อเท็จจริง ใช้การวิเคราะห์เชิงเหตุผลและหลักฐาน พร้อมทั้งมีความคิดเชิงสร้างสรรค์ในการแก้ปัญหาและพัฒนาความคิดใหม่ ๆ
+                </p>
+              </div>
+            </div>
+
+            <div class="pt-2">
+              <button type="button" class="w-full py-2.5 rounded-2xl bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white font-bold text-xs sm:text-sm border border-white/30 transition-all flex items-center justify-center gap-2 cursor-pointer shadow-sm">
+                <span>↺ แตะเพื่อย้อนกลับ</span>
+              </button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Card 2: นักประสาน -->
+      <div class="card-item perspective-1000 h-[480px] w-full cursor-pointer select-none group">
+        <div class="card-inner relative w-full h-full duration-700 preserve-3d transition-transform ease-out">
+          
+          <!-- Front Face -->
+          <div class="absolute inset-0 w-full h-full backface-hidden bg-white rounded-3xl shadow-xl hover:shadow-2xl border border-slate-200/80 flex flex-col transition-all duration-300 overflow-hidden">
+            <div class="h-[65%] w-full bg-slate-100 overflow-hidden relative">
+              <img 
+                src="https://s.imgz.io/2026/10/05/-68b9c6affe0893e62.png" 
+                alt="นักประสาน" 
+                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
+              >
+              <div class="absolute inset-x-0 bottom-0 h-10 bg-gradient-to-t from-black/10 to-transparent pointer-events-none"></div>
+            </div>
+
+            <div class="h-[35%] p-4 sm:p-5 bg-white flex flex-col justify-between items-center text-center">
+              <div class="flex items-center justify-center gap-1.5 mt-0.5">
+                <span class="h-1.5 w-1.5 rounded-full bg-slate-200"></span>
+                <span class="h-1.5 w-5 rounded-full bg-emerald-500"></span>
+                <span class="h-1.5 w-1.5 rounded-full bg-slate-200"></span>
+                <span class="h-1.5 w-1.5 rounded-full bg-slate-200"></span>
+              </div>
+
+              <h3 class="text-xl sm:text-2xl font-black text-slate-900 tracking-tight my-auto">
+                นักประสาน
+              </h3>
+
+              <button type="button" class="w-full py-2.5 px-4 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs sm:text-sm shadow-md shadow-emerald-600/20 transition-all flex items-center justify-center gap-2 cursor-pointer">
+                <span>ดูรายละเอียด</span>
+                <span>➔</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Back Face -->
+          <div class="absolute inset-0 w-full h-full backface-hidden bg-gradient-to-br from-teal-700 via-emerald-600 to-teal-900 text-white rounded-3xl shadow-xl flex flex-col justify-between p-6 sm:p-7 transition-all duration-300 overflow-hidden rotate-y-180">
+            <div class="text-center pt-1">
+              <span class="text-[11px] font-bold text-white/90 bg-white/20 px-3 py-1 rounded-full border border-white/30 inline-block mb-3">
+                คุณลักษณะที่ ๒
+              </span>
+              <h4 class="text-2xl sm:text-3xl font-black text-white tracking-tight">
+                นักประสาน
+              </h4>
+            </div>
+
+            <div class="my-auto py-2">
+              <div class="p-4 bg-white/10 backdrop-blur-md rounded-2xl border border-white/20 shadow-inner">
+                <p class="text-xs sm:text-sm text-white/95 leading-relaxed font-normal text-left">
+                  ผู้ที่มีทักษะในการยอมรับและเคารพวัฒนธรรมและวิถีชีวิตของคนอื่น สามารถทำงานร่วมกับผู้อื่นได้อย่างมีประสิทธิภาพ โดยสามารถหาจุดร่วมเพื่อสร้างความร่วมมือและบรรลุผลสำเร็จในโครงการหรือเป้าหมายได้
+                </p>
+              </div>
+            </div>
+
+            <div class="pt-2">
+              <button type="button" class="w-full py-2.5 rounded-2xl bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white font-bold text-xs sm:text-sm border border-white/30 transition-all flex items-center justify-center gap-2 cursor-pointer shadow-sm">
+                <span>↺ แตะเพื่อย้อนกลับ</span>
+              </button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Card 3: นักสื่อสาร -->
+      <div class="card-item perspective-1000 h-[480px] w-full cursor-pointer select-none group">
+        <div class="card-inner relative w-full h-full duration-700 preserve-3d transition-transform ease-out">
+          
+          <!-- Front Face -->
+          <div class="absolute inset-0 w-full h-full backface-hidden bg-white rounded-3xl shadow-xl hover:shadow-2xl border border-slate-200/80 flex flex-col transition-all duration-300 overflow-hidden">
+            <div class="h-[65%] w-full bg-slate-100 overflow-hidden relative">
+              <img 
+                src="https://s.imgz.io/2026/10/05/-7c6bb539ec5e7dcb9.png" 
+                alt="นักสื่อสาร" 
+                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
+              >
+              <div class="absolute inset-x-0 bottom-0 h-10 bg-gradient-to-t from-black/10 to-transparent pointer-events-none"></div>
+            </div>
+
+            <div class="h-[35%] p-4 sm:p-5 bg-white flex flex-col justify-between items-center text-center">
+              <div class="flex items-center justify-center gap-1.5 mt-0.5">
+                <span class="h-1.5 w-1.5 rounded-full bg-slate-200"></span>
+                <span class="h-1.5 w-1.5 rounded-full bg-slate-200"></span>
+                <span class="h-1.5 w-5 rounded-full bg-emerald-500"></span>
+                <span class="h-1.5 w-1.5 rounded-full bg-slate-200"></span>
+              </div>
+
+              <h3 class="text-xl sm:text-2xl font-black text-slate-900 tracking-tight my-auto">
+                นักสื่อสาร
+              </h3>
+
+              <button type="button" class="w-full py-2.5 px-4 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs sm:text-sm shadow-md shadow-emerald-600/20 transition-all flex items-center justify-center gap-2 cursor-pointer">
+                <span>ดูรายละเอียด</span>
+                <span>➔</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Back Face -->
+          <div class="absolute inset-0 w-full h-full backface-hidden bg-gradient-to-br from-amber-600 via-orange-600 to-amber-800 text-white rounded-3xl shadow-xl flex flex-col justify-between p-6 sm:p-7 transition-all duration-300 overflow-hidden rotate-y-180">
+            <div class="text-center pt-1">
+              <span class="text-[11px] font-bold text-white/90 bg-white/20 px-3 py-1 rounded-full border border-white/30 inline-block mb-3">
+                คุณลักษณะที่ ๓
+              </span>
+              <h4 class="text-2xl sm:text-3xl font-black text-white tracking-tight">
+                นักสื่อสาร
+              </h4>
+            </div>
+
+            <div class="my-auto py-2">
+              <div class="p-4 bg-white/10 backdrop-blur-md rounded-2xl border border-white/20 shadow-inner">
+                <p class="text-xs sm:text-sm text-white/95 leading-relaxed font-normal text-left">
+                  ผู้ที่เปิดใจรับฟังความคิดเห็นของผู้อื่น เคารพความเห็นต่าง และสามารถสื่อสารความคิดหรือข้อมูลอย่างชัดเจน โดยใช้ข้อเท็จจริงและเหตุผลในการสนทนา นอกจากนี้ยังสามารถสร้างการมีส่วนร่วมอย่างเหมาะสมเพื่อให้บรรลุเป้าหมายร่วมกัน
+                </p>
+              </div>
+            </div>
+
+            <div class="pt-2">
+              <button type="button" class="w-full py-2.5 rounded-2xl bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white font-bold text-xs sm:text-sm border border-white/30 transition-all flex items-center justify-center gap-2 cursor-pointer shadow-sm">
+                <span>↺ แตะเพื่อย้อนกลับ</span>
+              </button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Card 4: นักสร้างนวัตกรรม -->
+      <div class="card-item perspective-1000 h-[480px] w-full cursor-pointer select-none group">
+        <div class="card-inner relative w-full h-full duration-700 preserve-3d transition-transform ease-out">
+          
+          <!-- Front Face -->
+          <div class="absolute inset-0 w-full h-full backface-hidden bg-white rounded-3xl shadow-xl hover:shadow-2xl border border-slate-200/80 flex flex-col transition-all duration-300 overflow-hidden">
+            <div class="h-[65%] w-full bg-slate-100 overflow-hidden relative">
+              <img 
+                src="https://s.imgz.io/2026/10/05/-8f165d9465507cd81.png" 
+                alt="นักสร้างนวัตกรรม" 
+                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
+              >
+              <div class="absolute inset-x-0 bottom-0 h-10 bg-gradient-to-t from-black/10 to-transparent pointer-events-none"></div>
+            </div>
+
+            <div class="h-[35%] p-4 sm:p-5 bg-white flex flex-col justify-between items-center text-center">
+              <div class="flex items-center justify-center gap-1.5 mt-0.5">
+                <span class="h-1.5 w-1.5 rounded-full bg-slate-200"></span>
+                <span class="h-1.5 w-1.5 rounded-full bg-slate-200"></span>
+                <span class="h-1.5 w-1.5 rounded-full bg-slate-200"></span>
+                <span class="h-1.5 w-5 rounded-full bg-emerald-500"></span>
+              </div>
+
+              <h3 class="text-xl sm:text-2xl font-black text-slate-900 tracking-tight my-auto">
+                นักสร้างนวัตกรรม
+              </h3>
+
+              <button type="button" class="w-full py-2.5 px-4 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs sm:text-sm shadow-md shadow-emerald-600/20 transition-all flex items-center justify-center gap-2 cursor-pointer">
+                <span>ดูรายละเอียด</span>
+                <span>➔</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Back Face -->
+          <div class="absolute inset-0 w-full h-full backface-hidden bg-gradient-to-br from-purple-700 via-violet-600 to-purple-900 text-white rounded-3xl shadow-xl flex flex-col justify-between p-6 sm:p-7 transition-all duration-300 overflow-hidden rotate-y-180">
+            <div class="text-center pt-1">
+              <span class="text-[11px] font-bold text-white/90 bg-white/20 px-3 py-1 rounded-full border border-white/30 inline-block mb-3">
+                คุณลักษณะที่ ๔
+              </span>
+              <h4 class="text-2xl sm:text-3xl font-black text-white tracking-tight">
+                นักสร้างนวัตกรรม
+              </h4>
+            </div>
+
+            <div class="my-auto py-2">
+              <div class="p-4 bg-white/10 backdrop-blur-md rounded-2xl border border-white/20 shadow-inner">
+                <p class="text-xs sm:text-sm text-white/95 leading-relaxed font-normal text-left">
+                  ผู้ที่มีความสามารถในการปรับปรุง พัฒนา หรือสร้างกระบวนการใหม่ ๆ เพื่อเพิ่มคุณค่าของผลลัพธ์ มีความคิดสร้างสรรค์และกล้าที่จะรับมือกับความท้าทายใหม่ ๆ ผ่านการใช้ความคิดสร้างนวัตกรรมเพื่อการแก้ปัญหา
+                </p>
+              </div>
+            </div>
+
+            <div class="pt-2">
+              <button type="button" class="w-full py-2.5 rounded-2xl bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white font-bold text-xs sm:text-sm border border-white/30 transition-all flex items-center justify-center gap-2 cursor-pointer shadow-sm">
+                <span>↺ แตะเพื่อย้อนกลับ</span>
+              </button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Interactive Click-to-Flip JavaScript -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const cards = document.querySelectorAll('.card-item');
+
+      cards.forEach((card) => {
+        card.addEventListener('click', () => {
+          const inner = card.querySelector('.card-inner');
+          if (inner) {
+            inner.classList.toggle('rotate-y-180');
+          }
+        });
+      });
+    });
+  </script>
+
+</body>
+</html>

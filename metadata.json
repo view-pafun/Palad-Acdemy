@@ -1,0 +1,8 @@
+{
+  "name": "Remix วิศวกรสังคม",
+  "description": "แพลตฟอร์มวิศวกรสังคม ออกแบบเส้นทางชีวิตและการเรียนรู้ตลอดชีวิต คอร์สออนไลน์ ระบบข้อสอบ เกียรติบัตร และคอมมูนิตี้แลกเปลี่ยนเรียนรู้ มหาวิทยาลัยราชภัฏอุดรธานี",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

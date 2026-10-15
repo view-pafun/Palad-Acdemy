@@ -1,0 +1,1213 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ระบบเข้าสู่ระบบและสมัครสมาชิก | Authentication Portal</title>
+  <!-- Google Fonts: Sarabun & Kanit -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  
+  <style>
+    /* CSS Variables & Reset */
+    :root {
+      --primary-color: #0f766e;        /* Deep Teal */
+      --primary-hover: #115e59;
+      --primary-light: #ccfbf1;
+      --accent-color: #0369a1;         /* Ocean Blue */
+      --text-main: #1e293b;            /* Slate 800 */
+      --text-muted: #64748b;           /* Slate 500 */
+      --text-light: #94a3b8;           /* Slate 400 */
+      --border-color: #e2e8f0;         /* Slate 200 */
+      --border-focus: #0f766e;
+      --bg-page: #f8fafc;
+      --bg-card: #ffffff;
+      --error-color: #e11d48;
+      --success-color: #16a34a;
+      --radius-modal: 20px;
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --shadow-modal: 0 25px 50px -12px rgba(15, 23, 42, 0.25);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Sarabun', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: var(--bg-page);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    /* Page Demo Launcher button */
+    .demo-page-container {
+      text-align: center;
+      max-width: 600px;
+      padding: 40px 24px;
+      background: var(--bg-card);
+      border-radius: var(--radius-modal);
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+      border: 1px solid var(--border-color);
+    }
+
+    .demo-page-title {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 8px;
+    }
+
+    .demo-page-desc {
+      font-size: 14px;
+      color: var(--text-muted);
+      line-height: 1.6;
+      margin-bottom: 24px;
+    }
+
+    .btn-launch {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--primary-color);
+      color: #ffffff;
+      border: none;
+      padding: 12px 28px;
+      font-size: 15px;
+      font-weight: 600;
+      font-family: inherit;
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(15, 118, 110, 0.25);
+      transition: all 0.2s ease;
+    }
+
+    .btn-launch:hover {
+      background: var(--primary-hover);
+      transform: translateY(-1px);
+    }
+
+    /* Backdrop Modal Overlay */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background-color: rgba(15, 23, 42, 0.6);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      z-index: 9999;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.25s ease, visibility 0.25s ease;
+    }
+
+    .modal-backdrop.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    /* Modal Main Container: 2-Column with Rounded Corners */
+    .modal-window {
+      background: var(--bg-card);
+      width: 100%;
+      max-width: 960px;
+      height: 630px;
+      max-height: 92vh;
+      border-radius: var(--radius-modal);
+      overflow: hidden; /* Controls image corners from spilling out */
+      box-shadow: var(--shadow-modal);
+      display: flex;
+      position: relative;
+      transform: scale(0.96) translateY(8px);
+      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .modal-backdrop.active .modal-window {
+      transform: scale(1) translateY(0);
+    }
+
+    /* Close Button (Minimalist X) */
+    .btn-modal-close {
+      position: absolute;
+      top: 14px;
+      right: 16px;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: #f1f5f9;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      line-height: 1;
+      z-index: 20;
+      transition: all 0.15s ease;
+    }
+
+    .btn-modal-close:hover {
+      background: #e2e8f0;
+      color: var(--text-main);
+    }
+
+    /* Left Side: Visual Illustration Panel (Balanced & Uncropped) */
+    .modal-col-left {
+      flex: 1;
+      min-width: 360px;
+      max-width: 430px;
+      position: relative;
+      background: radial-gradient(circle at 50% 35%, #f0fdf4 0%, #ecfdf5 45%, #e0f2fe 100%);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 24px;
+      user-select: none;
+      border-right: 1px solid rgba(226, 232, 240, 0.8);
+    }
+
+    /* Ambient soft glow */
+    .modal-col-left .art-glow-top {
+      position: absolute;
+      width: 240px;
+      height: 240px;
+      border-radius: 50%;
+      background: rgba(167, 243, 208, 0.45);
+      top: -30px;
+      left: -30px;
+      filter: blur(32px);
+      pointer-events: none;
+    }
+
+    .modal-col-left .art-glow-bottom {
+      position: absolute;
+      width: 260px;
+      height: 260px;
+      border-radius: 50%;
+      background: rgba(186, 230, 253, 0.45);
+      bottom: -30px;
+      right: -30px;
+      filter: blur(32px);
+      pointer-events: none;
+    }
+
+    /* Top Context Badge */
+    .art-badge-top {
+      position: relative;
+      z-index: 2;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      align-self: flex-start;
+      background: rgba(255, 255, 255, 0.88);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      border: 1px solid rgba(167, 243, 208, 0.8);
+      padding: 5px 12px;
+      border-radius: 9999px;
+      font-size: 11px;
+      font-weight: 600;
+      color: #065f46;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+    }
+
+    /* Centered Artwork Canvas - Unclipped and balanced */
+    .art-canvas {
+      position: relative;
+      z-index: 2;
+      width: 100%;
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 0;
+      padding: 6px 0;
+    }
+
+    .art-canvas img {
+      max-width: 100%;
+      max-height: 100%;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+      object-position: center;
+      display: block;
+      filter: drop-shadow(0 12px 20px rgba(15, 23, 42, 0.08));
+      transition: transform 0.3s ease;
+    }
+
+    .art-canvas img.untrimmed-art {
+      max-width: 135%;
+      max-height: 135%;
+      transform: scale(1.32);
+    }
+
+    /* Bottom Highlight Tags */
+    .art-footer-tags {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding-top: 10px;
+      border-top: 1px solid rgba(209, 250, 229, 0.8);
+    }
+
+    .art-pill {
+      font-size: 11px;
+      font-weight: 500;
+      color: #334155;
+      background: rgba(255, 255, 255, 0.85);
+      border: 1px solid rgba(226, 232, 240, 0.8);
+      padding: 4px 10px;
+      border-radius: 9999px;
+      backdrop-filter: blur(4px);
+    }
+
+    /* Right Side: Forms Container (Scrollable) */
+    .modal-col-right {
+      flex: 1.2;
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+      padding: 36px 36px 32px 36px;
+      position: relative;
+    }
+
+    /* Custom Scrollbar */
+    .modal-col-right::-webkit-scrollbar {
+      width: 6px;
+    }
+    .modal-col-right::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    .modal-col-right::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 9999px;
+    }
+    .modal-col-right::-webkit-scrollbar-thumb:hover {
+      background: #94a3b8;
+    }
+
+    /* Header & Tab Switcher */
+    .auth-header {
+      margin-bottom: 24px;
+    }
+
+    .auth-header-title {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--text-main);
+      letter-spacing: -0.3px;
+    }
+
+    .auth-header-subtitle {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    /* Segmented Tab Switcher */
+    .tabs-nav {
+      display: flex;
+      background: #f1f5f9;
+      padding: 4px;
+      border-radius: var(--radius-md);
+      margin-bottom: 24px;
+      gap: 4px;
+    }
+
+    .tab-btn {
+      flex: 1;
+      padding: 9px 14px;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 600;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-align: center;
+    }
+
+    .tab-btn.active {
+      background: #ffffff;
+      color: var(--primary-color);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+    }
+
+    /* Tab Panes */
+    .tab-pane {
+      display: none;
+      animation: fadeIn 0.25s ease forwards;
+    }
+
+    .tab-pane.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Form Fields Styling */
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .form-row {
+      display: flex;
+      gap: 12px;
+    }
+
+    .form-row .form-group {
+      flex: 1;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: #334155;
+      margin-bottom: 6px;
+    }
+
+    .form-label .req {
+      color: var(--error-color);
+      margin-left: 2px;
+    }
+
+    .form-input,
+    .form-select {
+      width: 100%;
+      padding: 10px 14px;
+      font-size: 14px;
+      font-family: inherit;
+      color: var(--text-main);
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      outline: none;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .form-input::placeholder {
+      color: var(--text-light);
+    }
+
+    .form-input:focus,
+    .form-select:focus {
+      border-color: var(--border-focus);
+      box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.12);
+    }
+
+    .form-select {
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2364748b'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      background-size: 16px;
+      padding-right: 36px;
+      cursor: pointer;
+    }
+
+    .form-hint {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 5px;
+      line-height: 1.4;
+    }
+
+    .form-hint strong {
+      color: var(--primary-color);
+    }
+
+    /* Admin tip box */
+    .admin-tip-box {
+      background: #f0fdfa;
+      border: 1px solid #ccfbf1;
+      padding: 10px 14px;
+      border-radius: var(--radius-sm);
+      font-size: 12px;
+      color: #0f766e;
+      margin-bottom: 18px;
+      line-height: 1.5;
+    }
+
+    /* Submit Button */
+    .btn-submit {
+      width: 100%;
+      padding: 12px;
+      background: var(--primary-color);
+      color: #ffffff;
+      border: none;
+      border-radius: var(--radius-sm);
+      font-family: inherit;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s ease, transform 0.15s ease;
+      margin-top: 8px;
+    }
+
+    .btn-submit:hover {
+      background: var(--primary-hover);
+    }
+
+    .btn-submit:active {
+      transform: scale(0.99);
+    }
+
+    /* Alert / Feedback Notification */
+    .alert-box {
+      display: none;
+      padding: 12px 14px;
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      margin-bottom: 16px;
+      line-height: 1.5;
+    }
+
+    .alert-box.active {
+      display: block;
+      animation: fadeIn 0.2s ease;
+    }
+
+    .alert-box.error {
+      background: #fff1f2;
+      border: 1px solid #fecdd3;
+      color: #be123c;
+    }
+
+    .alert-box.success {
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      color: #15803d;
+    }
+
+    /* Responsive Breakdown */
+    @media (max-width: 820px) {
+      .modal-window {
+        flex-direction: column;
+        height: auto;
+        max-height: 94vh;
+        max-width: 500px;
+      }
+
+      .modal-col-left {
+        min-width: 100%;
+        max-width: 100%;
+        height: 180px;
+        min-height: 180px;
+        padding: 12px 16px;
+        border-right: none;
+        border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+      }
+
+      .art-badge-top,
+      .art-footer-tags {
+        display: none;
+      }
+
+      .art-canvas {
+        height: 100%;
+        padding: 0;
+      }
+
+      .art-canvas img {
+        max-height: 155px;
+      }
+
+      .modal-col-right {
+        padding: 24px 20px;
+      }
+
+      .form-row {
+        flex-direction: column;
+        gap: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Demo Launcher Page Container -->
+  <div class="demo-page-container">
+    <h1 class="demo-page-title">ระบบเข้าสู่ระบบและสมัครสมาชิก</h1>
+    <p class="demo-page-desc">
+      ตัวอย่างหน้าต่าง Pop-up ออกแบบสไตล์มินิมอล คลีน แบ่ง 2 ฝั่งซ้าย-ขวาอย่างชัดเจน
+      พร้อมระบบตรวจสอบเงื่อนไข Email สำหรับผู้ใช้งานทั่วไป และ Username/Email สำหรับผู้ดูแลระบบ (Admin)
+    </p>
+    <button class="btn-launch" onclick="openAuthModal('login')">
+      เปิดหน้าต่างเข้าสู่ระบบ (Sign In)
+    </button>
+    <div style="margin-top: 12px;">
+      <button class="tab-btn" onclick="openAuthModal('register')" style="display:inline-block; width:auto; text-decoration:underline; font-size:13px; color:var(--text-muted); padding:4px 8px;">
+        หรือกดเปิดหน้าต่างสมัครสมาชิก (Register)
+      </button>
+    </div>
+  </div>
+
+  <!-- Pop-up Modal Backdrop -->
+  <div class="modal-backdrop" id="authModalBackdrop" onclick="handleBackdropClick(event)">
+    <div class="modal-window" id="modalWindow">
+      
+      <!-- Close Button (X) -->
+      <button class="btn-modal-close" onclick="closeAuthModal()" aria-label="ปิดหน้าต่าง">
+        &#x2715;
+      </button>
+
+      <!-- Left Side: Visual Illustration Panel (Balanced & Uncropped) -->
+      <div class="modal-col-left">
+        <div class="art-glow-top"></div>
+        <div class="art-glow-bottom"></div>
+
+        <!-- Top Context Badge -->
+        <div class="art-badge-top">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+          </svg>
+          <span>วิศวกรสังคม</span>
+        </div>
+
+        <!-- Centered Artwork Frame: zero cut-off, zero dead gap -->
+        <div class="art-canvas">
+          <img 
+            id="authMainImg"
+            src="/auth-illustration.png" 
+            alt="วิศวกรสังคม Illustration" 
+            loading="eager"
+            onerror="if (this.src.indexOf('imgz.io') === -1) { this.src='https://s.imgz.io/2026/10/02/-473bd4dff649d741e.png'; this.classList.add('untrimmed-art'); }"
+          />
+        </div>
+
+        <!-- Bottom Feature Highlights -->
+        <div class="art-footer-tags">
+          <span class="art-pill">✦ 4 ทักษะวิศวกรสังคม</span>
+          <span class="art-pill">✦ ออกแบบเส้นทางชีวิต</span>
+        </div>
+      </div>
+
+      <!-- Right Side: Forms (Scrollable) -->
+      <div class="modal-col-right">
+        
+        <!-- Header -->
+        <div class="auth-header">
+          <h2 class="auth-header-title" id="authTitle">ยินดีต้อนรับ</h2>
+          <p class="auth-header-subtitle" id="authSubtitle">กรุณาเข้าสู่ระบบหรือสมัครสมาชิกเพื่อเริ่มต้นใช้งาน</p>
+        </div>
+
+        <!-- Tab Controls (Sign In / Register) -->
+        <div class="tabs-nav">
+          <button class="tab-btn active" id="tabBtnLogin" onclick="switchAuthTab('login')">
+            เข้าสู่ระบบ
+          </button>
+          <button class="tab-btn" id="tabBtnRegister" onclick="switchAuthTab('register')">
+            สมัครสมาชิก
+          </button>
+        </div>
+
+        <!-- Alert Notification Box -->
+        <div class="alert-box" id="authAlertBox"></div>
+
+        <!-- ============================================== -->
+        <!-- TAB 1: FORM LOGIN (เข้าสู่ระบบ) -->
+        <!-- ============================================== -->
+        <div class="tab-pane active" id="tabLogin">
+          
+          <div class="admin-tip-box">
+            <strong>คำแนะนำในการตรวจสอบสิทธิ์:</strong><br>
+            • ผู้ใช้ทั่วไป / นักศึกษา / อาจารย์: ต้องระบุเป็น <strong>Email</strong> เท่านั้น<br>
+            • ผู้ดูแลระบบ (Admin): ระบุได้ทั้ง <strong>Username (เช่น admin)</strong> หรือ Email
+          </div>
+
+          <form id="loginForm" onsubmit="handleLoginSubmit(event)" novalidate>
+            <!-- Identifier Input (Email or Username) -->
+            <div class="form-group">
+              <label class="form-label" for="loginIdentifier">
+                อีเมล หรือ ชื่อผู้ใช้ <span class="req">*</span>
+              </label>
+              <input 
+                type="text" 
+                id="loginIdentifier" 
+                class="form-input" 
+                placeholder="กรอกอีเมล (สำหรับทั่วไป) หรือ Username (สำหรับ Admin)"
+                required 
+              />
+              <p class="form-hint">
+                ผู้ใช้งานทั่วไปกรุณากรอก Email ที่ถูกต้อง (เช่น user@example.com)
+              </p>
+            </div>
+
+            <!-- Password Input -->
+            <div class="form-group">
+              <label class="form-label" for="loginPassword">
+                รหัสผ่าน (Password) <span class="req">*</span>
+              </label>
+              <input 
+                type="password" 
+                id="loginPassword" 
+                class="form-input" 
+                placeholder="กรอกรหัสผ่านของคุณ" 
+                required 
+              />
+            </div>
+
+            <!-- Remember & Forgot link -->
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:18px; font-size:13px; color:var(--text-muted);">
+              <label style="display:flex; align-items:center; gap:6px; cursor:pointer;">
+                <input type="checkbox" id="rememberMe" style="accent-color:var(--primary-color);">
+                <span>จดจำการเข้าสู่ระบบ</span>
+              </label>
+              <a href="javascript:void(0)" onclick="handleForgotPassword()" style="color:var(--primary-color); text-decoration:none; font-weight:500;">
+                ลืมรหัสผ่าน?
+              </a>
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit" class="btn-submit">
+              เข้าสู่ระบบ (Sign In)
+            </button>
+          </form>
+
+        </div>
+
+        <!-- ============================================== -->
+        <!-- TAB 2: FORM REGISTER (สมัครสมาชิก) -->
+        <!-- ============================================== -->
+        <div class="tab-pane" id="tabRegister">
+          
+          <form id="registerForm" onsubmit="handleRegisterSubmit(event)" novalidate>
+            
+            <!-- 1. คำนำหน้าชื่อ + 2. ชื่อจริง -->
+            <div class="form-row">
+              <div class="form-group" style="flex: 0.8;">
+                <label class="form-label" for="regPrefix">
+                  คำนำหน้าชื่อ <span class="req">*</span>
+                </label>
+                <select id="regPrefix" class="form-select" required>
+                  <option value="">เลือกคำนำหน้า</option>
+                  <option value="นาย">นาย</option>
+                  <option value="นาง">นาง</option>
+                  <option value="นางสาว">นางสาว</option>
+                  <option value="อาจารย์">อาจารย์</option>
+                  <option value="ดร.">ดร.</option>
+                </select>
+              </div>
+
+              <div class="form-group" style="flex: 1.2;">
+                <label class="form-label" for="regFirstName">
+                  ชื่อจริง <span class="req">*</span>
+                </label>
+                <input 
+                  type="text" 
+                  id="regFirstName" 
+                  class="form-input" 
+                  placeholder="เช่น สมชาย" 
+                  required 
+                />
+              </div>
+            </div>
+
+            <!-- 3. นามสกุล -->
+            <div class="form-group">
+              <label class="form-label" for="regLastName">
+                นามสกุล <span class="req">*</span>
+              </label>
+              <input 
+                type="text" 
+                id="regLastName" 
+                class="form-input" 
+                placeholder="เช่น วงศ์เจริญ" 
+                required 
+              />
+            </div>
+
+            <!-- 4. Username + 5. Email -->
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label" for="regUsername">
+                  ชื่อผู้ใช้ (Username) <span class="req">*</span>
+                </label>
+                <input 
+                  type="text" 
+                  id="regUsername" 
+                  class="form-input" 
+                  placeholder="เช่น somchai.w" 
+                  required 
+                />
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="regEmail">
+                  อีเมล (Email) <span class="req">*</span>
+                </label>
+                <input 
+                  type="email" 
+                  id="regEmail" 
+                  class="form-input" 
+                  placeholder="name@example.com" 
+                  required 
+                />
+              </div>
+            </div>
+
+            <!-- 6. Password -->
+            <div class="form-group">
+              <label class="form-label" for="regPassword">
+                รหัสผ่าน (Password) <span class="req">*</span>
+              </label>
+              <input 
+                type="password" 
+                id="regPassword" 
+                class="form-input" 
+                placeholder="กำหนดรหัสผ่านอย่างน้อย 6 ตัวอักษร" 
+                required 
+              />
+            </div>
+
+            <!-- 7. หน่วยงาน / คณะ -->
+            <div class="form-group">
+              <label class="form-label" for="regOrganization">
+                หน่วยงาน / คณะ <span class="req">*</span>
+              </label>
+              <input 
+                type="text" 
+                id="regOrganization" 
+                class="form-input" 
+                placeholder="เช่น คณะวิทยาศาสตร์ สาขาสิ่งแวดล้อม" 
+                required 
+              />
+            </div>
+
+            <!-- 8. สถานศึกษา / โรงเรียน / มหาวิทยาลัย -->
+            <div class="form-group">
+              <label class="form-label" for="regInstitute">
+                สถานศึกษา / โรงเรียน / มหาวิทยาลัย <span class="req">*</span>
+              </label>
+              <input 
+                type="text" 
+                id="regInstitute" 
+                class="form-input" 
+                placeholder="เช่น สถาบันการศึกษา / มหาวิทยาลัย" 
+                required 
+              />
+            </div>
+
+            <!-- 9. จังหวัด (ครบทั้ง 77 จังหวัด เรียงตามตัวอักษร ก-ฮ) -->
+            <div class="form-group">
+              <label class="form-label" for="regProvince">
+                จังหวัด <span class="req">*</span>
+              </label>
+              <select id="regProvince" class="form-select" required>
+                <option value="">-- กรุณาเลือกจังหวัด --</option>
+                <!-- Populated dynamically alphabetically via JavaScript -->
+              </select>
+            </div>
+
+            <!-- Register Submit Button -->
+            <button type="submit" class="btn-submit">
+              ยืนยันการสมัครสมาชิก (Register)
+            </button>
+          </form>
+
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+  <!-- JavaScript Logic -->
+  <script>
+    // -----------------------------------------------------------------
+    // รายชื่อ 77 จังหวัดของประเทศไทย เรียงตามลำดับตัวอักษร ก-ฮ
+    // -----------------------------------------------------------------
+    const THAI_PROVINCES = [
+      "กระบี่",
+      "กรุงเทพมหานคร",
+      "กาญจนบุรี",
+      "กาฬสินธุ์",
+      "กำแพงเพชร",
+      "ขอนแก่น",
+      "จันทบุรี",
+      "ฉะเชิงเทรา",
+      "ชลบุรี",
+      "ชัยนาท",
+      "ชัยภูมิ",
+      "ชุมพร",
+      "เชียงราย",
+      "เชียงใหม่",
+      "ตรัง",
+      "ตราด",
+      "ตาก",
+      "นครนายก",
+      "นครปฐม",
+      "นครพนม",
+      "นครราชสีมา",
+      "นครศรีธรรมราช",
+      "นครสวรรค์",
+      "นนทบุรี",
+      "นราธิวาส",
+      "น่าน",
+      "บึงกาฬ",
+      "บุรีรัมย์",
+      "ปทุมธานี",
+      "ประจวบคีรีขันธ์",
+      "ปราจีนบุรี",
+      "ปัตตานี",
+      "พระนครศรีอยุธยา",
+      "พะเยา",
+      "พังงา",
+      "พัทลุง",
+      "พิจิตร",
+      "พิษณุโลก",
+      "เพชรบุรี",
+      "เพชรบูรณ์",
+      "แพร่",
+      "ภูเก็ต",
+      "มหาสารคาม",
+      "มุกดาหาร",
+      "แม่ฮ่องสอน",
+      "ยโสธร",
+      "ยะลา",
+      "ร้อยเอ็ด",
+      "ระนอง",
+      "ระยอง",
+      "ราชบุรี",
+      "ลพบุรี",
+      "ลำปาง",
+      "ลำพูน",
+      "เลย",
+      "ศรีสะเกษ",
+      "สกลนคร",
+      "สงขลา",
+      "สตูล",
+      "สมุทรปราการ",
+      "สมุทรสงคราม",
+      "สมุทรสาคร",
+      "สระแก้ว",
+      "สระบุรี",
+      "สิงห์บุรี",
+      "สุโขทัย",
+      "สุพรรณบุรี",
+      "สุราษฎร์ธานี",
+      "สุรินทร์",
+      "หนองคาย",
+      "หนองบัวลำภู",
+      "อ่างทอง",
+      "อำนาจเจริญ",
+      "อุดรธานี",
+      "อุตรดิตถ์",
+      "อุทัยธานี",
+      "อุบลราชธานี"
+    ];
+
+    // โหลดรายชื่อ 77 จังหวัดเข้าสู่ Dropdown ตอนเปิดหน้าเว็บ
+    function populateProvinces() {
+      const selectElem = document.getElementById("regProvince");
+      if (!selectElem) return;
+
+      THAI_PROVINCES.forEach(province => {
+        const option = document.createElement("option");
+        option.value = province;
+        option.textContent = province;
+        selectElem.appendChild(option);
+      });
+    }
+
+    // เรียกทำงานทันทีหลังโหลด DOM
+    document.addEventListener("DOMContentLoaded", () => {
+      populateProvinces();
+      // เปิดแสดง Pop-up ทันทีเพื่อความสะดวกในการทดสอบ
+      openAuthModal('login');
+    });
+
+    // -----------------------------------------------------------------
+    // การควบคุมการเปิด-ปิด Modal
+    // -----------------------------------------------------------------
+    function openAuthModal(defaultTab = 'login') {
+      const backdrop = document.getElementById("authModalBackdrop");
+      if (backdrop) {
+        backdrop.classList.add("active");
+        switchAuthTab(defaultTab);
+        clearAlert();
+      }
+    }
+
+    function closeAuthModal() {
+      const backdrop = document.getElementById("authModalBackdrop");
+      if (backdrop) {
+        backdrop.classList.remove("active");
+        clearAlert();
+      }
+    }
+
+    function handleBackdropClick(event) {
+      // คลิกพื้นที่มืดด้านนอกเพื่อปิดหน้าต่าง
+      if (event.target.id === "authModalBackdrop") {
+        closeAuthModal();
+      }
+    }
+
+    // -----------------------------------------------------------------
+    // สลับแท็บ เข้าสู่ระบบ <-> สมัครสมาชิก
+    // -----------------------------------------------------------------
+    function switchAuthTab(tab) {
+      const tabBtnLogin = document.getElementById("tabBtnLogin");
+      const tabBtnRegister = document.getElementById("tabBtnRegister");
+      const tabLogin = document.getElementById("tabLogin");
+      const tabRegister = document.getElementById("tabRegister");
+      const authTitle = document.getElementById("authTitle");
+      const authSubtitle = document.getElementById("authSubtitle");
+
+      clearAlert();
+
+      if (tab === 'login') {
+        tabBtnLogin.classList.add("active");
+        tabBtnRegister.classList.remove("active");
+        tabLogin.classList.add("active");
+        tabRegister.classList.remove("active");
+        authTitle.textContent = "เข้าสู่ระบบ";
+        authSubtitle.textContent = "กรอกข้อมูลบัญชีเพื่อเข้าใช้งานระบบ";
+      } else {
+        tabBtnLogin.classList.remove("active");
+        tabBtnRegister.classList.add("active");
+        tabLogin.classList.remove("active");
+        tabRegister.classList.add("active");
+        authTitle.textContent = "สมัครสมาชิกใหม่";
+        authSubtitle.textContent = "กรอกข้อมูลให้ครบถ้วนเพื่อสร้างบัญชีผู้ใช้งาน";
+      }
+    }
+
+    // -----------------------------------------------------------------
+    // Helper: แสดงข้อความแจ้งเตือน (Alert Box)
+    // -----------------------------------------------------------------
+    function showAlert(message, type = 'error') {
+      const alertBox = document.getElementById("authAlertBox");
+      if (!alertBox) return;
+      alertBox.textContent = message;
+      alertBox.className = `alert-box active ${type}`;
+      alertBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    function clearAlert() {
+      const alertBox = document.getElementById("authAlertBox");
+      if (alertBox) {
+        alertBox.className = "alert-box";
+        alertBox.textContent = "";
+      }
+    }
+
+    // ตรวจสอบรูปแบบ Email
+    function isValidEmail(email) {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      return emailRegex.test(email);
+    }
+
+    // -----------------------------------------------------------------
+    // ระบบเข้าสู่ระบบ (Login System Logic)
+    // เงื่อนไข:
+    // - ทั่วไป / นักศึกษา / อาจารย์: บังคับ Email และ Password เท่านั้น
+    // - Admin: ยืดหยุ่นได้ทั้ง Username (เช่น admin) หรือ Email คู่กับ Password
+    // -----------------------------------------------------------------
+    function handleLoginSubmit(event) {
+      event.preventDefault();
+      clearAlert();
+
+      const identifierInput = document.getElementById("loginIdentifier");
+      const passwordInput = document.getElementById("loginPassword");
+
+      const identifier = identifierInput ? identifierInput.value.trim() : "";
+      const password = passwordInput ? passwordInput.value : "";
+
+      if (!identifier) {
+        showAlert("กรุณากรอกอีเมลหรือชื่อผู้ใช้งาน", "error");
+        identifierInput?.focus();
+        return;
+      }
+
+      if (!password) {
+        showAlert("กรุณากรอกรหัสผ่าน", "error");
+        passwordInput?.focus();
+        return;
+      }
+
+      // เช็คว่าเป็นสิทธิ์ Admin หรือไม่ (เช่น ใช้ username เป็น admin หรือคำว่า admin)
+      const isAdminUsername = identifier.toLowerCase() === 'admin' || identifier.toLowerCase().startsWith('admin.');
+      const isEmail = isValidEmail(identifier);
+
+      if (isAdminUsername) {
+        // กรณี Admin: อนุญาตให้เข้าสู่ระบบด้วย Username ได้
+        if (password === 'adminx' || password.length >= 4) {
+          showAlert("เข้าสู่ระบบในฐานะ 'ผู้ดูแลระบบ (Admin)' สำเร็จ!", "success");
+          setTimeout(() => {
+            alert(
+              "เข้าสู่ระบบสำเร็จ!\n\n" +
+              "สถานะสิทธิ์: ผู้ดูแลระบบ (Administrator)\n" +
+              "บัญชีผู้ใช้: " + identifier + "\n" +
+              "ยินดีต้อนรับเข้าสู่ระบบจัดการข้อมูล"
+            );
+            closeAuthModal();
+          }, 300);
+        } else {
+          showAlert("รหัสผ่านผู้ดูแลระบบไม่ถูกต้อง (คำแนะนำ: ทดสอบด้วยรหัส adminx)", "error");
+        }
+        return;
+      }
+
+      // กรณีผู้ใช้งานทั่วไป / นักศึกษา / อาจารย์:
+      // บังคับให้กรอกเป็น "Email" เท่านั้น! หากไม่ใช่รูปแบบ Email ให้แจ้งเตือนข้อผิดพลาด
+      if (!isEmail) {
+        showAlert(
+          "ข้อผิดพลาด: สำหรับผู้ใช้งานทั่วไป / นักศึกษา / อาจารย์ บังคับให้กรอก 'อีเมล (Email)' ที่ถูกต้องเท่านั้น! (ตัวอย่าง: name@example.com)", 
+          "error"
+        );
+        identifierInput?.focus();
+        return;
+      }
+
+      // ตรวจสอบความยาวรหัสผ่าน
+      if (password.length < 4) {
+        showAlert("รหัสผ่านต้องมีความยาวอย่างน้อย 4 ตัวอักษร", "error");
+        passwordInput?.focus();
+        return;
+      }
+
+      // จำลองการเข้าสู่ระบบผู้ใช้งานทั่วไปสำเร็จ
+      showAlert("เข้าสู่ระบบสำเร็จ กำลังนำท่านเข้าสู่ระบบ...", "success");
+      setTimeout(() => {
+        alert(
+          "เข้าสู่ระบบสำเร็จ!\n\n" +
+          "ประเภทผู้ใช้: ผู้ใช้งานทั่วไป / นักศึกษา / อาจารย์\n" +
+          "อีเมลที่ใช้เข้าสู่ระบบ: " + identifier + "\n\n" +
+          "ยินดีต้อนรับเข้าสู่ระบบอย่างเป็นทางการ"
+        );
+        closeAuthModal();
+      }, 300);
+    }
+
+    // -----------------------------------------------------------------
+    // ระบบสมัครสมาชิก (Register System Logic)
+    // -----------------------------------------------------------------
+    function handleRegisterSubmit(event) {
+      event.preventDefault();
+      clearAlert();
+
+      const prefix = document.getElementById("regPrefix")?.value.trim();
+      const firstName = document.getElementById("regFirstName")?.value.trim();
+      const lastName = document.getElementById("regLastName")?.value.trim();
+      const username = document.getElementById("regUsername")?.value.trim();
+      const email = document.getElementById("regEmail")?.value.trim();
+      const password = document.getElementById("regPassword")?.value;
+      const organization = document.getElementById("regOrganization")?.value.trim();
+      const institute = document.getElementById("regInstitute")?.value.trim();
+      const province = document.getElementById("regProvince")?.value;
+
+      // ตรวจสอบความครบถ้วนของข้อมูล
+      if (!prefix) {
+        showAlert("กรุณาเลือกคำนำหน้าชื่อ", "error");
+        document.getElementById("regPrefix")?.focus();
+        return;
+      }
+      if (!firstName) {
+        showAlert("กรุณากรอกชื่อจริง", "error");
+        document.getElementById("regFirstName")?.focus();
+        return;
+      }
+      if (!lastName) {
+        showAlert("กรุณากรอกนามสกุล", "error");
+        document.getElementById("regLastName")?.focus();
+        return;
+      }
+      if (!username) {
+        showAlert("กรุณากรอกชื่อผู้ใช้ (Username)", "error");
+        document.getElementById("regUsername")?.focus();
+        return;
+      }
+      if (!email || !isValidEmail(email)) {
+        showAlert("กรุณากรอกรูปแบบอีเมลที่ถูกต้อง (ตัวอย่าง: name@example.com)", "error");
+        document.getElementById("regEmail")?.focus();
+        return;
+      }
+      if (!password || password.length < 6) {
+        showAlert("กรุณากำหนดรหัสผ่านอย่างน้อย 6 ตัวอักษร", "error");
+        document.getElementById("regPassword")?.focus();
+        return;
+      }
+      if (!organization) {
+        showAlert("กรุณากรอกหน่วยงาน / คณะ", "error");
+        document.getElementById("regOrganization")?.focus();
+        return;
+      }
+      if (!institute) {
+        showAlert("กรุณากรอกสถานศึกษา / โรงเรียน / มหาวิทยาลัย", "error");
+        document.getElementById("regInstitute")?.focus();
+        return;
+      }
+      if (!province) {
+        showAlert("กรุณาเลือกจังหวัดของคุณจาก 77 จังหวัด", "error");
+        document.getElementById("regProvince")?.focus();
+        return;
+      }
+
+      // แสดงการแจ้งเตือนสำเร็จ
+      showAlert("สมัครสมาชิกสำเร็จ! ข้อมูลของคุณได้รับการบันทึกเรียบร้อย", "success");
+
+      // Alert สรุปผลข้อมูลที่ลงทะเบียนจริง
+      setTimeout(() => {
+        alert(
+          "สมัครสมาชิกสำเร็จเรียบร้อยแล้ว!\n" +
+          "----------------------------------------\n" +
+          "ชื่อ-นามสกุล: " + prefix + " " + firstName + " " + lastName + "\n" +
+          "Username: " + username + "\n" +
+          "Email: " + email + "\n" +
+          "หน่วยงาน/คณะ: " + organization + "\n" +
+          "สถานศึกษา: " + institute + "\n" +
+          "จังหวัด: " + province + "\n" +
+          "----------------------------------------\n" +
+          "ระบบจะนำท่านไปยังแท็บ 'เข้าสู่ระบบ' โดยอัตโนมัติ"
+        );
+
+        // เติมข้อมูลลงในช่อง Login ให้อัตโนมัติ เพื่อความสะดวกของผู้ใช้
+        document.getElementById("loginIdentifier").value = email;
+        document.getElementById("loginPassword").value = password;
+
+        // ล้างค่าในฟอร์มสมัครสมาชิก
+        document.getElementById("registerForm").reset();
+
+        // สลับไปยังแท็บเข้าสู่ระบบ
+        switchAuthTab('login');
+      }, 400);
+    }
+
+    function handleForgotPassword() {
+      const email = prompt("กรุณากรอกอีเมลของคุณเพื่อขอรับลิงก์รีเซ็ตรหัสผ่าน:");
+      if (email) {
+        if (isValidEmail(email)) {
+          alert("ระบบได้จัดส่งลิงก์สำหรับรีเซ็ตรหัสผ่านไปยัง: " + email + " เรียบร้อยแล้ว (จำลองการทำงาน)");
+        } else {
+          alert("รูปแบบอีเมลไม่ถูกต้อง กรุณาลองใหม่อีกครั้ง");
+        }
+      }
+    }
+  </script>
+</body>
+</html>

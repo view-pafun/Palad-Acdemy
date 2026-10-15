@@ -1,0 +1,202 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "User profile with learning progress, points, and university affiliation",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Auth UID" },
+        "name": { "type": "string", "maxLength": 150 },
+        "email": { "type": "string", "format": "email", "maxLength": 200 },
+        "role": { "type": "string", "enum": ["admin", "subadmin", "student", "lecturer", "general"] },
+        "avatar": { "type": "string", "maxLength": 1000 },
+        "organization": { "type": "string", "maxLength": 200 },
+        "institute": { "type": "string", "maxLength": 200 },
+        "province": { "type": "string", "maxLength": 100 },
+        "points": { "type": "number" },
+        "level": { "type": "number" },
+        "enrolledCourseIds": { "type": "array" },
+        "completedCourseIds": { "type": "array" },
+        "savedPlansCount": { "type": "number" },
+        "badges": { "type": "array" },
+        "createdAt": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["id", "name", "email", "role"]
+    },
+    "AdminRole": {
+      "title": "AdminRole",
+      "description": "Admin and sub-admin authority lookup record",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "email": { "type": "string", "format": "email" },
+        "name": { "type": "string" },
+        "role": { "type": "string", "enum": ["admin", "subadmin"] },
+        "permissions": { "type": "object" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["id", "email", "role"]
+    },
+    "Course": {
+      "title": "Course",
+      "description": "Educational course for Social Engineer development",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string", "maxLength": 300 },
+        "instructor": { "type": "string", "maxLength": 150 },
+        "category": { "type": "string", "maxLength": 100 },
+        "level": { "type": "string", "maxLength": 50 },
+        "duration": { "type": "string", "maxLength": 50 },
+        "enrolledCount": { "type": "number" },
+        "rating": { "type": "number" },
+        "price": { "type": "number" },
+        "originalPrice": { "type": "number" },
+        "isFeatured": { "type": "boolean" },
+        "status": { "type": "string", "enum": ["published", "draft", "archived"] },
+        "thumbnail": { "type": "string", "maxLength": 1000 },
+        "description": { "type": "string", "maxLength": 2000 },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["id", "title", "instructor", "price", "status"]
+    },
+    "BlogTopic": {
+      "title": "BlogTopic",
+      "description": "Community post and knowledge sharing article",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string", "maxLength": 300 },
+        "author": { "type": "string", "maxLength": 150 },
+        "authorRole": { "type": "string", "maxLength": 100 },
+        "authorAvatar": { "type": "string", "maxLength": 1000 },
+        "authorId": { "type": "string" },
+        "category": { "type": "string", "maxLength": 100 },
+        "likes": { "type": "number" },
+        "commentsCount": { "type": "number" },
+        "status": { "type": "string", "enum": ["approved", "pending", "blocked"] },
+        "views": { "type": "number" },
+        "readTime": { "type": "string", "maxLength": 50 },
+        "content": { "type": "string", "maxLength": 10000 },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["id", "title", "author", "content", "status"]
+    },
+    "PeerStory": {
+      "title": "PeerStory",
+      "description": "Inspirational alumni and senior peer success story",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string", "maxLength": 300 },
+        "seniorName": { "type": "string", "maxLength": 150 },
+        "role": { "type": "string", "maxLength": 150 },
+        "year": { "type": "string", "maxLength": 50 },
+        "province": { "type": "string", "maxLength": 100 },
+        "excerpt": { "type": "string", "maxLength": 1000 },
+        "fullStory": { "type": "string", "maxLength": 10000 },
+        "likes": { "type": "number" },
+        "status": { "type": "string", "enum": ["approved", "pending", "blocked"] },
+        "image": { "type": "string", "maxLength": 1000 },
+        "tags": { "type": "array" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["id", "title", "seniorName", "fullStory", "status"]
+    },
+    "EventItem": {
+      "title": "EventItem",
+      "description": "Workshop, seminar, or landing page activity",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string", "maxLength": 300 },
+        "date": { "type": "string", "maxLength": 50 },
+        "time": { "type": "string", "maxLength": 50 },
+        "location": { "type": "string", "maxLength": 200 },
+        "speaker": { "type": "string", "maxLength": 150 },
+        "category": { "type": "string", "maxLength": 100 },
+        "maxSeats": { "type": "number" },
+        "enrolledCount": { "type": "number" },
+        "image": { "type": "string", "maxLength": 1000 },
+        "status": { "type": "string", "enum": ["upcoming", "ongoing", "completed", "cancelled"] },
+        "description": { "type": "string", "maxLength": 2000 },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["id", "title", "date", "speaker", "status"]
+    },
+    "SiteSetting": {
+      "title": "SiteSetting",
+      "description": "Landing page hero banner and configuration settings",
+      "type": "object",
+      "properties": {
+        "heroBannerUrl": { "type": "string", "maxLength": 1000 },
+        "updatedBy": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["heroBannerUrl"]
+    },
+    "CourseNote": {
+      "title": "CourseNote",
+      "description": "Student personal study note tied to their user ID and course in Firebase",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "studentName": { "type": "string", "maxLength": 150 },
+        "courseId": { "type": "string" },
+        "courseTitle": { "type": "string", "maxLength": 300 },
+        "lessonId": { "type": "string", "maxLength": 100 },
+        "lessonTitle": { "type": "string", "maxLength": 300 },
+        "title": { "type": "string", "maxLength": 300 },
+        "content": { "type": "string", "maxLength": 10000 },
+        "tags": { "type": "array" },
+        "createdAt": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["id", "userId", "courseId", "content"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "UserProfile",
+      "description": "User profiles and learning state keyed by user auth UID"
+    },
+    "/users/{userId}/notes/{noteId}": {
+      "schema": "CourseNote",
+      "description": "Student personal course study notes bound to user ID in Firebase"
+    },
+    "/courseNotes/{noteId}": {
+      "schema": "CourseNote",
+      "description": "Course study notes queryable by student user ID and course ID"
+    },
+    "/admins/{adminId}": {
+      "schema": "AdminRole",
+      "description": "Administrative authority and permission records"
+    },
+    "/courses/{courseId}": {
+      "schema": "Course",
+      "description": "Course catalog items for social engineering and life path"
+    },
+    "/blogs/{blogId}": {
+      "schema": "BlogTopic",
+      "description": "Community blogs and knowledge repository items"
+    },
+    "/peerStories/{storyId}": {
+      "schema": "PeerStory",
+      "description": "Inspirational stories and alumni experiences"
+    },
+    "/events/{eventId}": {
+      "schema": "EventItem",
+      "description": "Workshops, training sessions, and events"
+    },
+    "/siteSettings/{settingId}": {
+      "schema": "SiteSetting",
+      "description": "System and landing page settings"
+    },
+    "/test/{testId}": {
+      "schema": "SiteSetting",
+      "description": "Health check and connection verification document"
+    }
+  }
+}
