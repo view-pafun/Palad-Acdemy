@@ -2,6 +2,192 @@ import { Course, BlogTopic, PeerStory, EventItem, Mentor, ForumPost, Achievement
 
 export const INITIAL_COURSES: Course[] = [
   {
+    id: 'course-ice-breaking',
+    title: 'สร้างบทสนทนาด้วย Ice Breaking Card',
+    slug: 'ice-breaking-card',
+    description: 'เรียนรู้เทคนิคการละลายพฤติกรรมและการเปิดใจเพื่อสร้างบทสนทนาที่มีพลังและมีความหมาย ด้วยเครื่องมือ Ice Breaking Card สำหรับวิศวกรสังคม',
+    longDescription: 'หลักสูตรเชิงปฏิบัติการเพื่อเสริมสร้างทักษะการเป็นผู้นำกระบวนการ (Facilitator) ผ่านการใช้การ์ด Ice Breaking ช่วยให้ผู้เข้าร่วมสามารถเปิดใจ แลกเปลี่ยนมุมมอง และสร้างบรรยากาศที่ปลอดภัยและสร้างสรรค์ในการทำงานกลุ่ม',
+    category: 'กระบวนการกลุ่ม & Soft Skills',
+    level: 'เริ่มต้น',
+    durationHours: 4,
+    lessonsCount: 3,
+    rating: 5.0,
+    studentsCount: 340,
+    instructor: {
+      name: 'ผศ.ดร. ธีรภัทร วัฒนโกศล',
+      title: 'ผู้เชี่ยวชาญการพัฒนานวัตกรรมชุมชน UDRU',
+      avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80',
+    },
+    thumbnail: 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=600&q=80',
+    badge: 'กิจกรรมยอดนิยม',
+    isFree: true,
+    hasCertificate: true,
+    status: 'published',
+    scheduleType: 'flexible',
+    durationLimitType: 'unlimited',
+    createdAt: '15 ต.ค. 2569',
+    modules: [
+      {
+        id: 'm-ice-1',
+        title: 'ฐานที่ 1: การใช้การ์ดสร้างบทสนทนา',
+        lessons: [
+          {
+            id: 'l-ice-1',
+            title: 'บทนำ: ทำไมต้อง Ice Breaking และจิตวิทยาการเปิดใจ',
+            durationMinutes: 15,
+            contentType: 'article',
+            contentDetails: 'การเปิดใจเป็นก้าวแรกที่สำคัญที่สุดในการทำงานร่วมกัน Ice Breaking Card ถูกออกแบบมาเพื่อทลายกำแพงความเงียบ โดยเริ่มจากคำถามที่ไม่ตัดสิน และเปิดโอกาสให้ทุกคนได้เล่าเรื่องราวของตนเอง',
+            isLocked: false
+          },
+          {
+            id: 'l-ice-2',
+            title: 'วิดีโอสาธิต: เทคนิคการเปิดวงสนทนา 4 ระดับ',
+            durationMinutes: 20,
+            contentType: 'video',
+            videoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+            requiresVideoCompletion: true,
+            isLocked: false
+          },
+          {
+            id: 'l-ice-3',
+            title: 'แบบทดสอบ: ความเข้าใจการเป็น Facilitator เบื้องต้น',
+            durationMinutes: 15,
+            contentType: 'quiz',
+            isLocked: false
+          }
+        ]
+      }
+    ]
+  },
+  {
+    id: 'course-social-engineer-intro',
+    title: 'แนะนำตัวด้วยการ์ดวิศวกรสังคม',
+    slug: 'intro-social-engineer-cards',
+    description: 'ค้นหาตัวตนและสะท้อนทักษะ 4 แกนหลัก (นักคิด นักประสาน นักแก้ปัญหา นักสร้างนวัตกรรม) ผ่านการแนะนำตัวเชิงลึกด้วยการ์ดวิศวกรสังคม',
+    longDescription: 'เครื่องมือสำคัญสำหรับนิสิตนักศึกษาวิศวกรสังคม ในการทำความรู้จักตนเองและเพื่อนร่วมทีมอย่างลึกซึ้งผ่านภาพและคีย์เวิร์ดทรงพลัง',
+    category: 'วิศวกรสังคม UDRU',
+    level: 'เริ่มต้น',
+    durationHours: 3,
+    lessonsCount: 3,
+    rating: 4.95,
+    studentsCount: 520,
+    instructor: {
+      name: 'อ. รุ่งอรุณ เมธาวี',
+      title: 'ผู้เชี่ยวชาญด้านจิตวิทยาและการแนะแนว',
+      avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=200&q=80',
+    },
+    thumbnail: 'https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&w=600&q=80',
+    badge: 'คอร์สแนะนำ',
+    isFree: true,
+    hasCertificate: true,
+    status: 'published',
+    scheduleType: 'flexible',
+    durationLimitType: 'unlimited',
+    createdAt: '14 ต.ค. 2569',
+    modules: [
+      {
+        id: 'm-se-1',
+        title: 'ฐานที่ 1: การ์ดสะท้อนพลัง 4 ทิศ',
+        lessons: [
+          {
+            id: 'l-se-1',
+            title: 'คู่มือการแนะนำตัวด้วยการ์ดวิศวกรสังคม',
+            durationMinutes: 15,
+            contentType: 'article',
+            contentDetails: 'วิศวกรสังคมประกอบด้วย 4 บทบาทหลัก ได้แก่ นักคิด นักประสาน นักแก้ปัญหา และนักสร้างนวัตกรรม ในบทความนี้เราจะแนะนำวิธีการเลือกการ์ดที่สะท้อนจุดแข็งของตนเอง',
+            isLocked: false
+          },
+          {
+            id: 'l-se-2',
+            title: 'วิดีโอตัวอย่าง: กรณีศึกษาการแนะนำตัวในเวทีชุมชน',
+            durationMinutes: 20,
+            contentType: 'video',
+            videoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+            requiresVideoCompletion: true,
+            isLocked: false
+          }
+        ]
+      }
+    ]
+  },
+  {
+    id: 'course-emotion-wheel',
+    title: 'วงล้ออารมณ์',
+    slug: 'emotion-wheel',
+    description: 'การรู้เท่าทันอารมณ์และความรู้สึกของตนเองและผู้อื่นด้วย Emotion Wheel เพื่อการสื่อสารอย่างเข้าอกเข้าใจและมีประสิทธิภาพ',
+    longDescription: 'วงล้ออารมณ์ (The Emotion Wheel) เป็นเครื่องมือทางจิตวิทยาที่ช่วยจำแนกความรู้สึกที่ซับซ้อนให้ชัดเจน ช่วยให้นักศึกษาสามารถระบุอารมณ์ จัดการความเครียด และสร้างความสัมพันธ์เชิงบวกในการทำงานร่วมกับผู้อื่น',
+    category: 'จิตวิทยาและการพัฒนาตนเอง',
+    level: 'เริ่มต้น',
+    durationHours: 6,
+    lessonsCount: 4,
+    rating: 5.0,
+    studentsCount: 0,
+    instructor: {
+      name: 'อ. รุ่งอรุณ เมธาวี',
+      title: 'ผู้เชี่ยวชาญด้านจิตวิทยาและการแนะแนว',
+      avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=200&q=80',
+    },
+    thumbnail: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=600&q=80',
+    badge: 'ฉบับร่าง',
+    isFree: true,
+    hasCertificate: true,
+    status: 'draft',
+    scheduleType: 'flexible',
+    durationLimitType: 'unlimited',
+    createdAt: '15 ต.ค. 2569',
+    modules: [
+      {
+        id: 'm-wheel-1',
+        title: 'วงล้ออารมณ์',
+        lessons: [
+          {
+            id: 'l-wheel-1',
+            title: 'บทนำ: ทำความรู้จักวงล้ออารมณ์และระดับความรู้สึกลึกซึ้ง',
+            durationMinutes: 20,
+            contentType: 'article',
+            contentDetails: 'อารมณ์พื้นฐานของมนุษย์ เช่น สุข เศร้า โกรธ กลัว มักมีอารมณ์ย่อยที่ซ่อนอยู่เบื้องหลัง การสำรวจวงล้ออารมณ์ช่วยให้เราเข้าใจตนเองและเข้าใจผู้อื่นอย่างแท้จริง',
+            isLocked: false
+          },
+          {
+            id: 'l-wheel-2',
+            title: 'วิดีโอ: เวิร์กช็อปถอดรหัสความรู้สึกในสถานการณ์ขัดแย้ง',
+            durationMinutes: 25,
+            contentType: 'video',
+            videoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+            requiresVideoCompletion: true,
+            isLocked: false
+          },
+          {
+            id: 'l-wheel-3',
+            title: 'แบบทดสอบ: ประเมินการรู้เท่าทันอารมณ์ (Emotional Literacy Quiz)',
+            durationMinutes: 15,
+            contentType: 'quiz',
+            isLocked: false
+          }
+        ]
+      }
+    ],
+    quiz: {
+      title: 'แบบทดสอบประเมินการรู้เท่าทันอารมณ์',
+      passingScorePercent: 80,
+      timeLimitMinutes: 15,
+      questions: [
+        {
+          id: 1,
+          question: 'เมื่อรู้สึก "หงุดหงิด" ลึกๆ แล้วอาจเกิดจากอารมณ์พื้นฐานใดในวงล้ออารมณ์?',
+          options: [
+            'ความสุข',
+            'ความกลัว หรือ ความโกรธ ที่ไม่ได้รับการตอบสนอง',
+            'ความเบื่อหน่าย',
+            'ความกระตือรือร้น'
+          ],
+          correctOptionIndex: 1,
+          explanation: 'ความหงุดหงิดมักเป็นอารมณ์ระดับทุติยภูมิที่ต่อยอดมาจากความกลัวหรือความโกรธ'
+        }
+      ]
+    }
+  },
+  {
     id: 'course-1',
     title: 'นวัตกรรมสังคมและการแก้ปัญหาเชิงพื้นที่ (Social Innovation for Community)',
     slug: 'social-innovation-udru',
@@ -22,6 +208,10 @@ export const INITIAL_COURSES: Course[] = [
     badge: 'คอร์สแนะนำยอดนิยม',
     isFree: true,
     hasCertificate: true,
+    status: 'published',
+    scheduleType: 'flexible',
+    durationLimitType: 'unlimited',
+    createdAt: '10 ต.ค. 2569',
     modules: [
       {
         id: 'm1',

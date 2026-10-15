@@ -158,6 +158,13 @@ export interface Course {
   price?: number;
   hasCertificate: boolean;
   accessDurationMonths?: number; // e.g. 12 = 1 ปี, 0 = ตลอดชีพ
+  status?: 'published' | 'draft' | 'archived'; // เผยแพร่แล้ว, ฉบับร่าง, เก็บถาวรแล้ว
+  scheduleType?: 'flexible' | 'scheduled'; // ไม่กำหนดเวลา | กำหนดเวลา
+  scheduleStartDate?: string;
+  scheduleEndDate?: string;
+  durationLimitType?: 'unlimited' | 'limited'; // ไม่จำกัด (เข้าร่วมได้ทุกเมื่อ) | จำกัดเวลา (ต้องเสร็จตามระยะเวลาที่กำหนด)
+  durationLimitDays?: number; // จำนวนวัน เช่น 30, 60, 90 วัน
+  createdAt?: string; // วันที่สร้าง เช่น "15 ต.ค. 2569"
   modules: {
     id: string;
     title: string;
@@ -166,15 +173,18 @@ export interface Course {
       id: string;
       title: string;
       durationMinutes: number;
+      contentType?: 'article' | 'video' | 'quiz';
       mediaType?: MediaType;
       videoUrl?: string;
       audioUrl?: string;
       pdfUrl?: string;
       externalLink?: string;
       summary?: string;
+      contentDetails?: string; // รายละเอียดวิธีการทำภารกิจ / บทความเนื้อหา
       isLocked?: boolean;
       requiresVideoCompletion?: boolean;
       requiresQuizPassed?: boolean;
+      quizData?: Quiz;
       dripType?: 'none' | 'weekly' | 'days_after_enrollment';
       dripWeek?: number;
       dripUnlockDays?: number;

@@ -139,10 +139,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
       items: [
         {
           id: 'courses',
-          label: 'จัดการหลักสูตรและราคา (LMS)',
-          subLabel: 'โครงสร้างบทเรียน, ล็อคเนื้อหา, คลังข้อสอบ',
-          icon: DollarSign,
-          badge: `${courses.length} คอร์ส`,
+          label: 'โปรแกรมกิจกรรมออนไลน์',
+          subLabel: 'ตั้งชื่อ, เวลา, ราคา, รูปปก, บทความ/วิดีโอ/แบบทดสอบ',
+          icon: BookOpen,
+          badge: `${courses.length} รายการ`,
         },
       ],
     },
