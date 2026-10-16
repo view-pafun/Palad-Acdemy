@@ -38,7 +38,8 @@ import {
   Edit3,
   X,
   Radar,
-  RotateCcw
+  RotateCcw,
+  Video
 } from 'lucide-react';
 import { User, Course, BlogTopic, CertificateData, AchievementBadge } from '../types';
 import { ProfileAvatarModal } from './ProfileAvatarModal';
@@ -96,11 +97,28 @@ export const UserProfileDashboard: React.FC<UserProfileDashboardProps> = ({
   // System Announcement visibility toggle
   const [showAnnouncement, setShowAnnouncement] = useState(true);
 
-  // Virtual Card Flip Modal state
-  const [showVirtualCard, setShowVirtualCard] = useState(false);
+  // Counseling Sanctuary Bookings synced with localStorage
+  const [counselingBookings, setCounselingBookings] = useState<any[]>(() => {
+    try {
+      const stored = localStorage.getItem('palad_counseling_bookings');
+      if (stored) return JSON.parse(stored);
+    } catch {}
+    return [
+      {
+        id: 'book-sample',
+        mentorName: 'พี่เมย์ (นักจิตวิทยาการปรึกษา & ดูแลสุขภาวะใจ)',
+        studentName: 'พลัส นุ้ย (คุณ)',
+        date: '18 เมษายน 2567',
+        timeSlot: '13:00 - 14:00',
+        topic: 'ความเครียดและความกังวลเรื่องการเรียนและอนาคต',
+        status: 'confirmed',
+        meetingCode: 'SANCTUARY-ROOM-882'
+      }
+    ];
+  });
 
-  // Navigation Tabs: 'blogs' | 'courses' | 'events' | 'certificates' | 'notifications' | 'assessment'
-  const [activeTab, setActiveTab] = useState<'blogs' | 'courses' | 'events' | 'certificates' | 'notifications' | 'assessment'>('blogs');
+  // Navigation Tabs: 'blogs' | 'courses' | 'events' | 'counseling' | 'certificates' | 'notifications' | 'assessment'
+  const [activeTab, setActiveTab] = useState<'blogs' | 'courses' | 'events' | 'counseling' | 'certificates' | 'notifications' | 'assessment'>('blogs');
 
   // Blog Sub-filter: 'my_ideas' | 'credited' | 'drafts' | 'saved' | 'liked'
   const [blogSubFilter, setBlogSubFilter] = useState<'my_ideas' | 'credited' | 'drafts' | 'saved' | 'liked'>('my_ideas');
@@ -372,74 +390,6 @@ export const UserProfileDashboard: React.FC<UserProfileDashboardProps> = ({
           {/* [ส่วนที่ 2] แถบด้านข้างซ้าย (Sidebar Widgets & Personal Info) - 4 Cols */}
           {/* ======================================================================= */}
           <div className="lg:col-span-4 space-y-6">
-            
-            {/* Account Credentials Card (กล่องสีเทาจางสำหรับค่าคงที่ที่แก้ไขไม่ได้) */}
-            <div className="bg-slate-50 border border-slate-200/80 rounded-3xl p-6 shadow-2xs">
-              <div className="flex items-center gap-2 mb-4 text-xs font-bold uppercase tracking-wider text-slate-500">
-                <ShieldCheck className="w-4 h-4 text-purple-600" />
-                <span>Account Credentials (ข้อมูลบัญชีประจำตัว)</span>
-              </div>
-
-              <div className="space-y-4 text-xs">
-                {/* CMU/UDRU LE ACCOUNT */}
-                <div className="bg-white p-3.5 rounded-2xl border border-slate-200/70">
-                  <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider block mb-1">
-                    CMU LE / UDRU ACCOUNT
-                  </span>
-                  <div className="flex items-center justify-between">
-                    <span className="font-semibold text-slate-800 break-all">
-                      {isTeacher ? 'theerapat.w@udru.ac.th' : 'view.paf@lifelong.cmu.ac.th'}
-                    </span>
-                    <Lock className="w-3.5 h-3.5 text-slate-400 shrink-0 ml-2" />
-                  </div>
-                </div>
-
-                {/* LEARNER ID / USER ID */}
-                <div className="bg-white p-3.5 rounded-2xl border border-slate-200/70">
-                  <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider block mb-1">
-                    LEARNER ID / USER ID
-                  </span>
-                  <div className="flex items-center justify-between">
-                    <span className="font-mono font-bold text-slate-900 text-sm">
-                      {isTeacher ? '820491024' : '719524219'}
-                    </span>
-                    <span className="text-[10px] px-2 py-0.5 bg-slate-100 text-slate-600 rounded-md font-medium">
-                      Verified
-                    </span>
-                  </div>
-                </div>
-
-                {/* CMU LIFELONG CARD: ปุ่มกดดูบัตรเสมือนจริง */}
-                <button
-                  onClick={() => setShowVirtualCard(!showVirtualCard)}
-                  className="w-full py-3 rounded-2xl bg-gradient-to-r from-purple-700 to-indigo-700 hover:from-purple-800 hover:to-indigo-800 text-white font-semibold text-xs shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer"
-                >
-                  <Award className="w-4 h-4 text-amber-300" />
-                  <span>ดูบัตรเสมือนจริง (CMU LIFELONG CARD)</span>
-                </button>
-              </div>
-
-              {/* Virtual Card Preview / Flip Display */}
-              {showVirtualCard && (
-                <div className="mt-4 p-5 rounded-2xl bg-gradient-to-br from-slate-900 via-purple-950 to-slate-950 text-white border-2 border-purple-400/40 shadow-xl relative overflow-hidden animate-in zoom-in-95 duration-200">
-                  <div className="absolute top-0 right-0 w-32 h-32 bg-purple-500/20 rounded-full blur-2xl pointer-events-none" />
-                  <div className="flex items-center justify-between mb-4">
-                    <span className="text-[10px] font-mono tracking-widest text-amber-300 uppercase">
-                      VIRTUAL LEARNER CARD
-                    </span>
-                    <span className="text-xs font-bold text-emerald-400">ACTIVE</span>
-                  </div>
-                  <p className="font-extrabold text-base tracking-tight mb-1">
-                    {profileForm.firstNameTh} {profileForm.lastNameTh}
-                  </p>
-                  <p className="text-[11px] text-slate-400 mb-3">{profileForm.faculty}</p>
-                  <div className="flex items-center justify-between text-[10px] text-slate-400 pt-2 border-t border-white/10 font-mono">
-                    <span>ID: {isTeacher ? '820491024' : '719524219'}</span>
-                    <span>EXP: 2028-12-31</span>
-                  </div>
-                </div>
-              )}
-            </div>
 
             {/* กล่องเมนูข้อมูลส่วนตัว (Edit Profile Form) */}
             <div className="bg-white border border-slate-200 rounded-3xl p-6 shadow-xs">
@@ -781,6 +731,27 @@ export const UserProfileDashboard: React.FC<UserProfileDashboardProps> = ({
                   </div>
                   {activeTab === 'events' && (
                     <span className="absolute bottom-[-9px] left-3 right-3 h-[3px] bg-purple-700 rounded-full" />
+                  )}
+                </button>
+
+                {/* Tab: Counseling Appointments (รายการนัดหมายของคุณ ช่องทางพักใจ) */}
+                <button
+                  onClick={() => setActiveTab('counseling')}
+                  className={`relative px-4 py-2.5 rounded-2xl text-xs sm:text-sm font-semibold transition cursor-pointer whitespace-nowrap ${
+                    activeTab === 'counseling'
+                      ? 'text-rose-950 font-bold bg-rose-50/90 shadow-2xs'
+                      : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
+                  }`}
+                >
+                  <div className="flex items-center gap-1.5">
+                    <Heart className="w-4 h-4 text-rose-500 fill-rose-500" />
+                    <span>รายการนัดหมายปรึกษา</span>
+                    <span className="px-1.5 py-0.5 rounded-full bg-rose-500 text-white text-[10px] font-bold">
+                      {counselingBookings.length}
+                    </span>
+                  </div>
+                  {activeTab === 'counseling' && (
+                    <span className="absolute bottom-[-9px] left-3 right-3 h-[3px] bg-rose-600 rounded-full" />
                   )}
                 </button>
 
@@ -1159,6 +1130,123 @@ export const UserProfileDashboard: React.FC<UserProfileDashboardProps> = ({
                           </button>
                         </div>
                       )}
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* TAB CONTENT: Counseling Sanctuary Bookings (รายการนัดหมายของคุณ) */}
+              {activeTab === 'counseling' && (
+                <div className="pt-4 space-y-5">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-3 border-b border-slate-100 gap-3">
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <span className="px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[11px] font-bold">
+                          🔒 ปลอดภัยและเป็นความลับ 100%
+                        </span>
+                        <span className="text-xs font-mono font-bold text-slate-500">
+                          {counselingBookings.length} นัดหมาย
+                        </span>
+                      </div>
+                      <h3 className="text-base sm:text-lg font-black text-slate-900 mt-1">
+                        รายการนัดหมายของคุณ (ช่องทางพักใจ Safe Space)
+                      </h3>
+                      <p className="text-xs text-slate-500">
+                        ตรวจสอบรอบเวลา พูดคุย 1-on-1 แบบส่วนตัว และเข้าห้องโทรเสมือนจริงกับอาจารย์ผู้เชี่ยวชาญ
+                      </p>
+                    </div>
+
+                    <button
+                      onClick={() => onNavigateToTab('sanctuary')}
+                      className="px-4 py-2.5 rounded-2xl bg-amber-400 hover:bg-amber-500 text-slate-950 font-bold text-xs shadow-xs transition flex items-center gap-1.5 self-start sm:self-auto cursor-pointer"
+                    >
+                      <Plus className="w-4 h-4" />
+                      <span>จองเวลานัดหมายใหม่</span>
+                    </button>
+                  </div>
+
+                  {counselingBookings.length > 0 ? (
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {counselingBookings.map((b, idx) => (
+                        <div
+                          key={b.id || idx}
+                          className="bg-white rounded-3xl p-5 sm:p-6 border-2 border-amber-200/90 shadow-2xs hover:shadow-sm transition-all flex flex-col justify-between"
+                        >
+                          <div>
+                            <div className="flex items-center justify-between text-xs mb-3">
+                              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 font-bold text-[11px]">
+                                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                                ยืนยันรอบเวลาแล้ว
+                              </span>
+                              <span className="font-mono text-[11px] bg-amber-50 px-2.5 py-1 rounded-lg border border-amber-200 text-amber-900 font-bold">
+                                {b.date}
+                              </span>
+                            </div>
+
+                            <h4 className="font-black text-slate-900 text-base mb-1">
+                              {b.mentorName}
+                            </h4>
+                            <p className="text-xs text-amber-900 font-bold mb-3">
+                              รอบเวลา: {b.timeSlot} น.
+                            </p>
+
+                            <div className="bg-slate-50 p-3 rounded-2xl border border-slate-100 text-xs text-slate-600 mb-4">
+                              <span className="font-bold text-slate-800 block mb-0.5">หัวข้อปรึกษา:</span>
+                              {b.topic}
+                            </div>
+                          </div>
+
+                          <div className="pt-3 border-t border-slate-100 space-y-2.5">
+                            <div className="flex items-center justify-between text-[11px] text-slate-500">
+                              <span>รหัสห้องปลอดภัย:</span>
+                              <span className="font-mono font-bold text-slate-800">{b.meetingCode || 'SANCTUARY-ROOM-882'}</span>
+                            </div>
+
+                            <button
+                              onClick={() => {
+                                onNavigateToTab('sanctuary');
+                                showToast(`กำลังนำคุณเข้าสู่ช่องทางพักใจ สำหรับรอบ ${b.timeSlot} น.`);
+                              }}
+                              className="w-full py-2.5 rounded-2xl bg-slate-950 hover:bg-slate-800 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-sm hover:shadow-md transition cursor-pointer"
+                            >
+                              <Video className="w-3.5 h-3.5 text-amber-300" />
+                              <span>เข้าสู่ห้องโทรปรึกษาเสมือนจริง (Web Call)</span>
+                            </button>
+
+                            <button
+                              onClick={() => {
+                                if (window.confirm('คุณต้องการยกเลิกนัดหมายนี้หรือไม่?')) {
+                                  const updated = counselingBookings.filter((_, i) => i !== idx);
+                                  setCounselingBookings(updated);
+                                  try {
+                                    localStorage.setItem('palad_counseling_bookings', JSON.stringify(updated));
+                                  } catch {}
+                                  showToast('ยกเลิกรายการนัดหมายเรียบร้อยแล้ว');
+                                }
+                              }}
+                              className="w-full py-1.5 text-slate-400 hover:text-rose-600 text-[11px] transition cursor-pointer"
+                            >
+                              ยกเลิกการนัดหมาย
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="text-center py-12 bg-slate-50 rounded-3xl border border-slate-200/80 p-8">
+                      <div className="w-14 h-14 rounded-full bg-rose-50 text-rose-500 flex items-center justify-center mx-auto mb-3">
+                        <Heart className="w-7 h-7" />
+                      </div>
+                      <h4 className="font-bold text-slate-800 text-base mb-1">ยังไม่มีรายการนัดหมายในขณะนี้</h4>
+                      <p className="text-xs text-slate-500 max-w-sm mx-auto mb-4">
+                        คุณสามารถจองคิวนัดหมายปรึกษาแบบ 1-on-1 ในช่องทางพักใจเพื่อพูดคุยเรื่องการเรียนหรือความเครียดได้ตลอดเวลา
+                      </p>
+                      <button
+                        onClick={() => onNavigateToTab('sanctuary')}
+                        className="px-6 py-2.5 rounded-full bg-slate-950 hover:bg-slate-800 text-white font-bold text-xs shadow-md transition cursor-pointer"
+                      >
+                        จองคิวนัดหมายช่องทางพักใจ
+                      </button>
                     </div>
                   )}
                 </div>

@@ -47,6 +47,10 @@
   font-family: 'Sriracha', cursive;
 }
 
+.font-nanum-pen {
+  font-family: 'Nanum Pen Script', cursive !important;
+}
+
 /* Button style utilities in #FFC800 and #000000 (No black borders; yellow turns black with white text on hover/active) */
 .btn-yellow,
 button.btn-yellow {

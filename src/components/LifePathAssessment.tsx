@@ -24,7 +24,12 @@ import {
   Target,
   Zap,
   Info,
-  Star
+  Star,
+  FileText,
+  BarChart2,
+  Clock,
+  Play,
+  TrendingUp,
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { 
@@ -64,7 +69,7 @@ export const LifePathAssessment: React.FC<LifePathAssessmentProps> = ({
     return {};
   });
 
-  // Current active mode: 'test' | 'result'
+  // Current active mode: 'test' (hero and questions on same page) | 'result'
   const [viewState, setViewState] = useState<'test' | 'result'>('test');
   // Saved assessment result
   const [result, setResult] = useState<AssessmentResult | null>(() => {
@@ -218,7 +223,7 @@ export const LifePathAssessment: React.FC<LifePathAssessmentProps> = ({
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 font-['Mitr',sans-serif] text-slate-800 pb-20">
+    <div className="min-h-screen bg-white font-['Mitr',sans-serif] text-slate-800 pb-20">
       {/* Toast Alert */}
       {toastMessage && (
         <div className="fixed top-20 right-6 z-50 bg-slate-900 text-white px-5 py-3 rounded-2xl shadow-2xl border border-amber-400 flex items-center gap-3 animate-in fade-in slide-in-from-top-2">
@@ -227,80 +232,245 @@ export const LifePathAssessment: React.FC<LifePathAssessmentProps> = ({
         </div>
       )}
 
-      {/* Header Banner */}
-      <section className="bg-white border-b border-slate-200 pt-10 pb-8 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-5xl mx-auto">
-          {viewState === 'result' && (
-            <div className="flex justify-end mb-4">
-              <button
-                onClick={() => setViewState('test')}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-950 bg-amber-400 hover:bg-amber-300 transition-colors shadow-xs cursor-pointer"
-              >
-                <RotateCcw className="w-3.5 h-3.5" />
-                <span>แก้ไขคำตอบ</span>
-              </button>
+      {/* ========================================================================= */}
+      {/* HERO SECTION: Redesigned matching reference with full-height large image   */}
+      {/* ========================================================================= */}
+      {viewState !== 'result' && (
+        <>
+          <section
+            className="relative overflow-hidden bg-white border-b border-slate-200/80 pt-8 pb-10 sm:pt-10 sm:pb-12 lg:py-16 min-h-[560px] lg:min-h-[640px] flex items-center"
+            style={{
+              backgroundImage: `url('/lifepath_hero_bg.png')`,
+              backgroundPosition: 'right bottom',
+              backgroundRepeat: 'no-repeat',
+              backgroundSize: 'cover'
+            }}
+          >
+            {/* Background Illustration covering section */}
+            <div className="absolute inset-0 z-0 pointer-events-none select-none">
+              <img
+                src="https://s.imgz.io/2026/10/16/-41c72bdcf36a7055b.png"
+                alt="Life Path Background"
+                className="w-full h-full object-cover object-right md:object-right-bottom select-none"
+                onError={(e) => {
+                  const target = e.currentTarget;
+                  if (target.src.indexOf('lifepath_hero_bg') === -1) {
+                    target.src = '/lifepath_hero_bg.png';
+                  }
+                }}
+              />
             </div>
-          )}
 
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-            {viewState === 'result' ? (
-              <div className="space-y-1.5">
-                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-900 text-[#FFE600] text-[11px] font-bold tracking-wider uppercase font-mono shadow-xs">
-                  <span>{dominantArchetype.nameEn}</span>
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full relative z-10">
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center min-h-[480px] lg:min-h-[540px]">
+                
+                {/* Left Column: Title, Subtitle, Stats, Description, Highlights */}
+                <div className="lg:col-span-7 xl:col-span-7 text-left space-y-5 sm:space-y-6 bg-white/70 sm:bg-transparent backdrop-blur-xs sm:backdrop-blur-none p-4 sm:p-0 rounded-3xl">
+                  
+                  {/* Top Badge with Yellow Brush Rays: \ แบบทดสอบออกแบบชีวิต / */}
+                  <div className="inline-flex items-center gap-2 select-none">
+                    {/* Left Hand-drawn Rays */}
+                    <svg
+                      className="w-5 h-4 sm:w-6 sm:h-5 text-[#FFC800] shrink-0"
+                      viewBox="0 0 24 18"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path d="M4 15L1 9M11 14L7 3" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
+                    </svg>
+
+                    <span className="text-sm sm:text-base font-black text-slate-900 tracking-wide font-['Mitr',sans-serif]">
+                      แบบทดสอบออกแบบชีวิต
+                    </span>
+
+                    {/* Right Hand-drawn Rays */}
+                    <svg
+                      className="w-5 h-4 sm:w-6 sm:h-5 text-[#FFC800] shrink-0"
+                      viewBox="0 0 24 18"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path d="M20 15L23 9M13 14L17 3" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
+                    </svg>
+                  </div>
+
+                  {/* Main Heading: ประเมิน / ออกแบบเส้นทางชีวิต */}
+                  <div>
+                    <h1 className="text-4xl sm:text-6xl lg:text-7xl font-black text-slate-900 tracking-tight leading-[1.12]">
+                      <span className="block font-black text-slate-950 font-['Noto_Sans_Thai',sans-serif]">
+                        ประเมิน <span className="text-[#F59E0B] font-bold">/</span>
+                      </span>
+                      <span className="relative inline-block font-black text-slate-950 font-['Noto_Sans_Thai',sans-serif]">
+                        ออกแบบ
+                        <span className="text-[#F59E0B] relative inline-block ml-1.5 sm:ml-2">
+                          เส้นทางชีวิต
+                          {/* 3 Radiating Yellow Rays above 'เส้นทางชีวิต' */}
+                          <svg
+                            className="absolute -top-4 sm:-top-6 -right-2 sm:-right-4 w-10 sm:w-14 h-7 sm:h-9 text-[#FFC800] overflow-visible pointer-events-none"
+                            viewBox="0 0 54 36"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path d="M8 28L3 14" stroke="currentColor" strokeWidth="4" strokeLinecap="round" />
+                            <path d="M26 24L28 6" stroke="currentColor" strokeWidth="4" strokeLinecap="round" />
+                            <path d="M44 26L52 12" stroke="currentColor" strokeWidth="4" strokeLinecap="round" />
+                          </svg>
+                        </span>
+                      </span>
+                    </h1>
+                  </div>
+
+                  {/* Subtitle */}
+                  <p className="text-base sm:text-lg lg:text-xl font-bold text-slate-700 leading-snug">
+                    ค้นพบตัวตน สไตล์การใช้ชีวิต และศักยภาพที่ซ่อนอยู่ในตัวคุณ
+                  </p>
+
+                  {/* 3 Quick Stat Cards in Row */}
+                  <div className="grid grid-cols-3 gap-2.5 sm:gap-4 max-w-lg">
+                    {/* Card 1: 60 ข้อ */}
+                    <div className="bg-white rounded-2xl p-3 sm:p-3.5 border border-slate-200/90 shadow-2xs flex items-center gap-2.5 sm:gap-3 transition-transform hover:-translate-y-0.5">
+                      <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-[#FFF9D6] border border-[#FDE047]/60 flex items-center justify-center shrink-0 text-slate-900 shadow-2xs">
+                        <FileText className="w-4 h-4 sm:w-5 sm:h-5 text-slate-900" />
+                      </div>
+                      <div className="min-w-0">
+                        <span className="text-[10px] sm:text-xs text-slate-400 font-medium block truncate">
+                          จำนวนข้อ
+                        </span>
+                        <span className="text-sm sm:text-base font-black text-slate-900 block truncate">
+                          60 ข้อ
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Card 2: 1 - 7 */}
+                    <div className="bg-white rounded-2xl p-3 sm:p-3.5 border border-slate-200/90 shadow-2xs flex items-center gap-2.5 sm:gap-3 transition-transform hover:-translate-y-0.5">
+                      <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-[#FFF9D6] border border-[#FDE047]/60 flex items-center justify-center shrink-0 text-slate-900 shadow-2xs">
+                        <BarChart2 className="w-4 h-4 sm:w-5 sm:h-5 text-slate-900" />
+                      </div>
+                      <div className="min-w-0">
+                        <span className="text-[10px] sm:text-xs text-slate-400 font-medium block truncate">
+                          ระดับประเมิน
+                        </span>
+                        <span className="text-sm sm:text-base font-black text-slate-900 block truncate">
+                          1 - 7
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Card 3: 10 - 15 นาที */}
+                    <div className="bg-white rounded-2xl p-3 sm:p-3.5 border border-slate-200/90 shadow-2xs flex items-center gap-2.5 sm:gap-3 transition-transform hover:-translate-y-0.5">
+                      <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-[#FFF9D6] border border-[#FDE047]/60 flex items-center justify-center shrink-0 text-slate-900 shadow-2xs">
+                        <Clock className="w-4 h-4 sm:w-5 sm:h-5 text-slate-900" />
+                      </div>
+                      <div className="min-w-0">
+                        <span className="text-[10px] sm:text-xs text-slate-400 font-medium block truncate">
+                          ใช้เวลาประมาณ
+                        </span>
+                        <span className="text-sm sm:text-base font-black text-slate-900 block truncate">
+                          10 - 15 นาที
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Description Paragraph */}
+                  <p className="text-sm sm:text-base text-slate-600 leading-relaxed font-normal max-w-xl text-justify sm:text-left">
+                    แบบประเมินตนเองที่จะชวนคุณมองลึกเข้าไปในความคิด ความรู้สึก และพฤติกรรม เพื่อเข้าใจจุดแข็งของคุณ ค้นหาศักยภาพที่ซ่อนอยู่ และเห็นภาพเส้นทางชีวิตที่ใช่ในแบบของคุณ
+                  </p>
+
+                  {/* Bottom 3 Highlights / Value Props */}
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-4 border-t border-slate-200/80 max-w-xl">
+                    {/* Highlight 1: สะท้อนตัวตน */}
+                    <div className="flex items-start gap-2.5">
+                      <Sparkles className="w-5 h-5 text-slate-900 shrink-0 mt-0.5" />
+                      <div>
+                        <h4 className="text-xs sm:text-sm font-black text-slate-900">สะท้อนตัวตน</h4>
+                        <p className="text-[11px] text-slate-500 font-medium">มองเห็นสิ่งที่เป็นคุณ</p>
+                      </div>
+                    </div>
+
+                    {/* Highlight 2: เข้าใจตัวเองมากขึ้น */}
+                    <div className="flex items-start gap-2.5">
+                      <Heart className="w-5 h-5 text-slate-900 shrink-0 mt-0.5" />
+                      <div>
+                        <h4 className="text-xs sm:text-sm font-black text-slate-900">เข้าใจตัวเองมากขึ้น</h4>
+                        <p className="text-[11px] text-slate-500 font-medium">ทั้งจุดแข็งและสิ่งที่อยากพัฒนา</p>
+                      </div>
+                    </div>
+
+                    {/* Highlight 3: ต่อยอดเส้นทางชีวิต */}
+                    <div className="flex items-start gap-2.5">
+                      <TrendingUp className="w-5 h-5 text-slate-900 shrink-0 mt-0.5" />
+                      <div>
+                        <h4 className="text-xs sm:text-sm font-black text-slate-900">ต่อยอดเส้นทางชีวิต</h4>
+                        <p className="text-[11px] text-slate-500 font-medium">วางแผนอนาคตได้อย่างมั่นใจ</p>
+                      </div>
+                    </div>
+                  </div>
+
                 </div>
-                <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-slate-900 tracking-tight">
-                  {dominantArchetype.fullName}
-                </h1>
-                <p className="text-sm text-slate-600 font-medium flex flex-wrap items-center gap-2 pt-0.5">
-                  <span className="px-2.5 py-0.5 rounded-lg bg-[#FFE600] text-black text-xs font-black shadow-2xs">
-                    ★ {dominantArchetype.personalityRole} ({dominantArchetype.personalityRoleEn})
+
+                {/* Right Column: Transparent viewport for background artwork */}
+                <div className="hidden lg:block lg:col-span-5 xl:col-span-5 h-full pointer-events-none select-none" />
+
+              </div>
+            </div>
+          </section>
+
+          {/* Sticky/Smooth Progress & Instructions Bar right under Hero */}
+          <section className="bg-slate-50/80 border-b border-slate-200/80 py-4 px-4 sm:px-6 lg:px-8">
+            <div className="max-w-5xl mx-auto flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div>
+                <h3 className="text-base sm:text-lg font-black text-slate-900 flex items-center gap-2">
+                  <span>เริ่มทำแบบประเมินตนเอง 60 ข้อ</span>
+                  <span className="px-2.5 py-0.5 rounded-full bg-amber-400 text-slate-950 text-xs font-bold font-mono">
+                    มาตรวัด 1 - 7 รูปดาว
                   </span>
-                  <span>{dominantArchetype.callsign}</span>
+                </h3>
+                <p className="text-xs text-slate-500 mt-0.5">
+                  เลือกคำตอบที่ตรงกับตัวคุณมากที่สุด โดย 1 = ไม่เห็นด้วยมาก และ 7 = เห็นด้วยมาก
                 </p>
               </div>
-            ) : (
-              <div>
-                <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-slate-900 tracking-tight">
-                  แบบทดสอบ<span className="text-amber-500">เส้นทางชีวิต</span>
-                </h1>
+
+              {/* Progress indicator */}
+              <div className="flex items-center gap-3 shrink-0">
+                <div className="text-right">
+                  <span className="text-[11px] text-slate-500 font-medium block">
+                    ความคืบหน้า ({answeredCount}/60 ข้อ)
+                  </span>
+                  <span className="text-sm font-black text-amber-600 font-mono">
+                    {progressPercent}%
+                  </span>
+                </div>
+                <div className="w-28 sm:w-36 bg-slate-200 rounded-full h-2.5 overflow-hidden">
+                  <div
+                    className="bg-amber-400 h-2.5 rounded-full transition-all duration-300 ease-out"
+                    style={{ width: `${progressPercent}%` }}
+                  />
+                </div>
               </div>
-            )}
-
-            {/* Quick Stats Box */}
-            <div className="bg-slate-50 border border-slate-200/90 rounded-2xl p-4 shrink-0 flex items-center gap-4 sm:gap-6">
-              {viewState === 'result' ? (
-                <>
-                  <div className="text-center">
-                    <p className="text-[11px] text-slate-500 font-medium">ความมุ่งมั่นทุ่มเท</p>
-                    <p className="text-xl sm:text-2xl font-black text-slate-900 font-mono">{dominantArchetype.workaholismIndex}%</p>
-                  </div>
-                  <div className="h-8 w-px bg-slate-200" />
-                  <div className="text-center">
-                    <p className="text-[11px] text-slate-500 font-medium">ความแม่นยำสมบูรณ์</p>
-                    <p className="text-xl sm:text-2xl font-black text-amber-500 font-mono">{dominantArchetype.perfectionismLevel}%</p>
-                  </div>
-                </>
-              ) : (
-                <>
-                  <div className="text-center">
-                    <p className="text-[11px] text-slate-500 font-medium">จำนวนข้อ</p>
-                    <p className="text-xl sm:text-2xl font-black text-slate-900">60</p>
-                  </div>
-                  <div className="h-8 w-px bg-slate-200" />
-                  <div className="text-center">
-                    <p className="text-[11px] text-slate-500 font-medium">สเกลวัด</p>
-                    <p className="text-xl sm:text-2xl font-black text-amber-500">1 - 7</p>
-                  </div>
-                </>
-              )}
             </div>
-          </div>
-        </div>
-      </section>
+          </section>
+        </>
+      )}
 
-      {/* VIEW: RESULT SCREEN */}
+      {/* ========================================================================= */}
+      {/* VIEW: RESULT SCREEN                                                       */}
+      {/* ========================================================================= */}
       {viewState === 'result' ? (
-        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 space-y-8 animate-in fade-in duration-300">
+        <main className="w-full animate-in fade-in duration-300">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 pb-2">
+            <button
+              onClick={() => {
+                setViewState('test');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold transition-all cursor-pointer"
+            >
+              <ArrowLeft className="w-3.5 h-3.5" />
+              <span>กลับหน้าหลักแบบทดสอบ</span>
+            </button>
+          </div>
           <ResultsSummary
             answers={answers}
             userName="ผู้เข้ารับการประเมิน"
@@ -311,7 +481,7 @@ export const LifePathAssessment: React.FC<LifePathAssessmentProps> = ({
             onSelectCourse={onSelectCourse}
           />
         </main>
-      ) : (
+      ) : viewState === 'test' ? (
         /* VIEW: TEST QUESTIONS INTERACTION */
         <main className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 space-y-6">
           {/* Likert Scale Explanation Banner */}
@@ -763,7 +933,7 @@ export const LifePathAssessment: React.FC<LifePathAssessmentProps> = ({
             </div>
           </div>
         </main>
-      )}
+      ) : null}
     </div>
   );
 };

@@ -837,7 +837,9 @@ export default function App() {
 
             {currentTab === 'events' && <EventsCalendar events={events} />}
 
-            {currentTab === 'sanctuary' && <CounselingSanctuary mentors={mentors} />}
+            {currentTab === 'sanctuary' && (
+              <CounselingSanctuary mentors={mentors} currentUser={currentUser} />
+            )}
 
             {currentTab === 'about' && <AboutUs />}
 
