@@ -30,6 +30,7 @@ import {
   CalendarCheck2,
   FileText,
   User as UserIcon
+} from 'lucide-react';
 import { Mentor, CounselingBooking, User } from '../types';
 import { GachaponHealingCards } from './GachaponHealingCards';
 
