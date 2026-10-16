@@ -1,4 +1,4 @@
-import { AdminUser, QuizResultRecord, MembershipPlan } from '../types';
+import type { AdminUser, QuizResultRecord, MembershipPlan } from '../types';
 
 export const INITIAL_ADMIN_USERS: AdminUser[] = [
   {

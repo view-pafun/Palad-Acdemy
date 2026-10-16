@@ -7,54 +7,62 @@ interface FooterProps {
 
 export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
   return (
-    <footer className="relative bg-[#000000] pt-16 sm:pt-20 pb-16 sm:pb-20 text-slate-300 font-['Mitr','Prompt',sans-serif] overflow-hidden border-t border-neutral-900">
+    <footer 
+      className="relative bg-white pt-24 sm:pt-28 md:pt-32 lg:pt-36 pb-16 sm:pb-24 lg:pb-28 text-slate-300 font-['Mitr','Prompt',sans-serif] overflow-hidden border-t border-slate-100 min-h-[520px] sm:min-h-[580px] lg:min-h-[620px]"
+      style={{
+        backgroundImage: `url('https://s.imgz.io/2026/10/16/Testimonials-954f415e05884ea8b.png')`,
+        backgroundSize: '100% 100%',
+        backgroundPosition: 'center bottom',
+        backgroundRepeat: 'no-repeat',
+      }}
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-20">
         {/* Main Grid: Logo/Slogan/Social on left, Navigation columns on right */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-10 pb-12 border-b border-neutral-900">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-8 sm:gap-10 pb-8 sm:pb-10 border-b border-white/10">
           
-          {/* Column 1: Brand, Logo, Slogan & Social Media (Left side as in ref) */}
-          <div className="lg:col-span-4 space-y-6">
+          {/* Column 1: Brand, Logo, Slogan & Social Media */}
+          <div className="lg:col-span-4 space-y-4 sm:space-y-5">
             <div className="flex items-center">
               <img 
-                src="https://s.imgz.io/2026/10/14/-179871106970c83770.png"
+                src="https://s.imgz.io/2026/10/16/-17fbed7cb6fe269e65.png"
                 alt="PALAD ACADEMY"
-                className="h-16 sm:h-20 md:h-24 w-auto max-w-[300px] sm:max-w-[360px] object-contain drop-shadow-lg brightness-110 transition-transform duration-300 hover:scale-[1.02]"
+                className="h-16 sm:h-20 md:h-24 lg:h-26 w-auto max-w-[300px] sm:max-w-[380px] object-contain drop-shadow-sm transition-transform duration-300 hover:scale-[1.02]"
                 referrerPolicy="no-referrer"
               />
             </div>
 
             {/* Slogan */}
-            <p className="text-sm tracking-widest text-slate-400 font-['Mitr',sans-serif] font-medium leading-relaxed max-w-xs uppercase">
+            <p className="text-sm tracking-widest text-slate-300 font-['Mitr',sans-serif] font-medium leading-relaxed max-w-xs uppercase">
               PALAD ACADEMY
             </p>
 
-            {/* Social Icons (Ref: Instagram, YouTube, Facebook, Line) */}
+            {/* Social Icons */}
             <div className="flex items-center gap-3 pt-1">
               <a 
                 href="#instagram" 
                 aria-label="Instagram"
-                className="w-8 h-8 rounded-full bg-neutral-900 hover:bg-amber-400 hover:text-black flex items-center justify-center text-slate-200 transition-colors"
+                className="w-9 h-9 rounded-full bg-white hover:bg-amber-400 hover:text-black shadow-xs flex items-center justify-center text-slate-900 transition-colors"
               >
                 <Instagram className="w-4 h-4" />
               </a>
               <a 
                 href="#youtube" 
                 aria-label="YouTube"
-                className="w-8 h-8 rounded-full bg-neutral-900 hover:bg-amber-400 hover:text-black flex items-center justify-center text-slate-200 transition-colors"
+                className="w-9 h-9 rounded-full bg-white hover:bg-amber-400 hover:text-black shadow-xs flex items-center justify-center text-slate-900 transition-colors"
               >
                 <Youtube className="w-4 h-4" />
               </a>
               <a 
                 href="#facebook" 
                 aria-label="Facebook"
-                className="w-8 h-8 rounded-full bg-neutral-900 hover:bg-amber-400 hover:text-black flex items-center justify-center text-slate-200 transition-colors"
+                className="w-9 h-9 rounded-full bg-white hover:bg-amber-400 hover:text-black shadow-xs flex items-center justify-center text-slate-900 transition-colors"
               >
                 <Facebook className="w-4 h-4" />
               </a>
               <a 
                 href="#line" 
                 aria-label="Line"
-                className="w-8 h-8 rounded-full bg-neutral-900 hover:bg-amber-400 hover:text-black flex items-center justify-center text-slate-200 transition-colors font-bold text-xs"
+                className="w-9 h-9 rounded-full bg-white hover:bg-amber-400 hover:text-black shadow-xs flex items-center justify-center text-slate-900 transition-colors font-bold text-xs"
               >
                 <MessageCircle className="w-4 h-4" />
               </a>
@@ -66,7 +74,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
             <h4 className="font-bold text-white text-sm tracking-wide mb-4 font-['Mitr',sans-serif]">
               หลักสูตร
             </h4>
-            <ul className="space-y-2.5 text-xs sm:text-sm text-slate-400 font-light">
+            <ul className="space-y-2.5 text-xs sm:text-sm text-slate-300 font-normal">
               <li>
                 <button
                   onClick={() => onNavigate('courses')}
@@ -107,7 +115,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
             <h4 className="font-bold text-white text-sm tracking-wide mb-4 font-['Mitr',sans-serif]">
               เกี่ยวกับเรา
             </h4>
-            <ul className="space-y-2.5 text-xs sm:text-sm text-slate-400 font-light">
+            <ul className="space-y-2.5 text-xs sm:text-sm text-slate-300 font-normal">
               <li>
                 <button
                   onClick={() => onNavigate('about')}
@@ -140,7 +148,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
             <h4 className="font-bold text-white text-sm tracking-wide mb-4 font-['Mitr',sans-serif]">
               ช่วยเหลือ
             </h4>
-            <ul className="space-y-2.5 text-xs sm:text-sm text-slate-400 font-light">
+            <ul className="space-y-2.5 text-xs sm:text-sm text-slate-300 font-normal">
               <li>
                 <button
                   onClick={() => onNavigate('about')}
@@ -179,39 +187,26 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
         </div>
 
         {/* Bottom copyright row */}
-        <div className="pt-8 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 font-light gap-4">
+        <div className="pt-6 sm:pt-8 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-400 font-normal gap-4">
           <p className="tracking-wide">
             © 2026 PALAD ACADEMY. All rights reserved.
           </p>
 
-          <div className="flex items-center gap-4 text-slate-400">
-            <button onClick={() => onNavigate('home')} className="hover:text-amber-400 transition">
+          <div className="flex items-center gap-4 text-slate-300">
+            <button onClick={() => onNavigate('home')} className="hover:text-amber-400 transition cursor-pointer">
               เงื่อนไขการใช้งาน
             </button>
             <span>•</span>
-            <button onClick={() => onNavigate('home')} className="hover:text-amber-400 transition">
+            <button onClick={() => onNavigate('home')} className="hover:text-amber-400 transition cursor-pointer">
               ความปลอดภัยของข้อมูล
             </button>
             <span>•</span>
-            <button onClick={() => onNavigate('admin')} className="hover:text-amber-400 transition flex items-center gap-1">
+            <button onClick={() => onNavigate('admin')} className="hover:text-amber-400 transition flex items-center gap-1 cursor-pointer font-medium text-slate-200">
               <ShieldCheck className="w-3.5 h-3.5 text-amber-400" />
               <span>Admin Portal</span>
             </button>
           </div>
         </div>
-      </div>
-
-      {/* Decorative Footer Artwork at bottom-right corner */}
-      <div 
-        aria-hidden="true"
-        className="absolute bottom-0 right-0 pointer-events-none z-10 w-56 sm:w-72 md:w-96 lg:w-[440px] xl:w-[520px] max-w-[52vw] select-none"
-      >
-        <img
-          src="https://s.imgz.io/2026/10/14/-19631e62c460b52a25.png"
-          alt="PALAD ACADEMY Footer Artwork"
-          className="w-full h-auto object-contain object-bottom-right opacity-95 drop-shadow-2xl"
-          referrerPolicy="no-referrer"
-        />
       </div>
     </footer>
   );

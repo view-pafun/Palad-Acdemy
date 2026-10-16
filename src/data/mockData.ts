@@ -1,4 +1,4 @@
-import { Course, BlogTopic, PeerStory, EventItem, Mentor, ForumPost, AchievementBadge, LeaderboardUser } from '../types';
+import type { Course, BlogTopic, PeerStory, EventItem, Mentor, ForumPost, AchievementBadge, LeaderboardUser } from '../types';
 
 export const INITIAL_COURSES: Course[] = [
   {

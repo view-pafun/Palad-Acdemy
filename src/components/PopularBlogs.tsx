@@ -86,7 +86,7 @@ export const PopularBlogs: React.FC<PopularBlogsProps> = ({
 
                     {/* Clean unboxed tags */}
                     <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-slate-500 mb-3.5 font-normal">
-                      <span className="font-medium text-emerald-800">{topic.category}</span>
+                      <span className="font-semibold text-amber-500">{topic.category}</span>
                       <span aria-hidden="true" className="text-slate-300">·</span>
                       {topic.tags.map((tag, idx) => (
                         <span key={idx} className="text-slate-600">

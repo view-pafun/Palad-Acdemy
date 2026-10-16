@@ -60,7 +60,7 @@ export const FeaturedCourses: React.FC<FeaturedCoursesProps> = ({
         <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-8 sm:mb-12 gap-5">
           <div>
             <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight text-balance">
-              คอร์สเรียนแนะนำ <span className="text-emerald-700">Online Academy</span>
+              คอร์สเรียนแนะนำ <span className="text-amber-500">Online Academy</span>
             </h2>
             <p className="text-xs sm:text-sm text-slate-600 mt-1 font-normal">
               เลื่อนดูหลักสูตรยอดนิยม พัฒนาทักษะแห่งอนาคต และรับเกียรติบัตรรับรองสมรรถนะ
