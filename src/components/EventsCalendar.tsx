@@ -54,10 +54,10 @@ export const EventsCalendar: React.FC<EventsCalendarProps> = ({ events }) => {
             <span>กิจกรรมและเวิร์กช็อปพัฒนาทักษะ</span>
           </div>
           <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
-            ปฏิทินกิจกรรม <span className="text-emerald-600">Events & Workshops</span>
+            ปฏิทินกิจกรรม <span className="text-[#efd00a]" style={{ color: '#efd00a' }}>Events & Workshops</span>
           </h1>
           <p className="mt-3 text-slate-600 text-sm sm:text-base">
-            ร่วมสัมมนา แฮกกาธอน และเวิร์กช็อปทั้งรูปแบบ Onsite มรภ.อุดรธานี และ Online ผ่านเว็บไซต์ พร้อมรับเกียรติบัตร
+            ร่วมสัมมนา แฮกกาธอน และเวิร์กช็อปทั้งรูปแบบ Onsite และ Online ผ่านเว็บไซต์ พร้อมรับเกียรติบัตร
           </p>
         </div>
 
@@ -74,7 +74,7 @@ export const EventsCalendar: React.FC<EventsCalendarProps> = ({ events }) => {
                     : 'text-slate-600 hover:text-slate-900'
                 }`}
               >
-                {mode === 'All' ? 'กิจกรรมทั้งหมด' : mode === 'Onsite' ? 'เข้าร่วมที่ มรภ.อุดรฯ (Onsite)' : 'เข้าร่วมออนไลน์ (Online)'}
+                {mode === 'All' ? 'กิจกรรมทั้งหมด' : mode === 'Onsite' ? 'เข้าร่วม Onsite' : 'เข้าร่วมออนไลน์ (Online)'}
               </button>
             ))}
           </div>
@@ -231,7 +231,7 @@ export const EventsCalendar: React.FC<EventsCalendarProps> = ({ events }) => {
                         type="text"
                         value={formFaculty}
                         onChange={(e) => setFormFaculty(e.target.value)}
-                        placeholder="เช่น คณะวิทยาศาสตร์ มรภ.อุดรธานี"
+                        placeholder="เช่น คณะวิทยาศาสตร์ หรือหน่วยงานภายนอก"
                         className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs focus:outline-none focus:ring-2 focus:ring-emerald-500"
                       />
                     </div>
