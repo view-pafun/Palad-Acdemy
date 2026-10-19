@@ -14,6 +14,7 @@ import {
   Building
 } from 'lucide-react';
 import { FAQS } from '../data/mockData';
+import { Cta69 } from '@/components/ui/cta69';
 
 export const AboutUs: React.FC = () => {
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(0);
@@ -64,18 +65,9 @@ export const AboutUs: React.FC = () => {
   return (
     <div className="py-12 bg-gradient-to-b from-[#f8faf8] via-white to-[#faf9f5] min-h-screen">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16">
-        {/* Hero Banner */}
-        <div className="text-center max-w-3xl mx-auto">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-100 text-emerald-900 text-xs font-semibold mb-3">
-            <Info className="w-3.5 h-3.5 text-emerald-700" />
-            <span>เกี่ยวกับเรา (About Us)</span>
-          </div>
-          <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
-            การจัดการเรียนรู้แบบใหม่ <span className="text-emerald-600">UDRU</span>
-          </h1>
-          <p className="mt-3 text-slate-600 text-sm sm:text-base">
-            ขับเคลื่อนพลังบริสุทธิ์ของคนรุ่นใหม่ สู่การพัฒนาชุมชนท้องถิ่นที่ยั่งยืน
-          </p>
+        {/* Hero Section with Cta69 */}
+        <div className="w-full">
+          <Cta69 />
         </div>
 
         {/* Core Vision & Mission Card (Exact brief requirements) */}
