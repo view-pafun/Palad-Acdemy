@@ -21,6 +21,7 @@ import {
   Award
 } from 'lucide-react';
 import { User } from '../types';
+import { UserDropdown } from '@/components/ui/user-dropdown';
 
 interface HeaderProps {
   currentTab: string;
@@ -48,6 +49,7 @@ export const Header: React.FC<HeaderProps> = ({
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
+  const [userStatus, setUserStatus] = useState<string>('online');
 
   const [notifications, setNotifications] = useState([
     {
@@ -291,147 +293,53 @@ export const Header: React.FC<HeaderProps> = ({
 
             {/* User State */}
             {currentUser ? (
-              <div className="relative">
-                <button
-                  onClick={() => setProfileDropdownOpen(!profileDropdownOpen)}
-                  className="flex items-center gap-2 p-1.5 pr-2.5 rounded-full border border-slate-200 hover:border-emerald-300 bg-white hover:bg-emerald-50/50 transition cursor-pointer"
-                >
-                  <img
-                    src={currentUser.avatar}
-                    alt={currentUser.name}
-                    className="w-8 h-8 rounded-full object-cover ring-2 ring-emerald-400"
-                  />
-                  <div className="text-left hidden md:block">
-                    <p className="text-xs font-semibold text-slate-800 leading-tight">
-                      {currentUser.name}
-                    </p>
-                    <span className="inline-block text-[10px] font-medium text-emerald-600">
-                      {currentUser.role === 'admin'
-                        ? 'ผู้ดูแลระบบ'
-                        : currentUser.role === 'lecturer'
-                        ? 'อาจารย์'
-                        : 'นักศึกษา'}
-                    </span>
-                  </div>
-                </button>
-
-                {profileDropdownOpen && (
-                  <div className="absolute right-0 mt-2 w-56 bg-white rounded-2xl shadow-xl border border-slate-100 py-2 z-50 animate-in fade-in slide-in-from-top-2">
-                    <div className="px-4 py-2 border-b border-slate-100">
-                      <p className="text-sm font-semibold text-slate-800">{currentUser.name}</p>
-                      <p className="text-xs text-slate-500">{currentUser.email}</p>
-                      <div className="mt-1 flex items-center justify-between text-xs text-amber-700 font-bold">
-                        <span>คะแนน: {currentUser.points || 850} XP</span>
-                        <span>ระดับ: Lv.{currentUser.level || 2}</span>
-                      </div>
-                    </div>
-                    <button
-                      onClick={() => {
-                        setProfileDropdownOpen(false);
+              <div className="flex items-center">
+                <UserDropdown
+                  user={{
+                    name: currentUser.name || "Palad Academy",
+                    username: currentUser.email ? `@${currentUser.email.split('@')[0]}` : "@Palad-Academy",
+                    avatar: currentUser.avatar || "https://s.imgz.io/2026/10/19/-384c3bd9ee217dc12.png",
+                    initials: (currentUser.name || "PA").split(" ").map(w => w[0]).join("").slice(0, 2).toUpperCase(),
+                    status: userStatus,
+                    role: currentUser.role,
+                    email: currentUser.email
+                  }}
+                  selectedStatus={userStatus}
+                  onStatusChange={(status) => setUserStatus(status)}
+                  onAction={(action) => {
+                    switch (action) {
+                      case 'profile':
+                      case 'settings':
                         onOpenProfile();
-                      }}
-                      className="w-full text-left px-4 py-2 text-xs text-slate-700 hover:bg-purple-50 hover:text-purple-700 flex items-center gap-2 cursor-pointer font-medium"
-                    >
-                      <UserIcon className="w-3.5 h-3.5 text-purple-600" />
-                      <span>ข้อมูลโปรไฟล์ผู้ใช้งาน (User Profile Dashboard)</span>
-                    </button>
-                    <button
-                      onClick={() => {
-                        setProfileDropdownOpen(false);
-                        onNavigate('lifepath');
-                      }}
-                      className="w-full text-left px-4 py-2 text-xs text-slate-700 hover:bg-emerald-50 hover:text-emerald-700 flex items-center gap-2 cursor-pointer"
-                    >
-                      <Compass className="w-3.5 h-3.5 text-emerald-600" />
-                      <span>แผนชีวิตของฉัน</span>
-                    </button>
-                    <button
-                      onClick={() => {
-                        setProfileDropdownOpen(false);
+                        break;
+                      case 'notifications':
+                        setNotificationsOpen(true);
+                        break;
+                      case 'upgrade':
                         onNavigate('courses');
-                      }}
-                      className="w-full text-left px-4 py-2 text-xs text-slate-700 hover:bg-emerald-50 hover:text-emerald-700 flex items-center gap-2 cursor-pointer"
-                    >
-                      <GraduationCap className="w-3.5 h-3.5 text-blue-600" />
-                      <span>คอร์สและเกียรติบัตรที่ได้รับ</span>
-                    </button>
-                    {onOpenCertificateVault && (
-                      <button
-                        onClick={() => {
-                          setProfileDropdownOpen(false);
-                          onOpenCertificateVault();
-                        }}
-                        className="w-full text-left px-4 py-2 text-xs text-amber-800 hover:bg-amber-50 flex items-center gap-2 cursor-pointer font-bold"
-                      >
-                        <Award className="w-3.5 h-3.5 text-amber-500" />
-                        <span>Certificate Vault (คลังเกียรติบัตร) 🏆</span>
-                      </button>
-                    )}
-                    {/* 3-Role Quick Switcher for LMS Testing */}
-                    {onSwitchRole && (
-                      <div className="px-3 py-2 my-1 bg-slate-50 border-y border-slate-100">
-                        <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block mb-1.5">
-                          สลับบทบาทผู้ใช้งาน (LMS Role)
-                        </span>
-                        <div className="grid grid-cols-3 gap-1">
-                          <button
-                            type="button"
-                            onClick={() => {
-                              onSwitchRole('student');
-                              setProfileDropdownOpen(false);
-                            }}
-                            className={`px-1.5 py-1 rounded-lg text-[10px] font-bold text-center transition cursor-pointer ${
-                              currentUser.role === 'student'
-                                ? 'bg-amber-400 text-slate-950 shadow-2xs font-black'
-                                : 'bg-white hover:bg-slate-200 text-slate-700 border border-slate-200'
-                            }`}
-                          >
-                            🎓 นร.
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => {
-                              onSwitchRole('instructor');
-                              setProfileDropdownOpen(false);
-                            }}
-                            className={`px-1.5 py-1 rounded-lg text-[10px] font-bold text-center transition cursor-pointer ${
-                              currentUser.role === 'instructor' || currentUser.role === 'lecturer'
-                                ? 'bg-amber-400 text-slate-950 shadow-2xs font-black'
-                                : 'bg-white hover:bg-slate-200 text-slate-700 border border-slate-200'
-                            }`}
-                          >
-                            👨‍🏫 ผู้สอน
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => {
-                              onSwitchRole('admin');
-                              setProfileDropdownOpen(false);
-                            }}
-                            className={`px-1.5 py-1 rounded-lg text-[10px] font-bold text-center transition cursor-pointer ${
-                              currentUser.role === 'admin'
-                                ? 'bg-amber-400 text-slate-950 shadow-2xs font-black'
-                                : 'bg-white hover:bg-slate-200 text-slate-700 border border-slate-200'
-                            }`}
-                          >
-                            ⚙️ แอดมิน
-                          </button>
-                        </div>
-                      </div>
-                    )}
-
-                    <div className="border-t border-slate-100 my-1" />
-                    <button
-                      onClick={() => {
-                        setProfileDropdownOpen(false);
+                        break;
+                      case 'Missions':
+                        onNavigate('lifepath');
+                        break;
+                      case 'help':
+                        onNavigate('sanctuary');
+                        break;
+                      case 'switch':
+                        if (onSwitchRole && currentUser) {
+                          const nextRole = currentUser.role === 'student' ? 'instructor' : currentUser.role === 'instructor' ? 'admin' : 'student';
+                          onSwitchRole(nextRole);
+                        } else {
+                          onOpenProfile();
+                        }
+                        break;
+                      case 'logout':
                         onSignOut();
-                      }}
-                      className="w-full text-left px-4 py-2 text-xs text-rose-600 hover:bg-rose-50 flex items-center gap-2 cursor-pointer font-medium"
-                    >
-                      <span>ออกจากระบบ</span>
-                    </button>
-                  </div>
-                )}
+                        break;
+                      default:
+                        break;
+                    }
+                  }}
+                />
               </div>
             ) : (
               <button
