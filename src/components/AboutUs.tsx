@@ -1,20 +1,11 @@
 import React, { useState } from 'react';
 import { 
-  Info, 
-  MapPin, 
-  Phone, 
-  Mail, 
-  Sparkles, 
-  Users, 
   Target, 
   ChevronDown, 
   ChevronUp, 
-  Send,
-  HelpCircle,
-  Building
+  HelpCircle
 } from 'lucide-react';
 import { FAQS } from '../data/mockData';
-import { Cta69 } from '@/components/ui/cta69';
 
 export const AboutUs: React.FC = () => {
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(0);
@@ -63,65 +54,96 @@ export const AboutUs: React.FC = () => {
   };
 
   return (
-    <div className="py-12 bg-gradient-to-b from-[#f8faf8] via-white to-[#faf9f5] min-h-screen">
+    <div className="py-10 sm:py-16 bg-white min-h-screen text-slate-700 font-['Prompt','Kanit',sans-serif] selection:bg-amber-100 selection:text-slate-900">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16">
-        {/* Hero Section with Cta69 */}
-        <div className="w-full">
-          <Cta69 />
-        </div>
 
-        {/* Core Vision & Mission Card (Exact brief requirements) */}
-        <div className="bg-white rounded-3xl p-8 sm:p-12 border-2 border-emerald-100 shadow-xl relative overflow-hidden">
-          <div className="absolute -top-12 -right-12 w-64 h-64 bg-emerald-100/50 rounded-full blur-3xl pointer-events-none" />
-          
-          <div className="relative z-10 space-y-6">
-            <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-2xl bg-emerald-600 text-white flex items-center justify-center font-bold text-xl shadow-md">
-                🌱
-              </div>
-              <div>
-                <h2 className="text-xl sm:text-2xl font-black text-slate-900">
-                  การจัดการเรียนรู้แบบใหม่ !!
-                </h2>
-                <p className="text-xs sm:text-sm text-emerald-700 font-semibold">
-                  มหาวิทยาลัยราชภัฏอุดรธานี (UDRU)
-                </p>
-              </div>
+        {/* Section 1: Hero & Vision statement (Inspired by Image 1) */}
+        <section className="relative bg-white pt-6 pb-12 border-b border-slate-100">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+            {/* Left Col: Main Heading with gradient keywords */}
+            <div className="lg:col-span-7 space-y-4">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl font-black text-slate-900 leading-[1.25] tracking-tight text-balance">
+                เรา <span className="bg-gradient-to-r from-red-500 via-rose-500 to-fuchsia-600 bg-clip-text text-transparent font-black">สร้าง</span> พื้นที่รวมพลคนแตกต่าง ที่จะเปลี่ยนความ ‘<span className="bg-gradient-to-r from-amber-500 to-rose-500 bg-clip-text text-transparent font-black">ประหลาด</span>’ ของคุณให้กลายเป็น ‘<span className="bg-gradient-to-r from-emerald-600 to-teal-500 bg-clip-text text-transparent font-black">พลัง</span>’ และ ‘<span className="bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent font-black">ตัวตน</span>’ ที่ไม่มีใครเลียนแบบได้
+              </h1>
             </div>
 
-            <div className="bg-emerald-50/60 rounded-2xl p-6 border border-emerald-200/80">
-              <p className="text-sm sm:text-base text-slate-800 leading-relaxed font-normal">
-                "เปิดพื้นที่ให้นักศึกษาได้แสดงพลังบริสุทธิ์อย่างสร้างสรรค์ ผ่านการเรียนรู้ข้ามศาสตร์ <span className="font-bold text-emerald-900">(Multidisciplinary)</span> กับเพื่อนๆ ต่างคณะ ต่างสาขา เพื่อร่วมสนุกกับการเรียนรู้ที่จะลงมือแก้ปัญหาเชิงพื้นที่ ลงลึกวิเคราะห์ให้ถึงแก่นแท้แห่งสาเหตุของปัญหา แล้วระดมทรัพยากรและสรรพกำลังที่มีเพื่อแก้ไขแบบ <span className="font-bold text-emerald-800 underline decoration-amber-400 decoration-4">"เกาให้ถูกที่คัน"</span> และเรียนรู้การประยุกต์ใช้องค์ความรู้การปฏิบัติจริงเพื่อแก้ปัญหาชุมชนท้องถิ่นที่ซับซ้อนเกินกว่าจะแก้ปัญหาได้ด้วยศาสตร์เดียว หรือความรู้วิชาการแต่เพียงอย่างเดียว"
-              </p>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4">
-              <div className="p-4 rounded-2xl bg-slate-50 border border-slate-100">
-                <Target className="w-6 h-6 text-amber-500 mb-2" />
-                <h4 className="font-bold text-slate-900 text-sm mb-1">ลงลึกถึงแก่นแท้</h4>
-                <p className="text-xs text-slate-500">
-                  เข้าใจรากเหง้าปัญหาเชิงพื้นที่อย่างถ่องแท้ ไม่ฉาบฉวย
+            {/* Right Col: Story text */}
+            <div className="lg:col-span-5 flex flex-col justify-center h-full">
+              {/* Explanatory Narrative Paragraphs (Dark Grey, soft on the eyes) */}
+              <div className="space-y-4 text-slate-600 text-sm sm:text-base leading-relaxed pl-1 sm:pl-4 border-l-2 border-slate-100">
+                <p>
+                  <strong className="text-slate-800 font-semibold">ประหลาด Academy</strong> ก่อตั้งขึ้นบนความเชื่อที่ว่า ความยูนีคและความคิดนอกกรอบ <span className="text-slate-500 font-medium">(Unconventional)</span> คือสิ่งสร้างสรรค์ที่งดงามที่สุดในจักรวาล เราสร้างพื้นที่แห่งนี้ให้เป็นดั่งประภาคารคอยนำทางผู้เดินทางที่กำลังตั้งคำถามกับตัวเองว่า <span className="text-slate-800 font-medium italic">"ทำไมฉันถึงไม่เหมือนคนอื่น?"</span>
                 </p>
-              </div>
-
-              <div className="p-4 rounded-2xl bg-slate-50 border border-slate-100">
-                <Users className="w-6 h-6 text-blue-500 mb-2" />
-                <h4 className="font-bold text-slate-900 text-sm mb-1">เรียนรู้ข้ามศาสตร์</h4>
-                <p className="text-xs text-slate-500">
-                  ผสานจุดแข็งจากหลากหลายคณะ มารวมพลังเป็นทีมเดียว
-                </p>
-              </div>
-
-              <div className="p-4 rounded-2xl bg-slate-50 border border-slate-100">
-                <Sparkles className="w-6 h-6 text-emerald-500 mb-2" />
-                <h4 className="font-bold text-slate-900 text-sm mb-1">เกาให้ถูกที่คัน</h4>
-                <p className="text-xs text-slate-500">
-                  ส่งมอบผลงานนวัตกรรมที่ใช้งานได้จริงและชุมชนดูแลต่อได้
+                <p>
+                  พื้นที่รวมพลคนแตกต่าง ที่จะเปลี่ยนความ ‘ประหลาด’ ของคุณให้กลายเป็น ‘พลัง’ และ ‘ตัวตน’ ที่ไม่มีใครเลียนแบบได้! เราเชื่อว่าความแปลกไม่ใช่ข้อผิดพลาดของระบบ แต่เป็นซิกเนเจอร์จากจักรวาลที่รอให้คุณมาค้นพบ
                 </p>
               </div>
             </div>
           </div>
-        </div>
+        </section>
+
+        {/* Section 2: Two-Column Layout (Matching Reference Image 2) */}
+        <section className="bg-white py-6">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-start">
+            {/* Left Column: Heading + Big Standout Quote */}
+            <div className="lg:col-span-5 space-y-6">
+              <div>
+                <span className="text-xs sm:text-sm font-bold text-red-500 uppercase tracking-widest block mb-2">
+                  Mission & Vision
+                </span>
+                <h2 className="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight">
+                  พันธกิจ & วิสัยทัศน์
+                </h2>
+              </div>
+
+              {/* Standout Quote in Quotation marks with dark grey font */}
+              <div className="pt-2">
+                <blockquote className="text-lg sm:text-xl font-bold text-slate-700 leading-snug border-l-4 border-amber-400 pl-4 py-1 italic">
+                  “สร้างจักรวาลที่ทุกคนภูมิใจในความยูนีค และใช้ความประหลาดของตัวเองเปลี่ยนโลก”
+                </blockquote>
+              </div>
+            </div>
+
+            {/* Right Column: Detailed Paragraphs, Left-aligned, balanced */}
+            <div className="lg:col-span-7 space-y-6 text-slate-600 text-sm sm:text-base leading-relaxed">
+              {/* Pillars list */}
+              <div className="bg-slate-50/70 rounded-2xl p-6 sm:p-7 border border-slate-100 space-y-4">
+                <div className="flex items-start gap-3">
+                  <span className="w-2 h-2 rounded-full bg-amber-500 mt-2 shrink-0" />
+                  <p>
+                    <strong className="text-slate-800 font-bold">Empower:</strong> เปลี่ยนความ 'ประหลาด' ให้กลายเป็น 'พลัง' และ 'ตัวตน'
+                  </p>
+                </div>
+                <div className="flex items-start gap-3">
+                  <span className="w-2 h-2 rounded-full bg-sky-500 mt-2 shrink-0" />
+                  <p>
+                    <strong className="text-slate-800 font-bold">Navigate:</strong> นำทางผู้คนไปค้นหาคำตอบของชีวิต
+                  </p>
+                </div>
+                <div className="flex items-start gap-3">
+                  <span className="w-2 h-2 rounded-full bg-emerald-500 mt-2 shrink-0" />
+                  <p>
+                    <strong className="text-slate-800 font-bold">Unite:</strong> รวมพลคนคิดนอกกรอบเพื่อสร้างคอมมูนิตี้แห่งอนาคต
+                  </p>
+                </div>
+              </div>
+
+              {/* Goals / Commercialization section */}
+              <div className="p-6 sm:p-7 rounded-2xl bg-white border border-slate-200/80 shadow-sm space-y-3">
+                <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-amber-600 bg-amber-50 px-3 py-1 rounded-full border border-amber-200/60">
+                  <Target className="w-3.5 h-3.5" />
+                  <span>เป้าหมาย</span>
+                </div>
+
+                <div className="pt-1">
+                  <p className="text-slate-600 text-sm sm:text-base leading-relaxed">
+                    <strong className="text-slate-800 font-bold">Monetization & Commercialization:</strong> พัฒนาต่อยอดระบบแบบทดสอบบุคลิกภาพและโมเดลการเรียนรู้ ไปสู่บริการให้คำปรึกษาด้านทรัพยากรบุคคล (HR Solutions) สำหรับองค์กรที่ต้องการคัดสรรบุคลากรกลุ่ม Talent รวมถึงการพัฒนาหลักสูตรพิเศษ (Upskilling/Reskilling)
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
 
         {/* Personnel / Staff Section */}
         <div>
@@ -161,85 +183,6 @@ export const AboutUs: React.FC = () => {
                 </div>
               </div>
             ))}
-          </div>
-        </div>
-
-        {/* Contact Us Details (Exact brief requirements) */}
-        <div className="bg-slate-900 text-white rounded-3xl p-8 sm:p-12 shadow-xl">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
-            <div>
-              <span className="text-xs font-bold text-emerald-400 uppercase tracking-widest">
-                CONTACT INFORMATION
-              </span>
-              <h2 className="text-2xl sm:text-3xl font-extrabold text-white mt-1 mb-4">
-                ติดต่อเรา มหาวิทยาลัยราชภัฏอุดรธานี
-              </h2>
-              <p className="text-xs sm:text-sm text-slate-300 leading-relaxed mb-6">
-                ยินดีต้อนรับนักศึกษา ครูอาจารย์ หน่วยงานภาคีเครือข่าย และชุมชนทุกท่าน สามารถติดต่อสอบถามข้อมูลการเรียนรู้และโครงการได้ทุกช่องทาง
-              </p>
-
-              <div className="space-y-4 text-xs sm:text-sm">
-                {/* Phone */}
-                <div className="flex items-start gap-3 bg-slate-800/80 p-4 rounded-2xl border border-slate-700">
-                  <Phone className="w-5 h-5 text-emerald-400 shrink-0 mt-0.5" />
-                  <div>
-                    <p className="font-bold text-white text-base">
-                      หมายเลขโทรศัพท์อัตโนมัติ: 0-4221-1040-59
-                    </p>
-                    <p className="text-xs text-slate-400 mt-0.5">
-                      กดหมายเลขโทรศัพท์ภายในที่ต้องการติดต่อ หรือกด 0 เพื่อติดต่อ operator
-                    </p>
-                  </div>
-                </div>
-
-                {/* Email Central */}
-                <div className="flex items-start gap-3 bg-slate-800/80 p-4 rounded-2xl border border-slate-700">
-                  <Mail className="w-5 h-5 text-emerald-400 shrink-0 mt-0.5" />
-                  <div>
-                    <p className="font-bold text-white">อีเมลกลาง: saraban@udru.ac.th</p>
-                    <p className="text-xs text-slate-400 mt-0.5">
-                      ฝ่ายประชาสัมพันธ์: <span className="text-emerald-300 font-medium">udru-pr@udru.ac.th</span>
-                    </p>
-                  </div>
-                </div>
-
-                {/* Address */}
-                <div className="flex items-start gap-3 bg-slate-800/80 p-4 rounded-2xl border border-slate-700">
-                  <MapPin className="w-5 h-5 text-emerald-400 shrink-0 mt-0.5" />
-                  <div>
-                    <p className="font-bold text-white">ที่อยู่มหาวิทยาลัยราชภัฏอุดรธานี</p>
-                    <p className="text-xs text-slate-400 mt-0.5">
-                      64 ถนนทหาร ตำบลหมากแข้ง อำเภอเมือง จังหวัดอุดรธานี 41000
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Interactive Campus Map Card */}
-            <div className="bg-slate-800 rounded-2xl p-6 border border-slate-700 space-y-4">
-              <div className="flex items-center gap-2 text-white font-bold text-sm">
-                <Building className="w-4 h-4 text-emerald-400" />
-                <span>ศูนย์การเรียนรู้ ณ มหาวิทยาลัยราชภัฏอุดรธานี</span>
-              </div>
-              <div className="aspect-video rounded-xl bg-slate-950 overflow-hidden relative border border-slate-700 flex items-center justify-center">
-                <img
-                  src="https://images.unsplash.com/photo-1562774053-701939374585?auto=format&fit=crop&w=700&q=80"
-                  alt="UDRU Campus"
-                  className="w-full h-full object-cover opacity-60"
-                />
-                <div className="absolute inset-0 flex flex-col items-center justify-center p-4 text-center">
-                  <span className="w-10 h-10 rounded-full bg-emerald-500 text-white flex items-center justify-center font-bold text-lg mb-2 shadow-lg animate-bounce">
-                    📍
-                  </span>
-                  <p className="font-bold text-sm text-white">UDRU Main Campus</p>
-                  <p className="text-[11px] text-slate-300">อาคารเฉลิมพระเกียรติฯ & ศูนย์นวัตกรรมเพื่อการพัฒนาท้องถิ่น</p>
-                </div>
-              </div>
-              <p className="text-xs text-slate-400 text-center">
-                เปิดให้บริการวันจันทร์ - ศุกร์ เวลา 08:30 - 16:30 น.
-              </p>
-            </div>
           </div>
         </div>
 
