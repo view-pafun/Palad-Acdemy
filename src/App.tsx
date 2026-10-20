@@ -147,7 +147,7 @@ export default function App() {
       const saved = localStorage.getItem('udru_col_events');
       if (saved) {
         const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+        if (Array.isArray(parsed) && parsed.length >= INITIAL_EVENTS.length) return parsed;
       }
     } catch {}
     return INITIAL_EVENTS;

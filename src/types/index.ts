@@ -307,6 +307,14 @@ export interface EventItem {
   image: string;
   description: string;
   tags: string[];
+  price?: string;
+  statusBadge?: string;
+  criteriaBadge?: string;
+  regStartDate?: string;
+  regEndDate?: string;
+  workshopStartDate?: string;
+  workshopEndDate?: string;
+  isoDate?: string;
 }
 
 export interface Mentor {

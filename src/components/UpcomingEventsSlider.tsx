@@ -1,5 +1,20 @@
-import React, { useState, useEffect } from 'react';
-import { ChevronLeft, ChevronRight, Users, Calendar, MapPin, ArrowRight } from 'lucide-react';
+import React, { useState, useRef, useMemo } from 'react';
+import {
+  Calendar as CalendarIcon,
+  MapPin,
+  Users,
+  Clock,
+  CheckCircle2,
+  Ticket,
+  X,
+  QrCode,
+  ChevronLeft,
+  ChevronRight,
+  ArrowRight,
+  Sparkles,
+  CalendarDays,
+  Check
+} from 'lucide-react';
 import { EventItem } from '../types';
 
 interface UpcomingEventsSliderProps {
@@ -8,255 +23,863 @@ interface UpcomingEventsSliderProps {
   onExploreAllEvents?: () => void;
 }
 
+const MONTH_NAMES_TH = [
+  'มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน',
+  'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'
+];
+
+const MONTH_NAMES_EN = [
+  'January', 'February', 'March', 'April', 'May', 'June',
+  'July', 'August', 'September', 'October', 'November', 'December'
+];
+
+const WEEKDAY_NAMES = [
+  { th: 'อา.', en: 'SUN' },
+  { th: 'จ.', en: 'MON' },
+  { th: 'อ.', en: 'TUE' },
+  { th: 'พ.', en: 'WED' },
+  { th: 'พฤ.', en: 'THU' },
+  { th: 'ศ.', en: 'FRI' },
+  { th: 'ส.', en: 'SAT' },
+];
+
 export const UpcomingEventsSlider: React.FC<UpcomingEventsSliderProps> = ({
   events,
   onSelectEvent,
   onExploreAllEvents,
 }) => {
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [isPaused, setIsPaused] = useState(false);
-  const [registeredMsg, setRegisteredMsg] = useState<string | null>(null);
+  // Calendar state for the landing page section (defaults to October/November 2026)
+  const [currentYear, setCurrentYear] = useState<number>(2026);
+  const [currentMonth, setCurrentMonth] = useState<number>(10); // 10 = November, 9 = October
+  const [selectedDate, setSelectedDate] = useState<string | null>('2026-11-23');
+  const [selectedEventId, setSelectedEventId] = useState<string | null>('event-cwie-1');
 
-  // Fallback high-res events if list is empty
-  const displayEvents: EventItem[] = events && events.length > 0 ? events : [
-    {
-      id: 'ev-slide-1',
-      title: 'Social Innovation Camp 2026: ค่ายระดมความคิดปั้นนวัตกรรมชุมชนอุดรธานี',
-      type: 'Onsite',
-      date: '15 - 17 พฤศจิกายน 2569',
-      time: '09:00 - 17:00 น.',
-      location: 'หอประชุมใหญ่ อาคารเฉลิมพระเกียรติ มรภ.อุดรธานี',
-      speaker: 'ผศ.ดร. ธีรภัทร วัฒนโกศล',
-      speakerTitle: 'หัวหน้าโครงการพัฒนาทักษะและการเรียนรู้ UDRU',
-      seatsTotal: 120,
-      seatsBooked: 96,
-      category: 'แฮกกาธอน & เวิร์กช็อป',
-      image: 'https://images.unsplash.com/photo-1515187029135-18ee286d815b?auto=format&fit=crop&w=1200&q=80',
-      description: 'เรียนรู้กระบวนการ Design Thinking ร่วมกับเครื่องมือ 4 ประการในการแก้ปัญหาเชิงพื้นที่จริง ชิงทุนต่อยอดผลงานกว่า 100,000 บาท',
-      tags: ['มีเกียรติบัตร', 'อาหารฟรี', 'สะสม XP']
-    },
-    {
-      id: 'ev-slide-2',
-      title: 'Life Design Clinic & Webinar: เจาะลึกอาชีพแห่งอนาคตในยุค AI Disrupt',
-      type: 'Online',
-      date: '28 พฤศจิกายน 2569',
-      time: '19:00 - 21:00 น.',
-      location: 'Live Zoom Meeting & ถ่ายทอดสดทางเว็บไซต์',
-      speaker: 'อ. รุ่งอรุณ เมธาวี',
-      speakerTitle: 'ผู้เชี่ยวชาญการแนะแนวอาชีพและจิตวิทยา',
-      seatsTotal: 500,
-      seatsBooked: 432,
-      category: 'สัมมนาออนไลน์',
-      image: 'https://images.unsplash.com/photo-1531482615713-2afd69097998?auto=format&fit=crop&w=1200&q=80',
-      description: 'วิเคราะห์ทักษะข้ามศาสตร์ที่ตลาดต้องการ ถอดรหัสเป้าหมายชีวิต 4 มิติ และสร้างพิมพ์เขียวชีวิต (Life Blueprint) ร่วมกับอาจารย์ที่ปรึกษา',
-      tags: ['ฟรีไม่มีค่าใช้จ่าย', 'ถามตอบสด']
-    },
-    {
-      id: 'ev-slide-3',
-      title: 'ตลาดนัดนวัตกร UDRU แฟร์ 2026: แสดงผลงานจริงและเวิร์กช็อปแก้ปัญหาชุมชน',
-      type: 'Hybrid',
-      date: '10 ธันวาคม 2569',
-      time: '10:00 - 18:00 น.',
-      location: 'ลานกิจกรรมหน้าหอสมุดกลาง มรภ.อุดรธานี',
-      speaker: 'ทีมตัวแทนนักศึกษา 12 คณะ',
-      speakerTitle: 'ผู้นำเสนอผลงานนวัตกรรมต้นแบบ',
-      seatsTotal: 300,
-      seatsBooked: 240,
-      category: 'นิทรรศการ & โชว์เคส',
-      image: 'https://images.unsplash.com/photo-1511578314322-379afb476865?auto=format&fit=crop&w=1200&q=80',
-      description: 'สัมผัสและทดลองใช้นวัตกรรมแก้ปัญหาท้องถิ่น ชิมผลิตภัณฑ์ชุมชนที่นักศึกษาพัฒนาขึ้นจริง พร้อมรับฟังแรงบันดาลใจจากรุ่นพี่สู่รุ่นน้อง',
-      tags: ['ของรางวัล', 'เปิดรับทุกคน']
+  // Registration modal states
+  const [registeringEvent, setRegisteringEvent] = useState<EventItem | null>(null);
+  const [registrationSuccess, setRegistrationSuccess] = useState(false);
+  const [ticketData, setTicketData] = useState<{ name: string; email: string; phone: string; faculty: string; ticketId: string } | null>(null);
+  const [formName, setFormName] = useState('');
+  const [formEmail, setFormEmail] = useState('');
+  const [formPhone, setFormPhone] = useState('');
+  const [formFaculty, setFormFaculty] = useState('');
+
+  // Hover popover for calendar preview
+  const [hoveredEvent, setHoveredEvent] = useState<{ event: EventItem; x: number; y: number } | null>(null);
+
+  // References to event cards for smooth auto-scrolling
+  const eventCardRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
+  const listContainerRef = useRef<HTMLDivElement | null>(null);
+
+  // Parse ISO date helper
+  const getEventDateIso = (event: EventItem): string => {
+    if (event.isoDate) return event.isoDate;
+    if (event.date.includes('23') && event.date.includes('พฤศจิกายน')) return '2026-11-23';
+    if (event.date.includes('3') && event.date.includes('ตุลาคม')) return '2026-10-03';
+    if (event.date.includes('22') && event.date.includes('ตุลาคม')) return '2026-10-22';
+    if (event.date.includes('15') && event.date.includes('พฤศจิกายน')) return '2026-11-15';
+    if (event.date.includes('8') && event.date.includes('พฤศจิกายน')) return '2026-11-08';
+    if (event.date.includes('28') && event.date.includes('พฤศจิกายน')) return '2026-11-28';
+    if (event.date.includes('10') && event.date.includes('พฤศจิกายน')) return '2026-11-10';
+    return '2026-11-15';
+  };
+
+  // Calendar calculations
+  const calendarDays = useMemo(() => {
+    const firstDayOfMonth = new Date(currentYear, currentMonth, 1).getDay(); // 0 = Sun
+    const daysInCurrentMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+    const daysInPrevMonth = new Date(currentYear, currentMonth, 0).getDate();
+
+    const days: {
+      dayNumber: number;
+      isCurrentMonth: boolean;
+      isoDate: string;
+      events: EventItem[];
+    }[] = [];
+
+    // Previous month padding
+    for (let i = firstDayOfMonth - 1; i >= 0; i--) {
+      const dayNum = daysInPrevMonth - i;
+      const prevMonth = currentMonth === 0 ? 11 : currentMonth - 1;
+      const prevYear = currentMonth === 0 ? currentYear - 1 : currentYear;
+      const iso = `${prevYear}-${String(prevMonth + 1).padStart(2, '0')}-${String(dayNum).padStart(2, '0')}`;
+      days.push({
+        dayNumber: dayNum,
+        isCurrentMonth: false,
+        isoDate: iso,
+        events: []
+      });
     }
-  ];
 
-  const total = displayEvents.length;
+    // Current month days
+    for (let day = 1; day <= daysInCurrentMonth; day++) {
+      const iso = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+      const dayEvents = events.filter((ev) => getEventDateIso(ev) === iso);
+      days.push({
+        dayNumber: day,
+        isCurrentMonth: true,
+        isoDate: iso,
+        events: dayEvents
+      });
+    }
 
-  const nextSlide = () => {
-    setCurrentIndex((prev) => (prev + 1) % total);
+    // Next month padding to fill complete grid
+    const remainingSlots = (7 - (days.length % 7)) % 7;
+    for (let day = 1; day <= remainingSlots; day++) {
+      const nextMonth = currentMonth === 11 ? 0 : currentMonth + 1;
+      const nextYear = currentMonth === 11 ? currentYear + 1 : currentYear;
+      const iso = `${nextYear}-${String(nextMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+      days.push({
+        dayNumber: day,
+        isCurrentMonth: false,
+        isoDate: iso,
+        events: []
+      });
+    }
+
+    return days;
+  }, [currentYear, currentMonth, events]);
+
+  const handlePrevMonth = () => {
+    if (currentMonth === 0) {
+      setCurrentMonth(11);
+      setCurrentYear((y) => y - 1);
+    } else {
+      setCurrentMonth((m) => m - 1);
+    }
   };
 
-  const prevSlide = () => {
-    setCurrentIndex((prev) => (prev - 1 + total) % total);
+  const handleNextMonth = () => {
+    if (currentMonth === 11) {
+      setCurrentMonth(0);
+      setCurrentYear((y) => y + 1);
+    } else {
+      setCurrentMonth((m) => m + 1);
+    }
   };
 
-  // Auto-advance slides every 6 seconds when not paused
-  useEffect(() => {
-    if (isPaused) return;
-    const interval = setInterval(() => {
-      setCurrentIndex((prev) => (prev + 1) % total);
-    }, 6000);
-    return () => clearInterval(interval);
-  }, [isPaused, total]);
+  const handleGoToToday = () => {
+    setCurrentYear(2026);
+    setCurrentMonth(10);
+    setSelectedDate('2026-11-23');
+    setSelectedEventId('event-cwie-1');
+    scrollToEvent('event-cwie-1');
+  };
 
-  const currentEvent = displayEvents[currentIndex];
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(true);
+
+  const checkScrollState = () => {
+    if (listContainerRef.current) {
+      const { scrollLeft, scrollWidth, clientWidth } = listContainerRef.current;
+      setCanScrollLeft(scrollLeft > 10);
+      setCanScrollRight(scrollLeft < scrollWidth - clientWidth - 10);
+    }
+  };
+
+  // Scroll to event in the left list when clicked on calendar
+  const scrollToEvent = (eventId: string) => {
+    setSelectedEventId(eventId);
+    const targetElement = eventCardRefs.current[eventId];
+    if (targetElement && listContainerRef.current) {
+      targetElement.scrollIntoView({
+        behavior: 'smooth',
+        block: 'nearest',
+        inline: 'start'
+      });
+      setTimeout(checkScrollState, 350);
+    }
+  };
+
+  const scrollPrevCard = () => {
+    if (listContainerRef.current) {
+      const container = listContainerRef.current;
+      const cardWidth = container.firstElementChild?.clientWidth || 360;
+      container.scrollBy({ left: -(cardWidth + 16), behavior: 'smooth' });
+      setTimeout(checkScrollState, 350);
+    }
+  };
+
+  const scrollNextCard = () => {
+    if (listContainerRef.current) {
+      const container = listContainerRef.current;
+      const cardWidth = container.firstElementChild?.clientWidth || 360;
+      container.scrollBy({ left: cardWidth + 16, behavior: 'smooth' });
+      setTimeout(checkScrollState, 350);
+    }
+  };
+
+  const handleDayClick = (dayObj: { isoDate: string; events: EventItem[] }) => {
+    setSelectedDate(dayObj.isoDate);
+    if (dayObj.events.length > 0) {
+      const firstEvent = dayObj.events[0];
+      scrollToEvent(firstEvent.id);
+    }
+  };
+
+  const handleEventChipClick = (e: React.MouseEvent, event: EventItem) => {
+    e.stopPropagation();
+    const iso = getEventDateIso(event);
+    setSelectedDate(iso);
+    scrollToEvent(event.id);
+  };
+
+  const handleCardClick = (event: EventItem) => {
+    const iso = getEventDateIso(event);
+    setSelectedDate(iso);
+    setSelectedEventId(event.id);
+
+    const [y, m] = iso.split('-').map(Number);
+    if (y && m) {
+      setCurrentYear(y);
+      setCurrentMonth(m - 1);
+    }
+  };
+
+  const handleRegisterSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!formName || !formEmail) return;
+
+    setTicketData({
+      name: formName,
+      email: formEmail,
+      phone: formPhone || '08X-XXX-XXXX',
+      faculty: formFaculty || 'มหาวิทยาลัยราชภัฏอุดรธานี',
+      ticketId: `UDRU-${Math.floor(100000 + Math.random() * 900000)}`
+    });
+    setRegistrationSuccess(true);
+  };
+
+  const closeRegistration = () => {
+    setRegisteringEvent(null);
+    setRegistrationSuccess(false);
+    setTicketData(null);
+    setFormName('');
+    setFormEmail('');
+    setFormPhone('');
+    setFormFaculty('');
+  };
 
   return (
-    <section className="py-14 sm:py-20 bg-white relative overflow-hidden font-['Prompt',sans-serif]">
+    <section className="py-14 sm:py-20 bg-white relative overflow-hidden font-['Prompt','Kanit',sans-serif]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Section Header */}
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-8 sm:mb-10 gap-4 font-['Mitr',sans-serif]">
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-8 sm:mb-12 gap-4">
           <div>
-            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-slate-950 tracking-tight">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 text-emerald-800 text-xs font-semibold mb-3 border border-emerald-100">
+              <Sparkles className="w-3.5 h-3.5 text-emerald-600" />
+              <span>ปฏิทินกิจกรรม & เวิร์กช็อป</span>
+            </div>
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-slate-950 tracking-tight">
               กิจกรรมและเวิร์กช็อปที่กำลังจะมาถึง
             </h2>
-            <p className="text-xs sm:text-sm text-slate-600 mt-1 font-normal font-['Sriracha',cursive]">
-              เปิดโลกการเรียนรู้ ลงมือปฏิบัติจริง และสะสมประสบการณ์ร่วมกับเพื่อนๆ ทุกคณะ
+            <p className="text-xs sm:text-sm text-slate-600 mt-2 max-w-2xl leading-relaxed">
+              คลิกเลือกวันในปฏิทินเพื่อดูรายละเอียดกิจกรรม หรือเลื่อนดูเวิร์กช็อปที่เปิดรับสมัครในฝั่งซ้ายมือ
             </p>
           </div>
 
           {onExploreAllEvents && (
             <button
               onClick={onExploreAllEvents}
-              className="self-start sm:self-auto inline-flex items-center gap-2 text-xs sm:text-sm font-bold text-slate-950 hover:text-amber-600 transition cursor-pointer"
+              className="self-start sm:self-auto inline-flex items-center gap-2 px-5 py-2.5 rounded-2xl bg-slate-900 hover:bg-slate-800 text-white text-xs sm:text-sm font-bold transition cursor-pointer shadow-xs hover:shadow-md"
             >
-              <span>ดูกิจกรรมทั้งหมด</span>
-              <ArrowRight className="w-4 h-4" />
+              <span>ดูกิจกรรมทั้งหมด (Grid View)</span>
+              <ArrowRight className="w-4 h-4 text-emerald-400" />
             </button>
           )}
         </div>
 
-        {/* Carousel Container (Large rounded rectangular image component border-radius: 1.5rem or more) */}
-        <div 
-          onMouseEnter={() => setIsPaused(true)}
-          onMouseLeave={() => setIsPaused(false)}
-          className="relative w-full rounded-[2rem] overflow-hidden min-h-[440px] sm:min-h-[500px] lg:min-h-[540px] shadow-xl group"
-        >
-          {/* Background Images with smooth fade/scale transition */}
-          {displayEvents.map((event, idx) => (
-            <div
-              key={event.id}
-              className={`absolute inset-0 transition-opacity duration-700 ease-in-out ${
-                idx === currentIndex ? 'opacity-100 z-10' : 'opacity-0 z-0 pointer-events-none'
-              }`}
-            >
-              <img
-                src={event.image}
-                alt={event.title}
-                className="w-full h-full object-cover object-center transition-transform duration-1000 ease-out group-hover:scale-105"
-              />
-              {/* Subtle bottom-to-top dark linear gradient overlay for 100% text readability */}
-              <div 
-                aria-hidden="true" 
-                className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/60 via-40% to-transparent pointer-events-none" 
-              />
-            </div>
-          ))}
-
-          {/* Navigation Controls: Semi-transparent circular Next/Prev buttons overlaying left & right edges */}
-          <button
-            onClick={prevSlide}
-            aria-label="Previous Slide"
-            className="absolute left-3 sm:left-6 top-1/2 -translate-y-1/2 z-30 w-11 h-11 sm:w-13 sm:h-13 rounded-full bg-white/20 hover:bg-white/40 backdrop-blur-md text-white border border-white/30 flex items-center justify-center transition-all duration-200 hover:scale-110 active:scale-95 cursor-pointer shadow-lg"
-          >
-            <ChevronLeft className="w-6 h-6 stroke-[2.5]" />
-          </button>
-
-          <button
-            onClick={nextSlide}
-            aria-label="Next Slide"
-            className="absolute right-3 sm:right-6 top-1/2 -translate-y-1/2 z-30 w-11 h-11 sm:w-13 sm:h-13 rounded-full bg-white/20 hover:bg-white/40 backdrop-blur-md text-white border border-white/30 flex items-center justify-center transition-all duration-200 hover:scale-110 active:scale-95 cursor-pointer shadow-lg"
-          >
-            <ChevronRight className="w-6 h-6 stroke-[2.5]" />
-          </button>
-
-          {/* Content Overlay directly on top of the image layout near the bottom half */}
-          <div className="absolute inset-x-0 bottom-0 z-20 p-6 sm:p-10 lg:p-14 flex flex-col justify-end">
-            
-            {/* Top Badge & Organizer Row */}
-            <div className="flex flex-wrap items-center gap-3 mb-3">
-              {/* Styled Badge showing Free or Type */}
-              <span className="px-3.5 py-1 rounded-full text-xs font-black bg-amber-400 text-slate-950 shadow-xs border border-amber-300">
-                เข้าร่วมฟรี (Free)
-              </span>
-
-              <span className="px-3 py-1 rounded-full text-xs font-semibold bg-white/20 backdrop-blur-md text-white border border-white/30">
-                {currentEvent.category}
-              </span>
-
-              {/* Organizer Placeholder */}
-              <div className="flex items-center gap-2 text-xs sm:text-sm text-slate-200 bg-black/40 backdrop-blur-md px-3 py-1 rounded-full border border-white/10">
-                <span className="w-5 h-5 rounded-full bg-amber-400 text-slate-950 font-bold flex items-center justify-center text-[10px]">
-                  U
+        {/* Side-by-Side Dual Pane Layout (Left: Scrollable Cards, Right: Calendar) */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start">
+          
+          {/* LEFT SIDE: Horizontal Card Carousel */}
+          <div className="lg:col-span-5 flex flex-col space-y-4 relative min-w-0">
+            <div className="flex items-center justify-between pb-1">
+              <div className="flex items-center gap-2">
+                <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
+                <h3 className="text-base sm:text-lg font-bold text-slate-900">
+                  รายการเวิร์กช็อป & กิจกรรม
+                </h3>
+                <span className="text-xs bg-slate-100 text-slate-700 px-2 py-0.5 rounded-full font-bold">
+                  {events.length}
                 </span>
-                <span>จัดโดย: {currentEvent.speaker}</span>
               </div>
+
+              {/* Desktop Navigation Arrow Controls (Header) */}
+              <div className="hidden lg:flex items-center gap-1.5">
+                <button
+                  type="button"
+                  onClick={scrollPrevCard}
+                  disabled={!canScrollLeft}
+                  title="การ์ดก่อนหน้า"
+                  className="w-8 h-8 rounded-full border border-slate-200 bg-white hover:bg-slate-50 disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center text-slate-700 shadow-xs transition cursor-pointer"
+                >
+                  <ChevronLeft className="w-4 h-4" />
+                </button>
+                <button
+                  type="button"
+                  onClick={scrollNextCard}
+                  disabled={!canScrollRight}
+                  title="การ์ดถัดไป"
+                  className="w-8 h-8 rounded-full border border-slate-200 bg-white hover:bg-slate-50 disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center text-slate-700 shadow-xs transition cursor-pointer"
+                >
+                  <ChevronRight className="w-4 h-4" />
+                </button>
+              </div>
+
+              {/* Mobile/Tablet Swipe Hint */}
+              <span className="text-[11px] text-slate-400 lg:hidden">
+                ปัดซ้าย-ขวาเพื่อดูการ์ด
+              </span>
             </div>
 
-            {/* 1. Event Title: Bold, premium typography */}
-            <h3 className="text-xl sm:text-3xl lg:text-4xl font-black text-white tracking-tight leading-tight max-w-4xl drop-shadow-sm mb-3">
-              {currentEvent.title}
-            </h3>
-
-            {/* 3. Short Description: Clean excerpt text (truncated to max 2 lines) */}
-            <p className="line-clamp-2 text-xs sm:text-sm text-slate-300 max-w-3xl leading-relaxed mb-6 font-normal drop-shadow-2xs">
-              {currentEvent.description}
-            </p>
-
-            {/* Bottom Row: Event Details Grid + Sleek Fully-rounded CTA Button */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-2 border-t border-white/15">
-              
-              {/* 4. Event Details Grid: Minimalist icons */}
-              <div className="flex flex-wrap items-center gap-4 sm:gap-6 text-xs sm:text-sm text-slate-200">
-                <div className="flex items-center gap-2">
-                  <Calendar className="w-4 h-4 text-amber-400" />
-                  <span>{currentEvent.date}</span>
-                </div>
-
-                <div className="flex items-center gap-2">
-                  <MapPin className="w-4 h-4 text-amber-400" />
-                  <span className="line-clamp-1">{currentEvent.location}</span>
-                </div>
-
-                {/* Number of Attendees */}
-                <div className="flex items-center gap-2">
-                  <Users className="w-4 h-4 text-amber-400" />
-                  <span>ผู้เข้าร่วม {currentEvent.seatsBooked}/{currentEvent.seatsTotal} ที่นั่ง</span>
-                </div>
-              </div>
-
-              {/* 5. CTA Button: Sleek fully-rounded 'Join Event' button (#FFC800 with no black border, turns black on hover with white text) */}
+            {/* Carousel Container with Side Navigation Arrows */}
+            <div className="relative group/carousel min-w-0">
+              {/* Floating Side Left Arrow (Desktop only) */}
               <button
-                onClick={() => {
-                  if (onSelectEvent) {
-                    onSelectEvent(currentEvent);
-                  } else {
-                    setRegisteredMsg(`คุณได้ส่งคำขอเข้าร่วมกิจกรรม "${currentEvent.title}" เรียบร้อยแล้ว`);
-                    setTimeout(() => setRegisteredMsg(null), 3500);
-                  }
-                }}
-                className="self-start sm:self-auto px-7 py-3 rounded-full bg-[#FFC800] text-[#000000] hover:bg-[#000000] hover:text-white active:bg-[#000000] active:text-white font-bold text-xs sm:text-sm shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-0.5 active:translate-y-0 cursor-pointer flex items-center gap-2 border-0 font-['Mitr',sans-serif] group/cta"
+                type="button"
+                onClick={scrollPrevCard}
+                disabled={!canScrollLeft}
+                aria-label="Previous card"
+                className="hidden lg:flex absolute -left-3.5 top-1/2 -translate-y-1/2 z-20 w-9 h-9 rounded-full bg-white/95 backdrop-blur-xs border border-slate-200 shadow-md hover:bg-white hover:scale-105 active:scale-95 disabled:opacity-0 disabled:pointer-events-none items-center justify-center text-slate-800 transition cursor-pointer"
               >
-                <span>{registeredMsg ? 'ลงทะเบียนแล้ว ✓' : 'ลงทะเบียนเข้าร่วม (Join Event)'}</span>
-                <ArrowRight className="w-4 h-4 group-hover/cta:translate-x-1 group-hover/cta:text-white transition-all" />
+                <ChevronLeft className="w-5 h-5 text-slate-700" />
               </button>
-            </div>
-          </div>
 
-          {registeredMsg && (
-            <div className="absolute top-4 right-4 z-40 bg-slate-950 text-white px-4 py-2 rounded-2xl shadow-xl border border-amber-400 text-xs font-semibold animate-in fade-in">
-              {registeredMsg}
-            </div>
-          )}
-
-          {/* Bottom Center Pagination Dots: Active dot smoothly stretches into a horizontal capsule line */}
-          <div className="absolute bottom-3 sm:bottom-4 left-1/2 -translate-x-1/2 z-30 flex items-center gap-2">
-            {displayEvents.map((_, idx) => (
+              {/* Floating Side Right Arrow (Desktop only) */}
               <button
-                key={idx}
-                onClick={() => setCurrentIndex(idx)}
-                aria-label={`Go to slide ${idx + 1}`}
-                className={`transition-all duration-300 rounded-full cursor-pointer ${
-                  idx === currentIndex
-                    ? 'w-8 sm:w-10 h-2 sm:h-2.5 bg-white shadow-sm'
-                    : 'w-2 sm:w-2.5 h-2 sm:h-2.5 bg-white/40 hover:bg-white/70'
-                }`}
-              />
-            ))}
+                type="button"
+                onClick={scrollNextCard}
+                disabled={!canScrollRight}
+                aria-label="Next card"
+                className="hidden lg:flex absolute -right-3.5 top-1/2 -translate-y-1/2 z-20 w-9 h-9 rounded-full bg-white/95 backdrop-blur-xs border border-slate-200 shadow-md hover:bg-white hover:scale-105 active:scale-95 disabled:opacity-0 disabled:pointer-events-none items-center justify-center text-slate-800 transition cursor-pointer"
+              >
+                <ChevronRight className="w-5 h-5 text-slate-700" />
+              </button>
+
+              {/* Horizontal Scrollable Container with Scroll Snap */}
+              <div
+                ref={listContainerRef}
+                onScroll={checkScrollState}
+                className="flex flex-row overflow-x-auto gap-4 scroll-smooth snap-x snap-mandatory pb-3 pt-1 px-1 focus:outline-none [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+                style={{
+                  scrollSnapType: 'x mandatory',
+                  WebkitOverflowScrolling: 'touch'
+                }}
+              >
+                {events.map((event) => {
+                  const seatsLeft = event.seatsTotal - event.seatsBooked;
+                  const isFull = seatsLeft <= 0;
+                  const isSelected = selectedEventId === event.id;
+
+                  return (
+                    <div
+                      key={event.id}
+                      ref={(el) => {
+                        eventCardRefs.current[event.id] = el;
+                      }}
+                      onClick={() => handleCardClick(event)}
+                      className={`w-[88%] sm:w-[360px] lg:w-full shrink-0 snap-start group bg-white rounded-2xl sm:rounded-3xl overflow-hidden border transition-all duration-300 cursor-pointer flex flex-col justify-between ${
+                        isSelected
+                          ? 'border-emerald-500 shadow-lg ring-2 ring-emerald-500/20 translate-y-[-2px]'
+                          : 'border-slate-200 hover:border-slate-300 hover:shadow-md'
+                      }`}
+                      style={{ scrollSnapAlign: 'start' }}
+                    >
+                      {/* Top Image with Badges */}
+                      <div className="relative aspect-[16/9] w-full overflow-hidden bg-slate-100">
+                        <img
+                          src={event.image}
+                          alt={event.title}
+                          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                        />
+                        {/* Onsite pill */}
+                        <div className="absolute top-2.5 left-2.5">
+                          <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-600 text-white shadow-xs">
+                            {event.type}
+                          </span>
+                        </div>
+
+                        {/* Status pill */}
+                        <div className="absolute top-2.5 right-2.5">
+                          <span
+                            className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold shadow-xs ${
+                              event.statusBadge === 'หมดเวลารับสมัคร'
+                                ? 'bg-slate-800/90 text-slate-300'
+                                : 'bg-emerald-500 text-white'
+                            }`}
+                          >
+                            {event.statusBadge || 'กำลังเปิดรับสมัคร'}
+                          </span>
+                        </div>
+
+                        {/* Date pill over image */}
+                        <div className="absolute bottom-2.5 left-2.5">
+                          <span className="px-2.5 py-1 rounded-lg text-[10px] font-semibold bg-white/95 text-slate-800 shadow-xs flex items-center gap-1.5 backdrop-blur-xs">
+                            <CalendarIcon className="w-3 h-3 text-emerald-600" />
+                            <span>{event.date}</span>
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Content */}
+                      <div className="p-4 sm:p-5 flex-1 flex flex-col justify-between">
+                        <div>
+                          <h4 className="font-bold text-slate-900 text-sm sm:text-base leading-snug line-clamp-2 group-hover:text-emerald-700 transition">
+                            {event.title}
+                          </h4>
+
+                          {/* Badges */}
+                          <div className="flex flex-wrap items-center gap-1.5 mt-2 mb-2.5">
+                            {event.price && (
+                              <span
+                                className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                                  event.price === 'เข้าร่วมฟรี'
+                                    ? 'bg-purple-50 text-purple-700 border border-purple-100'
+                                    : 'bg-pink-50 text-pink-700 border border-pink-100'
+                                }`}
+                              >
+                                {event.price}
+                              </span>
+                            )}
+                            {event.criteriaBadge && (
+                              <span className="px-2 py-0.5 rounded-full text-[10px] font-medium bg-emerald-50 text-emerald-800 border border-emerald-100">
+                                {event.criteriaBadge}
+                              </span>
+                            )}
+                          </div>
+
+                          {/* Details box */}
+                          <div className="space-y-1.5 text-xs text-slate-600 bg-slate-50 p-2.5 rounded-xl border border-slate-100 my-2.5">
+                            <div className="flex items-center gap-2">
+                              <Clock className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                              <span className="text-[11px]">{event.time}</span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <MapPin className="w-3.5 h-3.5 text-amber-500 shrink-0" />
+                              <span className="text-[11px] truncate">{event.location}</span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <Users className="w-3.5 h-3.5 text-blue-500 shrink-0" />
+                              <span className="text-[11px] truncate">วิทยากร: {event.speaker}</span>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Footer & Buttons */}
+                        <div>
+                          <div className="flex items-center justify-between text-xs mb-2.5">
+                            <span className="text-slate-500 text-[11px]">ที่นั่งคงเหลือ:</span>
+                            <span
+                              className={`font-bold font-mono text-xs ${
+                                seatsLeft <= 10 ? 'text-rose-600' : 'text-emerald-700'
+                              }`}
+                            >
+                              {seatsLeft} / {event.seatsTotal} ที่
+                            </span>
+                          </div>
+
+                          <div className="flex items-center gap-2">
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setRegisteringEvent(event);
+                              }}
+                              disabled={isFull || event.statusBadge === 'หมดเวลารับสมัคร'}
+                              className="flex-1 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 disabled:bg-slate-200 disabled:text-slate-400 text-white font-bold text-xs flex items-center justify-center gap-1.5 transition cursor-pointer shadow-xs"
+                            >
+                              <Ticket className="w-3.5 h-3.5 text-emerald-400" />
+                              <span>
+                                {event.statusBadge === 'หมดเวลารับสมัคร'
+                                  ? 'หมดเวลารับสมัคร'
+                                  : isFull
+                                  ? 'ที่นั่งเต็มแล้ว'
+                                  : 'ลงทะเบียนเข้าร่วมฟรี'}
+                              </span>
+                            </button>
+
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleCardClick(event);
+                              }}
+                              title="ดูบนปฏิทิน"
+                              className={`px-3 py-2 rounded-xl border text-xs font-semibold transition cursor-pointer ${
+                                isSelected
+                                  ? 'bg-emerald-50 border-emerald-300 text-emerald-800'
+                                  : 'bg-slate-50 border-slate-200 text-slate-600 hover:bg-slate-100'
+                              }`}
+                            >
+                              <CalendarIcon className="w-3.5 h-3.5 text-emerald-600" />
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
           </div>
 
+          {/* RIGHT SIDE: Interactive Monthly Calendar */}
+          <div className="lg:col-span-7 bg-white rounded-3xl p-5 sm:p-6 border border-slate-200/90 shadow-sm">
+            {/* Calendar Controls */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-5 border-b border-slate-100 gap-3">
+              <div className="flex items-center gap-2">
+                <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-xl">
+                  <button
+                    onClick={handlePrevMonth}
+                    title="เดือนก่อนหน้า"
+                    className="p-1.5 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-white transition cursor-pointer"
+                  >
+                    <ChevronLeft className="w-4 h-4" />
+                  </button>
+                  <button
+                    onClick={handleNextMonth}
+                    title="เดือนถัดไป"
+                    className="p-1.5 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-white transition cursor-pointer"
+                  >
+                    <ChevronRight className="w-4 h-4" />
+                  </button>
+                </div>
+
+                <button
+                  onClick={handleGoToToday}
+                  className="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-xs font-semibold text-slate-700 transition cursor-pointer"
+                >
+                  วันนี้ (Today)
+                </button>
+
+                <div className="text-base sm:text-lg font-extrabold text-slate-900 ml-1">
+                  <span>{MONTH_NAMES_TH[currentMonth]} {currentYear + 543}</span>
+                  <span className="text-xs text-slate-400 font-normal ml-1.5 hidden sm:inline">
+                    ({MONTH_NAMES_EN[currentMonth]} {currentYear})
+                  </span>
+                </div>
+              </div>
+
+              <div className="text-[11px] text-slate-400 flex items-center gap-1.5">
+                <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
+                <span>คลิกวันเพื่อเลื่อนดูกิจกรรม</span>
+              </div>
+            </div>
+
+            {/* Days Grid */}
+            <div className="mt-4">
+              {/* Weekday Names */}
+              <div className="grid grid-cols-7 gap-1 text-center mb-1.5">
+                {WEEKDAY_NAMES.map((w, idx) => (
+                  <div
+                    key={w.en}
+                    className={`py-1.5 text-[11px] sm:text-xs font-bold uppercase tracking-wider ${
+                      idx === 0
+                        ? 'text-rose-500'
+                        : idx === 6
+                        ? 'text-indigo-500'
+                        : 'text-slate-400'
+                    }`}
+                  >
+                    <span className="hidden sm:inline">{w.en}</span>
+                    <span className="sm:hidden">{w.th}</span>
+                  </div>
+                ))}
+              </div>
+
+              {/* Day Cells */}
+              <div className="grid grid-cols-7 gap-1 sm:gap-2">
+                {calendarDays.map((dayObj, index) => {
+                  const hasEvents = dayObj.events.length > 0;
+                  const isDaySelected = selectedDate === dayObj.isoDate;
+                  const isToday =
+                    dayObj.isoDate === '2026-11-23' ||
+                    dayObj.isoDate === new Date().toISOString().split('T')[0];
+
+                  return (
+                    <div
+                      key={index}
+                      onClick={() => handleDayClick(dayObj)}
+                      className={`min-h-[75px] sm:min-h-[92px] p-1.5 rounded-2xl border transition-all duration-200 flex flex-col justify-between cursor-pointer relative group ${
+                        !dayObj.isCurrentMonth
+                          ? 'bg-slate-50/40 border-slate-100 text-slate-300 opacity-60'
+                          : isDaySelected
+                          ? 'bg-emerald-50/50 border-emerald-500 ring-2 ring-emerald-500/20 shadow-xs'
+                          : hasEvents
+                          ? 'bg-white border-slate-200 hover:border-emerald-300 hover:shadow-xs'
+                          : 'bg-white border-slate-100 hover:border-slate-200'
+                      }`}
+                    >
+                      {/* Day number */}
+                      <div className="flex items-center justify-between">
+                        <span
+                          className={`text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center ${
+                            isToday
+                              ? 'bg-slate-900 text-white'
+                              : isDaySelected
+                              ? 'text-emerald-700 bg-emerald-100'
+                              : dayObj.isCurrentMonth
+                              ? 'text-slate-800'
+                              : 'text-slate-400'
+                          }`}
+                        >
+                          {dayObj.dayNumber}
+                        </span>
+
+                        {hasEvents && (
+                          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 sm:hidden" />
+                        )}
+                      </div>
+
+                      {/* Events Mini Chips */}
+                      <div className="mt-1 space-y-1 flex-1 overflow-hidden">
+                        {dayObj.events.slice(0, 2).map((ev) => {
+                          const isEventActive = selectedEventId === ev.id;
+                          return (
+                            <div
+                              key={ev.id}
+                              onClick={(e) => handleEventChipClick(e, ev)}
+                              onMouseEnter={(e) => {
+                                const rect = e.currentTarget.getBoundingClientRect();
+                                setHoveredEvent({
+                                  event: ev,
+                                  x: rect.left,
+                                  y: rect.bottom + 8
+                                });
+                              }}
+                              onMouseLeave={() => setHoveredEvent(null)}
+                              className={`px-1.5 py-0.5 rounded-md text-[10px] leading-tight truncate transition cursor-pointer flex items-center gap-1 ${
+                                isEventActive
+                                  ? 'bg-emerald-600 text-white font-bold shadow-xs'
+                                  : 'bg-slate-100 hover:bg-emerald-100 text-slate-700 hover:text-emerald-900 font-medium'
+                              }`}
+                            >
+                              <span
+                                className={`w-1 h-1 rounded-full shrink-0 ${
+                                  isEventActive ? 'bg-white' : 'bg-emerald-500'
+                                }`}
+                              />
+                              <span className="truncate">{ev.title}</span>
+                            </div>
+                          );
+                        })}
+
+                        {dayObj.events.length > 2 && (
+                          <div className="text-[9px] font-bold text-slate-400 px-1">
+                            +{dayObj.events.length - 2} อื่นๆ
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Bottom footnote */}
+            <div className="mt-5 pt-4 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
+              <div className="flex items-center gap-3">
+                <span className="flex items-center gap-1 text-[11px]">
+                  <span className="w-2 h-2 rounded-full bg-emerald-500" />
+                  วันที่มีเวิร์กช็อป
+                </span>
+                <span className="flex items-center gap-1 text-[11px]">
+                  <span className="w-2 h-2 rounded-full bg-slate-900" />
+                  วันนี้
+                </span>
+              </div>
+              <span className="text-[11px] text-slate-400">
+                UDRU Social Engineer Platform
+              </span>
+            </div>
+          </div>
         </div>
 
+        {/* Hover Popover Tooltip for Calendar Chips */}
+        {hoveredEvent && (
+          <div
+            className="fixed z-50 pointer-events-none shadow-xl bg-white rounded-2xl border border-slate-200 p-3 max-w-xs w-68 animate-in fade-in zoom-in-95"
+            style={{
+              left: Math.min(hoveredEvent.x, window.innerWidth - 290),
+              top: Math.min(hoveredEvent.y, window.innerHeight - 230)
+            }}
+          >
+            <div className="aspect-video w-full rounded-lg overflow-hidden mb-2 bg-slate-100">
+              <img
+                src={hoveredEvent.event.image}
+                alt={hoveredEvent.event.title}
+                className="w-full h-full object-cover"
+              />
+            </div>
+            <div className="text-[10px] text-emerald-600 font-bold mb-1 flex items-center gap-1">
+              <Clock className="w-3 h-3" />
+              <span>{hoveredEvent.event.date} • {hoveredEvent.event.time}</span>
+            </div>
+            <h5 className="font-bold text-slate-900 text-xs line-clamp-2 leading-snug">
+              {hoveredEvent.event.title}
+            </h5>
+            <p className="text-[11px] text-slate-500 mt-1 line-clamp-2">
+              {hoveredEvent.event.description}
+            </p>
+          </div>
+        )}
+
+        {/* Registration Modal & Official e-Ticket */}
+        {registeringEvent && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm animate-in fade-in overflow-y-auto">
+            <div className="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-slate-200 my-auto">
+              {!registrationSuccess ? (
+                <div>
+                  <div className="flex items-center justify-between pb-3 border-b border-slate-100 mb-4">
+                    <h3 className="font-bold text-base text-slate-900 flex items-center gap-2">
+                      <Ticket className="w-5 h-5 text-emerald-600" />
+                      <span>ลงทะเบียนเข้าร่วมกิจกรรม</span>
+                    </h3>
+                    <button
+                      onClick={closeRegistration}
+                      className="p-1 rounded-lg text-slate-400 hover:text-slate-700 cursor-pointer"
+                    >
+                      <X className="w-5 h-5" />
+                    </button>
+                  </div>
+
+                  <div className="bg-slate-50 p-3 rounded-2xl border border-slate-100 mb-4 text-xs">
+                    <div className="font-bold text-slate-900 line-clamp-1">{registeringEvent.title}</div>
+                    <div className="text-slate-500 mt-1 flex items-center gap-1">
+                      <Clock className="w-3 h-3 text-emerald-600" />
+                      <span>{registeringEvent.date} ({registeringEvent.time})</span>
+                    </div>
+                    <div className="text-slate-500 flex items-center gap-1 mt-0.5">
+                      <MapPin className="w-3 h-3 text-amber-500" />
+                      <span className="truncate">{registeringEvent.location}</span>
+                    </div>
+                  </div>
+
+                  <form onSubmit={handleRegisterSubmit} className="space-y-3">
+                    <div>
+                      <label className="block text-xs font-semibold text-slate-700 mb-1">
+                        ชื่อ - นามสกุล *
+                      </label>
+                      <input
+                        type="text"
+                        required
+                        value={formName}
+                        onChange={(e) => setFormName(e.target.value)}
+                        placeholder="นาย/นางสาว..."
+                        className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-semibold text-slate-700 mb-1">
+                        อีเมลสำหรับรับบัตรเข้างาน *
+                      </label>
+                      <input
+                        type="email"
+                        required
+                        value={formEmail}
+                        onChange={(e) => setFormEmail(e.target.value)}
+                        placeholder="yourname@gmail.com หรือ saraban@udru.ac.th"
+                        className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-semibold text-slate-700 mb-1">
+                        เบอร์โทรศัพท์ติดต่อ
+                      </label>
+                      <input
+                        type="tel"
+                        value={formPhone}
+                        onChange={(e) => setFormPhone(e.target.value)}
+                        placeholder="08X-XXX-XXXX"
+                        className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-semibold text-slate-700 mb-1">
+                        คณะ / หน่วยงาน
+                      </label>
+                      <input
+                        type="text"
+                        value={formFaculty}
+                        onChange={(e) => setFormFaculty(e.target.value)}
+                        placeholder="เช่น คณะวิทยาศาสตร์ หรือบุคคลทั่วไป"
+                        className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                      />
+                    </div>
+
+                    <div className="pt-3 flex justify-end gap-2">
+                      <button
+                        type="button"
+                        onClick={closeRegistration}
+                        className="px-4 py-2.5 rounded-xl border border-slate-200 text-xs font-semibold text-slate-600 hover:bg-slate-50 cursor-pointer"
+                      >
+                        ยกเลิก
+                      </button>
+                      <button
+                        type="submit"
+                        className="px-6 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold cursor-pointer shadow-xs"
+                      >
+                        ยืนยันการลงทะเบียน
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              ) : (
+                /* e-Ticket Generated */
+                <div className="space-y-4 text-center">
+                  <div className="w-12 h-12 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto">
+                    <CheckCircle2 className="w-7 h-7" />
+                  </div>
+                  <h3 className="font-bold text-lg text-slate-900">
+                    ลงทะเบียนสำเร็จเรียบร้อย! 🎉
+                  </h3>
+                  <p className="text-xs text-slate-500">
+                    นี่คือบัตรอิเล็กทรอนิกส์ (e-Ticket) สำหรับแสดงหน้างานหรือล็อกอินเข้าฟังออนไลน์
+                  </p>
+
+                  <div className="bg-slate-900 text-white rounded-3xl p-5 text-left relative overflow-hidden border border-slate-800 shadow-md">
+                    <div className="flex items-center justify-between pb-3 border-b border-slate-800">
+                      <span className="text-[10px] font-bold uppercase tracking-widest text-emerald-400">
+                        OFFICIAL E-TICKET
+                      </span>
+                      <span className="text-xs font-mono text-slate-400">
+                        {ticketData?.ticketId}
+                      </span>
+                    </div>
+
+                    <h4 className="font-bold text-white text-sm mt-3 line-clamp-2">
+                      {registeringEvent.title}
+                    </h4>
+
+                    <div className="mt-3 space-y-1 text-xs text-slate-300">
+                      <p>👤 ผู้ถือบัตร: <span className="text-white font-semibold">{ticketData?.name}</span></p>
+                      <p>📅 วันที่: {registeringEvent.date}</p>
+                      <p>📍 สถานที่: {registeringEvent.location}</p>
+                    </div>
+
+                    <div className="mt-4 pt-3 border-t border-dashed border-slate-800 flex items-center justify-between">
+                      <div className="text-[10px] text-slate-400">
+                        สแกน QR Code เพื่อเช็คอินเข้างาน
+                      </div>
+                      <div className="w-12 h-12 bg-white rounded-lg p-1 flex items-center justify-center text-slate-900">
+                        <QrCode className="w-10 h-10" />
+                      </div>
+                    </div>
+                  </div>
+
+                  <button
+                    onClick={closeRegistration}
+                    className="w-full py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold cursor-pointer"
+                  >
+                    เสร็จสิ้น
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
       </div>
     </section>
   );
