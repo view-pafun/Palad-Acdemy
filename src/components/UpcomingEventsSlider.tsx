@@ -687,9 +687,6 @@ export const UpcomingEventsSlider: React.FC<UpcomingEventsSliderProps> = ({
                   วันนี้
                 </span>
               </div>
-              <span className="text-[11px] text-slate-400">
-                UDRU Social Engineer Platform
-              </span>
             </div>
           </div>
         </div>
