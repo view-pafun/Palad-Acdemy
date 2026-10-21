@@ -29,7 +29,8 @@ import {
   Check,
   CalendarCheck2,
   FileText,
-  User as UserIcon
+  User as UserIcon,
+  Lightbulb
 } from 'lucide-react';
 import { Mentor, CounselingBooking, User } from '../types';
 import { GachaponHealingCards } from './GachaponHealingCards';
@@ -940,64 +941,98 @@ export const CounselingSanctuary: React.FC<CounselingSanctuaryProps> = ({ mentor
       </div>
 
       {/* 5. BENEFITS SECTION: "ทำไมการปรึกษาถึงช่วยคุณได้" */}
-      <section className="py-12 sm:py-16 bg-[#FFFDF5] border-b border-amber-100/70">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="py-12 sm:py-16 bg-[#FFFDF5] border-b border-amber-100/70 relative overflow-hidden font-['Prompt',sans-serif]">
+        
+        {/* Soft background decorative ambient dots matching reference image */}
+        <div className="absolute top-10 left-6 w-32 h-32 bg-amber-200/20 rounded-full blur-2xl pointer-events-none" />
+        <div className="absolute bottom-8 right-8 w-40 h-40 bg-rose-200/20 rounded-full blur-2xl pointer-events-none" />
+        <div className="absolute top-16 right-16 text-slate-300 select-none pointer-events-none text-xs">○</div>
+        <div className="absolute bottom-12 left-10 text-amber-400 select-none pointer-events-none text-xs">●</div>
+
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           
-          <div className="text-center sm:text-left mb-10 sm:mb-12">
-            <div className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-amber-100/80 text-amber-900 text-xs font-bold mb-3">
-              <Sparkles className="w-3.5 h-3.5 text-amber-600" />
+          {/* Section Header with decorative icon & styling */}
+          <div className="text-center mb-10 sm:mb-12">
+            <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-rose-50 text-rose-600 text-xs font-bold mb-3 border border-rose-200/70 shadow-2xs">
+              <Lightbulb className="w-3.5 h-3.5 text-rose-500 fill-rose-100" />
               <span>ประโยชน์ของการปรึกษา (Benefits of Counseling)</span>
             </div>
-            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-slate-900 tracking-tight">
-              ทำไมการปรึกษาถึงช่วยคุณได้
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-slate-900 tracking-tight flex items-center justify-center gap-2.5">
+              <span>ทำไมการปรึกษาถึงช่วยคุณได้</span>
+              <Sparkles className="w-5 h-5 sm:w-6 sm:h-6 text-amber-500 shrink-0" />
             </h2>
+            <p className="text-xs sm:text-sm text-slate-600 mt-2.5 max-w-2xl mx-auto leading-relaxed">
+              ไม่ว่าคุณจะเจอเรื่องยากแค่ไหน การพูดคุยกับผู้เชี่ยวชาญสามารถช่วยให้คุณผ่อนคลายและมองเห็นแนวทางใหม่ๆ ได้เสมอ
+            </p>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* 3 Benefits Cards with Illustrations & Perfectly Centered Content */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
             
-            {/* Benefit 1 */}
-            <div className="bg-white rounded-3xl p-6 border border-amber-200/80 shadow-2xs hover:shadow-md transition-all flex flex-col justify-between">
-              <div>
-                <div className="w-12 h-12 rounded-2xl bg-amber-50 border border-amber-200 text-amber-800 font-black text-lg flex items-center justify-center mb-4">
-                  01
-                </div>
-                <h3 className="text-base font-bold text-slate-900 mb-2">
-                  ช่วยสะท้อนให้เห็นถึงคุณค่าของตัวเอง
-                </h3>
-                <p className="text-xs text-slate-600 leading-relaxed font-normal">
-                  การปรึกษาพูดคุยจะช่วยคุณสะท้อนสิ่งต่างๆ ในมุมมองที่คุณอาจไม่เคยเห็นมาก่อน ทำให้เห็นจุดแข็ง และค้นพบแนวทางการแก้ปัญหาใหม่ๆ ด้วยตัวคุณเอง
-                </p>
+            {/* Benefit 1: ช่วยสะท้อนให้เห็นถึงคุณค่าของตัวเอง */}
+            <div className="bg-white rounded-[28px] p-6 sm:p-8 border border-amber-100/80 shadow-[0_4px_24px_rgba(0,0,0,0.03)] hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 flex flex-col items-center justify-center text-center group">
+              <div className="relative w-full h-36 sm:h-44 flex items-center justify-center mb-5">
+                <div className="absolute w-28 h-28 sm:w-32 sm:h-32 bg-[#FFF6D6] rounded-full blur-[2px] -z-0 group-hover:scale-110 transition-transform duration-300" />
+                <img
+                  src="https://s.imgz.io/2026/10/21/0aa51e9de838b35e79c3cf12524d5774e40e3307e398d891.png"
+                  alt="ช่วยสะท้อนให้เห็นถึงคุณค่าของตัวเอง"
+                  className="relative z-10 max-h-32 sm:max-h-40 w-auto object-contain select-none transition-transform duration-300 group-hover:scale-105"
+                  onError={(e) => {
+                    (e.currentTarget as HTMLImageElement).src = '/assets/counseling/benefit-reflect.png';
+                  }}
+                  referrerPolicy="no-referrer"
+                />
               </div>
+              <h3 className="text-base sm:text-lg font-bold text-slate-900 mb-2.5 text-center">
+                ช่วยสะท้อนให้เห็นถึงคุณค่าของตัวเอง
+              </h3>
+              <p className="text-xs sm:text-sm text-slate-600 leading-relaxed font-normal text-center max-w-xs mx-auto">
+                ช่วยให้คุณมองเห็นมุมมองใหม่ที่ไม่เคยสังเกตมาก่อน ค้นพบจุดแข็ง ศักยภาพ และเข้าใจคุณค่าที่แท้จริงในตัวเอง
+              </p>
             </div>
 
-            {/* Benefit 2 */}
-            <div className="bg-white rounded-3xl p-6 border border-rose-200/80 shadow-2xs hover:shadow-md transition-all flex flex-col justify-between">
-              <div>
-                <div className="w-12 h-12 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 font-black text-lg flex items-center justify-center mb-4">
-                  02
-                </div>
-                <h3 className="text-base font-bold text-slate-900 mb-2">
-                  พูดคุยเรื่องที่ไม่สามารถพูดกับใครได้
-                </h3>
-                <p className="text-xs text-slate-600 leading-relaxed font-normal">
-                  ผู้ให้คำปรึกษาจะรับฟังอย่างตั้งใจโดยไม่ตัดสิน เป็นพื้นที่ที่คุณสามารถปลดปล่อยความรู้สึกหนักอึ้งได้อย่างสบายใจ และปลอดภัย 100%
-                </p>
+            {/* Benefit 2: พูดคุยเรื่องที่ไม่สามารถพูดกับใครได้ */}
+            <div className="bg-white rounded-[28px] p-6 sm:p-8 border border-amber-100/80 shadow-[0_4px_24px_rgba(0,0,0,0.03)] hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 flex flex-col items-center justify-center text-center group">
+              <div className="relative w-full h-36 sm:h-44 flex items-center justify-center mb-5">
+                <div className="absolute w-28 h-28 sm:w-32 sm:h-32 bg-[#FFF6D6] rounded-full blur-[2px] -z-0 group-hover:scale-110 transition-transform duration-300" />
+                <img
+                  src="https://s.imgz.io/2026/10/21/8fafc2d9f2c1466b8b1b5ae23c27d2ead2be99a413244d35.png"
+                  alt="พูดคุยเรื่องที่ไม่สามารถพูดกับใครได้"
+                  className="relative z-10 max-h-32 sm:max-h-40 w-auto object-contain select-none transition-transform duration-300 group-hover:scale-105"
+                  onError={(e) => {
+                    (e.currentTarget as HTMLImageElement).src = '/assets/counseling/benefit-listen.png';
+                  }}
+                  referrerPolicy="no-referrer"
+                />
               </div>
+              <h3 className="text-base sm:text-lg font-bold text-slate-900 mb-2.5 text-center">
+                พูดคุยเรื่องที่ไม่สามารถพูดกับใครได้
+              </h3>
+              <p className="text-xs sm:text-sm text-slate-600 leading-relaxed font-normal text-center max-w-xs mx-auto">
+                พื้นที่ปลอดภัยที่พร้อมรับฟังทุกความรู้สึกอย่างแท้จริง ปราศจากการตัดสิน ให้คุณปลดปล่อยความกังวลได้อย่างสบายใจ 100%
+              </p>
             </div>
 
-            {/* Benefit 3 */}
-            <div className="bg-white rounded-3xl p-6 border border-blue-200/80 shadow-2xs hover:shadow-md transition-all flex flex-col justify-between">
-              <div>
-                <div className="w-12 h-12 rounded-2xl bg-blue-50 border border-blue-200 text-blue-800 font-black text-lg flex items-center justify-center mb-4">
-                  03
-                </div>
-                <h3 className="text-base font-bold text-slate-900 mb-2">
-                  วางแผนอนาคตอย่างมั่นใจ
-                </h3>
-                <p className="text-xs text-slate-600 leading-relaxed font-normal">
-                  ไม่ว่าจะเป็นการเรียน การเลือกสายงาน หรือการจัดการกับความสับสน คุณจะได้รับแนวทางที่ปฏิบัติได้จริงและเหมาะกับคุณโดยเฉพาะ
-                </p>
+            {/* Benefit 3: วางแผนอนาคตอย่างมั่นใจ */}
+            <div className="bg-white rounded-[28px] p-6 sm:p-8 border border-amber-100/80 shadow-[0_4px_24px_rgba(0,0,0,0.03)] hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 flex flex-col items-center justify-center text-center group">
+              <div className="relative w-full h-36 sm:h-44 flex items-center justify-center mb-5">
+                <div className="absolute w-28 h-28 sm:w-32 sm:h-32 bg-[#FFF6D6] rounded-full blur-[2px] -z-0 group-hover:scale-110 transition-transform duration-300" />
+                <img
+                  src="https://s.imgz.io/2026/10/21/ca6441df7f783535a67638a2d56fabd826b6cca4089d4ad5.png"
+                  alt="วางแผนอนาคตอย่างมั่นใจ"
+                  className="relative z-10 max-h-32 sm:max-h-40 w-auto object-contain select-none transition-transform duration-300 group-hover:scale-105"
+                  onError={(e) => {
+                    (e.currentTarget as HTMLImageElement).src = '/assets/counseling/benefit-plan.png';
+                  }}
+                  referrerPolicy="no-referrer"
+                />
               </div>
+              <h3 className="text-base sm:text-lg font-bold text-slate-900 mb-2.5 text-center">
+                วางแผนอนาคตอย่างมั่นใจ
+              </h3>
+              <p className="text-xs sm:text-sm text-slate-600 leading-relaxed font-normal text-center max-w-xs mx-auto">
+                ร่วมค้นหาทิศทาง ทั้งเรื่องการเรียน อาชีพ และเป้าหมายชีวิต ได้รับแนวทางการจัดการปัญหาอย่างเป็นระบบและลงมือทำได้จริง
+              </p>
             </div>
 
           </div>
@@ -1010,9 +1045,6 @@ export const CounselingSanctuary: React.FC<CounselingSanctuaryProps> = ({ mentor
           
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
             <div>
-              <span className="inline-block px-3 py-1 rounded-full bg-amber-100 text-amber-900 text-xs font-bold mb-2">
-                อาจารย์ผู้เชี่ยวชาญ
-              </span>
               <h2 className="text-2xl sm:text-3xl font-black text-slate-900">
                 เลือกอาจารย์ที่ปรึกษาประจำศูนย์พักใจ
               </h2>

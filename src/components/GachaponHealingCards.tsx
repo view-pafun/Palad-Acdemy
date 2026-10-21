@@ -362,12 +362,6 @@ export const GachaponHealingCards: React.FC = () => {
             {/* ======================================================================= */}
             <div className="lg:col-span-3 flex flex-col justify-center text-left space-y-3 sm:space-y-4">
               
-              {/* Pink Pill Badge: ♫ เติมพลังใจในทุกวัน */}
-              <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-[#FDF2F4] text-[#E11D48] text-xs font-bold shadow-2xs w-fit">
-                <Music className="w-3.5 h-3.5 fill-[#E11D48] text-[#E11D48]" />
-                <span>เติมพลังใจในทุกวัน</span>
-              </div>
-
               {/* Heading: สุ่มการ์ดกำลังใจ */}
               <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-slate-900 tracking-tight leading-tight">
                 สุ่มการ์ดกำลังใจ

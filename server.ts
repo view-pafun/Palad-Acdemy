@@ -9,7 +9,14 @@ import { INITIAL_COURSES, INITIAL_BLOG_TOPICS, INITIAL_PEER_STORIES, INITIAL_EVE
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000;
+let defaultPort = 3000;
+const portArgIndex = process.argv.indexOf('--port');
+if (portArgIndex !== -1 && process.argv[portArgIndex + 1]) {
+  defaultPort = parseInt(process.argv[portArgIndex + 1], 10);
+} else if (process.env.PORT) {
+  defaultPort = parseInt(process.env.PORT, 10);
+}
+const PORT = defaultPort;
 
 app.use(express.json());
 
@@ -589,6 +596,10 @@ app.post('/api/settings/landing', async (req, res) => {
 
 // Auto-seed initial catalog to database if empty
 async function seedSqlDatabaseIfEmpty() {
+  if (!process.env.SQL_HOST) {
+    console.log('SQL_HOST not configured, skipping SQL database auto-seed.');
+    return;
+  }
   try {
     // Check if the courses table exists before querying
     const tableCheck = await db.execute(
@@ -704,7 +715,6 @@ async function seedSqlDatabaseIfEmpty() {
 // Vite Middleware Integration (Dev & Prod)
 // ==========================================
 async function startServer() {
-  await seedSqlDatabaseIfEmpty();
   const isProduction = process.env.NODE_ENV === 'production';
 
   if (!isProduction) {
@@ -723,6 +733,10 @@ async function startServer() {
 
   app.listen(PORT, '0.0.0.0', () => {
     console.log(`Server running at http://0.0.0.0:${PORT}`);
+    // Run database seed in background without blocking server startup
+    seedSqlDatabaseIfEmpty().catch((err) => {
+      console.log('Background seed notice:', err?.message || err);
+    });
   });
 }
 
